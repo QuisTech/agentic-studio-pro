@@ -59,8 +59,11 @@ export default function DashboardClient() {
     const savedColumns = localStorage.getItem("agentic_columns");
     const savedFiles = localStorage.getItem("agentic_files");
     
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedMessages) setMessages(JSON.parse(savedMessages));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedColumns) setColumns(JSON.parse(savedColumns));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedFiles) setFiles(JSON.parse(savedFiles));
     
     setIsHydrated(true);
@@ -80,8 +83,13 @@ export default function DashboardClient() {
       localStorage.removeItem("agentic_messages");
       localStorage.removeItem("agentic_columns");
       localStorage.removeItem("agentic_files");
-      setMessages(DEFAULT_MESSAGES);
-      setColumns(DEFAULT_COLUMNS);
+      setMessages([]);
+      
+      const resetColumns = DEFAULT_COLUMNS.map(col => ({
+        ...col,
+        tasks: col.tasks.map(task => ({ ...task, status: "todo" as const }))
+      }));
+      setColumns(resetColumns);
       setFiles(DEFAULT_FILES);
     }
   };

@@ -11,10 +11,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "QWEN_API_KEY is not set" }, { status: 500 });
   }
 
-  const { prompt, history } = await req.json();
+  const { history } = await req.json();
 
   // Convert custom message format to OpenAI format
-  const formattedHistory = (history || []).map((msg: any) => ({
+  const formattedHistory = (history || []).map((msg: { role: string; content: string; sender?: string }) => ({
     role: msg.role === "user" ? "user" : "assistant",
     content: msg.role === "user" ? msg.content : `[${msg.sender}]: ${msg.content}`
   }));
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
         });
 
         const devResponse = devCompletion.choices[0].message.content || "";
-        let codeFiles: Record<string, string> = {};
+        const codeFiles: Record<string, string> = {};
         
         try {
           const fileRegex = /###\s+([^\n]+)\n```[\w]*\n([\s\S]*?)\n```/g;
