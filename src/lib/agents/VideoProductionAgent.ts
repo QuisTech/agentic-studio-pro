@@ -5,13 +5,26 @@ import ffmpeg from 'fluent-ffmpeg';
 import { GoogleVideoForgeAgent } from './GoogleVideoForgeAgent';
 import { spawn, execSync } from 'child_process';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const ffmpegStatic = require('ffmpeg-static');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const ffprobeStatic = require('ffprobe-static');
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const ffmpegStatic = require('ffmpeg-static');
+  const ffmpegPath = typeof ffmpegStatic === 'string' ? ffmpegStatic : (ffmpegStatic && typeof ffmpegStatic.path === 'string' ? ffmpegStatic.path : null);
+  if (ffmpegPath) {
+    ffmpeg.setFfmpegPath(ffmpegPath);
+  }
+} catch (e) {
+  // Ignore missing or null ffmpeg-static path
+}
 
-ffmpeg.setFfmpegPath(ffmpegStatic);
-ffmpeg.setFfprobePath(ffprobeStatic.path);
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const ffprobeStatic = require('ffprobe-static');
+  if (ffprobeStatic && typeof ffprobeStatic.path === 'string') {
+    ffmpeg.setFfprobePath(ffprobeStatic.path);
+  }
+} catch (e) {
+  // Ignore missing or null ffprobe-static path
+}
 
 export interface VideoSceneSpec {
   id: string;

@@ -18,10 +18,15 @@ import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import { EdgeTTS } from 'node-edge-tts';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const ffprobeStatic = require('ffprobe-static');
-
-ffmpeg.setFfprobePath(ffprobeStatic.path);
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const ffprobeStatic = require('ffprobe-static');
+  if (ffprobeStatic && typeof ffprobeStatic.path === 'string') {
+    ffmpeg.setFfprobePath(ffprobeStatic.path);
+  }
+} catch (e) {
+  // Ignore missing or null ffprobe-static path
+}
 
 export class NarrationAgent {
   private outputDir: string;

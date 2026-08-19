@@ -4,10 +4,15 @@ import ffmpeg from 'fluent-ffmpeg';
 import axios from 'axios';
 import { EdgeTTS } from 'node-edge-tts';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const ffprobeStatic = require('ffprobe-static');
-
-ffmpeg.setFfprobePath(ffprobeStatic.path);
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const ffprobeStatic = require('ffprobe-static');
+  if (ffprobeStatic && typeof ffprobeStatic.path === 'string') {
+    ffmpeg.setFfprobePath(ffprobeStatic.path);
+  }
+} catch (e) {
+  // Ignore missing or null ffprobe-static path
+}
 
 export interface GoogleTtsConfig {
   voiceName?: string;

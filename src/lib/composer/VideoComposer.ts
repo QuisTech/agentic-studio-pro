@@ -14,19 +14,25 @@
 import ffmpeg from 'fluent-ffmpeg';
 import type { CompositionResult } from '../types';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const ffmpegStatic = require('ffmpeg-static');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const ffprobeStatic = require('ffprobe-static');
-
 try {
-  ffmpeg.setFfmpegPath(ffmpegStatic);
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const ffmpegStatic = require('ffmpeg-static');
+  const ffmpegPath = typeof ffmpegStatic === 'string' ? ffmpegStatic : (ffmpegStatic && typeof ffmpegStatic.path === 'string' ? ffmpegStatic.path : null);
+  if (ffmpegPath) {
+    ffmpeg.setFfmpegPath(ffmpegPath);
+  }
 } catch (e) {
-  ffmpeg.setFfmpegPath('C:\\Program Files\\BlueStacks_nxt\\ffmpeg.exe');
+  try {
+    ffmpeg.setFfmpegPath('C:\\Program Files\\BlueStacks_nxt\\ffmpeg.exe');
+  } catch {}
 }
 
 try {
-  ffmpeg.setFfprobePath(ffprobeStatic.path);
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const ffprobeStatic = require('ffprobe-static');
+  if (ffprobeStatic && typeof ffprobeStatic.path === 'string') {
+    ffmpeg.setFfprobePath(ffprobeStatic.path);
+  }
 } catch (e) {
   // ffprobe path not available — probing will fail gracefully
 }
