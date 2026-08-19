@@ -791,8 +791,8 @@ ${bp.agentArchitecture.map(a => `- **${a.name}**: ${a.role}`).join('\n')}
       'NEXT_PUBLIC_APP_URL=http://localhost:3000',
     ];
 
-    if (bp.requiredApiKeys) {
-      for (const key of bp.requiredApiKeys) {
+    if ((bp as any).requiredApiKeys) {
+      for (const key of (bp as any).requiredApiKeys) {
         lines.push(`${key.name}=your_${key.name.toLowerCase()}`);
       }
     }

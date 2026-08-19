@@ -174,8 +174,8 @@ export class VideoProductionAgent {
 
           if (target && (window as any).activeSceneId === id) {
             // Apply Dynamic Orbiting Gradient Outline Styles (Concept B)
-            target.style.position = 'relative';
-            target.style.transition = 'all 0.6s ease-in-out';
+            (target as HTMLElement).style.position = 'relative';
+            (target as HTMLElement).style.transition = 'all 0.6s ease-in-out';
             
             let glowStyle = document.getElementById('production-glow-style');
             if (!glowStyle) {
