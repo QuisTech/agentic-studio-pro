@@ -913,31 +913,18 @@ body {
   }
 
   private generateReadme(bp: HackathonBlueprint): string {
+    const tracks = (bp as any).targetTracks ? (bp as any).targetTracks.map((t: string) => `- ${t}`).join('\n') : '- Autonomous AI\n- Multi-Agent Orchestration';
     return `# ${bp.projectName}
 > ${bp.tagline}
 
 ## 🚀 Overview
 ${bp.proposedSolution}
 
-## 🎯 Target Hackathon Tracks
-${bp.targetTracks.map(t => `- ${t}`).join('\n')}
+## 🎯 Target Tracks
+${tracks}
 
 ## 🤖 Multi-Agent Architecture
-${bp.agentArchitecture.map(a => `### ${a.name}
-- **Role:** ${a.role}
-- **Inputs:** ${a.inputs}
-- **Outputs:** ${a.outputs}
-`).join('\n')}
-
-## 🛠️ Tech Stack
-${bp.techStack.frontend.map(t => `- ${t}`).join('\n')}
-${bp.techStack.backend.map(t => `- ${t}`).join('\n')}
-
-## 📦 Getting Started
-\`\`\`bash
-npm install
-npm run dev
-\`\`\`
+${bp.agentArchitecture ? bp.agentArchitecture.map(a => `### ${a.name}\n- **Role:** ${a.role}\n- **Inputs:** ${a.inputs}\n- **Outputs:** ${a.outputs}\n`).join('\n') : ''}
 `;
   }
 
