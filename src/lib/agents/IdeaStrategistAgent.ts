@@ -49,19 +49,8 @@ export class IdeaStrategistAgent {
       apiKey: selectedKey,
     });
 
-    const angles = [
-      "Real-time Multimodal VFX Previsualization & Dynamic Set Rigging",
-      "Autonomous Foley & Spatial Audio Synthesis Pipeline",
-      "AI Continuity & Multi-character Script Doctor with Gemini 1.5 Pro 2M Context",
-      "Real-time Multilingual Neural Dubbing, Voice Cloning & Lip Sync",
-      "Generative Storyboard & Interactive 3D Camera Path Optimizer",
-      "Autonomous Production Budget & Compute Resource Allocator",
-      "Live Actor Re-aging & Neural Relighting Engine"
-    ];
-    const selectedAngle = angles[Math.floor(Math.random() * angles.length)];
-
     const prompt = `
-You are an elite Hackathon Strategist who has won 50+ hackathons. Given the following hackathon context, generate a UNIQUE, DISRUPTIVE, and WINNING project blueprint.
+You are an elite Hackathon Strategist who has won 50+ hackathons. Given the following hackathon prompt/context, generate a UNIQUE, HIGHLY INNOVATIVE, and WINNING project blueprint tailored directly to this domain.
 
 --- HACKATHON CONTEXT ---
 Theme: ${context.theme}
@@ -72,15 +61,15 @@ Time Constraints: ${context.timeConstraints}
 Full Prompt: ${context.rawPrompt.substring(0, 2000)}
 --- END ---
 
-🎯 CREATIVE ANGLE FOCUS FOR THIS RUN:
-Build around this specific disruptive domain: "${selectedAngle}".
-Make the idea bold, distinct, and completely different from generic co-pilots!
+🎯 CREATIVE DIRECTIVE:
+Analyze the domain requested in the prompt (e.g. Food & Beverage / Restaurant, FinTech, DevTools, HealthTech, Media, E-Commerce, Social).
+Design a sophisticated, high-impact product with a clever, catchy name and an undeniable AI innovation edge.
 
 Your goal is to design a project that solves a real-world problem with an INNOVATIVE AI edge:
-- Innovation: How does this go beyond a basic prompt? Use LLM reasoning, multi-modal capabilities, or massive context windows.
+- Innovation: How does this go beyond a basic prompt? Use LLM reasoning, autonomous multi-agent systems, or multimodal capabilities.
 - User Utility: Does this actually make a user's life better/easier? Focus on the end-user experience.
-- Holistic Product: Don't just build a dashboard. Plan a complete website (Landing Page + Application).
-- Technical Depth: Design a sophisticated multi-agent architecture that handles complex reasoning.
+- Holistic Product: Don't just build a simple dashboard. Plan a complete commercial command center with specialized agent workflows.
+- Technical Depth: Design a sophisticated multi-agent architecture (3-5 agents) with distinct responsibilities.
 - Visual WOW: Plan for a premium, state-of-the-art UI theme.
 
 Output a JSON object with this exact schema:

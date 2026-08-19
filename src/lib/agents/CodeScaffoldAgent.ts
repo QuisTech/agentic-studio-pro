@@ -47,16 +47,221 @@ export class CodeScaffoldAgent {
   }
 
   public async generateProjectFiles(blueprint: HackathonBlueprint): Promise<GeneratedFile[]> {
-    const projectName = blueprint.projectName || "Agentic Studio";
-    const tagline = blueprint.tagline || "Autonomous Multi-Agent Enterprise Command Center";
+    const projectName = (blueprint.projectName || "Agentic Studio").replace(/"/g, '\\"');
+    const tagline = (blueprint.tagline || "Autonomous Multi-Agent Enterprise Command Center").replace(/"/g, '\\"');
     const agents = blueprint.agentArchitecture && blueprint.agentArchitecture.length > 0 
       ? blueprint.agentArchitecture 
       : [
-          { name: "DirectorAgent", role: "Orchestrates scene breakdown & executive synthesis", inputs: "Script / Vision Prompt", outputs: "Production Specs" },
-          { name: "VFXSynthesizer", role: "Generates neural cinematic assets & VFX pipelines", inputs: "Scene Directives", outputs: "Rendered Frames" },
-          { name: "BudgetOptimizer", role: "Monitors GPU compute burn & token economics", inputs: "Execution Graph", outputs: "Financial Telemetry" },
-          { name: "AudioComposer", role: "Synthesizes multi-track adaptive spatial audio", inputs: "Scene Mood & Pace", outputs: "Lossless Audio Master" }
+          { name: "ExecutiveAgent", role: "Orchestrates multi-agent task graphs and executive telemetry", inputs: "Domain Directives", outputs: "Production Specs" },
+          { name: "SynthesisEngine", role: "Executes deep domain synthesis & neural workflows", inputs: "Task Directives", outputs: "Generated Assets" },
+          { name: "OptimizationAgent", role: "Monitors economics, token throughput & efficiency", inputs: "Execution Graph", outputs: "Performance Metrics" },
+          { name: "QualityAuditor", role: "Performs continuous compliance & quality assurance", inputs: "Pipeline Outputs", outputs: "Verified Master" }
         ];
+
+    const fullText = `${blueprint.projectName || ''} ${blueprint.tagline || ''} ${blueprint.problemStatement || ''} ${blueprint.proposedSolution || ''}`.toLowerCase();
+
+    // Context-aware domain configurations
+    let config = {
+      workspaceTitle: "AI Production & Strategy Canvas",
+      workspaceSubtitle: "Direct & synthesize multimodal autonomous workflows",
+      directivePlaceholder: "Enter production directive (e.g., 'Generate multi-agent execution pipeline...')...",
+      slider1Label: "Optimization Freedom",
+      slider1Unit: "%",
+      slider2Label: "Execution Depth",
+      slider2Options: ["Rapid (Fast)", "Balanced (Standard)", "Deep (Max Quality)"],
+      engineName: "Gemini 1.5 Pro Cluster",
+      engineDesc: "Autonomous multi-agent orchestration engine with real-time feedback loops.",
+      gridTitle: "Active Intelligence Canvas",
+      gridCount: "3 Modules Active",
+      cards: [
+        {
+          id: 1,
+          title: "Neural Pipeline Synthesis",
+          badge: "ORCHESTRATION",
+          latency: "14ms",
+          status: "ONLINE",
+          description: "Autonomous multi-agent execution cluster routing tasks across distributed sub-systems.",
+          imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          id: 2,
+          title: "Real-time Telemetry & State",
+          badge: "MONITORING",
+          latency: "8ms",
+          status: "STREAMING",
+          description: "Sub-second event streaming with verifiable cryptographic logs and state checkpointing.",
+          imageUrl: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          id: 3,
+          title: "High-Throughput Computation",
+          badge: "ACCELERATION",
+          latency: "22ms",
+          status: "OPTIMIZED",
+          description: "Parallel token scheduling and automated resource allocation for maximum efficiency.",
+          imageUrl: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
+        }
+      ],
+      metrics: [
+        { label: "Pipeline Success Rate", value: "99.8%", change: "+2.4%", desc: "Autonomous run completion across 2,400+ jobs" },
+        { label: "Average Execution Latency", value: "24ms", change: "-18%", desc: "Sub-second streaming token response" },
+        { label: "Compute Efficiency SLA", value: "98.4%", change: "+5.1%", desc: "Optimal GPU & memory load balancing" },
+        { label: "Active Sub-Agent Fleet", value: "12 Nodes", change: "Active", desc: "Coordinated micro-agents in live topology" }
+      ]
+    };
+
+    if (fullText.includes("coffee") || fullText.includes("restaurant") || fullText.includes("cafe") || fullText.includes("food") || fullText.includes("barista") || fullText.includes("dining") || fullText.includes("kitchen") || fullText.includes("roast") || fullText.includes("menu")) {
+      config = {
+        workspaceTitle: "Artisan Coffee & Culinary Command Canvas",
+        workspaceSubtitle: "Autonomous sensory extraction, live kitchen stream & inventory dispatch",
+        directivePlaceholder: "Enter roast curve, seasonal menu pairings, or order dispatch directives...",
+        slider1Label: "Roast & Extraction Profile",
+        slider1Unit: "°C / Yield",
+        slider2Label: "Service Velocity",
+        slider2Options: ["Artisan Pour (Slow)", "Peak Rush (Fast)", "Tasting Flight (Deep)"],
+        engineName: "Sensory AI & Order Hub",
+        engineDesc: "Autonomous sensory roast modeling, real-time ticket dispatch, and intelligent inventory tracking.",
+        gridTitle: "Active Kitchen & Barista Station",
+        gridCount: "3 Stations Live",
+        cards: [
+          {
+            id: 1,
+            title: "Ethiopia Yirgacheffe • Single Origin Pour-Over",
+            badge: "BARISTA BAR",
+            latency: "1:45 min",
+            status: "BREWING",
+            description: "Floral jasmine & bergamot tasting notes with precise 93.5°C PID temperature profiling.",
+            imageUrl: "https://images.unsplash.com/photo-1509785307050-d4066910ec1e?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            id: 2,
+            title: "Kyoto-Style Nitrogen Cold Drip Infusion",
+            badge: "SPECIALTY ROAST",
+            latency: "Cold Extract",
+            status: "SERVED",
+            description: "12-hour slow single-origin extraction infused with micro-nitrogen bubbles for velvet crema.",
+            imageUrl: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            id: 3,
+            title: "Artisan Culinary Pairing & Truffle Flight",
+            badge: "CHEF PASS",
+            latency: "3:20 min",
+            status: "EXPEDITING",
+            description: "Handmade tagliolini with shaved black winter truffles paired with biodynamic reserve espresso.",
+            imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        metrics: [
+          { label: "Order Velocity & Turn", value: "1.8 min", change: "-35s avg", desc: "Average table ticket-to-pass delivery time" },
+          { label: "Bean Freshness SLA", value: "100%", change: "Optimal", desc: "48h post-roast degas threshold compliance" },
+          { label: "Daily Customer Satisfaction", value: "4.98 ★", change: "+0.3%", desc: "Based on 340+ verified digital table reviews" },
+          { label: "Inventory Waste Reduction", value: "-42.6%", change: "Saved $1.4k", desc: "AI predictive batch brewing & ingredient scheduling" }
+        ]
+      };
+    } else if (fullText.includes("finance") || fullText.includes("crypto") || fullText.includes("defi") || fullText.includes("trading") || fullText.includes("invest") || fullText.includes("stock")) {
+      config = {
+        workspaceTitle: "Algorithmic Market & Portfolio Matrix",
+        workspaceSubtitle: "Autonomous cross-chain liquidity sentinel & quantitative execution hub",
+        directivePlaceholder: "Enter market hedge parameters, yield rebalancing or risk thresholds...",
+        slider1Label: "Risk Tolerance (VaR)",
+        slider1Unit: "%",
+        slider2Label: "Execution Horizon",
+        slider2Options: ["High-Frequency (10ms)", "Intraday (1h)", "Macro Swing (24h)"],
+        engineName: "Quant Alpha Engine",
+        engineDesc: "Sub-millisecond volatility analysis, MEV-shielded liquidity routing, and automated delta hedging.",
+        gridTitle: "Active Strategy Sentinel",
+        gridCount: "3 Vaults Live",
+        cards: [
+          {
+            id: 1,
+            title: "Arbitrage & Liquidity Pool Sentinel",
+            badge: "DEFI MATRIX",
+            latency: "4ms",
+            status: "ACTIVE",
+            description: "Continuous automated scanning across concentrated liquidity pools and flash loans.",
+            imageUrl: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            id: 2,
+            title: "Dynamic Delta-Neutral Yield Vault",
+            badge: "ALGO TRADING",
+            latency: "Real-time",
+            status: "HEDGED",
+            description: "Automated collateral re-pegging and perpetual futures basis funding arbitrage.",
+            imageUrl: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            id: 3,
+            title: "Institutional Risk & Exposure Radar",
+            badge: "RISK DESK",
+            latency: "12ms",
+            status: "PROTECTED",
+            description: "Multi-factor stress testing against tail-risk volatility and black swan liquidity shocks.",
+            imageUrl: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        metrics: [
+          { label: "Portfolio Sharpe Ratio", value: "3.42", change: "+0.84", desc: "Risk-adjusted performance above benchmark" },
+          { label: "Execution Slippage", value: "-0.012%", change: "Optimized", desc: "Saved $18,400 via private RPC bundle routing" },
+          { label: "Total Value Protected", value: "$8.42M", change: "100% Insured", desc: "Locked across smart contract vaults" },
+          { label: "Automated Profit Realized", value: "+34.8% APY", change: "+4.2% MoM", desc: "Net algorithmic return after gas fees" }
+        ]
+      };
+    } else if (fullText.includes("health") || fullText.includes("med") || fullText.includes("clinic") || fullText.includes("patient") || fullText.includes("doctor") || fullText.includes("pharma") || fullText.includes("care")) {
+      config = {
+        workspaceTitle: "Clinical Intelligence & Diagnostic Canvas",
+        workspaceSubtitle: "Multimodal biomarker triage, patient telemetry & automated EHR synthesis",
+        directivePlaceholder: "Enter clinical triage protocol, imaging scan directives or EHR analysis query...",
+        slider1Label: "Diagnostic Sensitivity",
+        slider1Unit: "%",
+        slider2Label: "Triage Priority",
+        slider2Options: ["Routine (P3)", "Urgent (P2)", "Critical ICU (P1)"],
+        engineName: "Clinical AI Copilot",
+        engineDesc: "HIPAA-compliant multimodal medical synthesis supporting physicians with evidence-based diagnostics.",
+        gridTitle: "Active Patient Diagnostic Streams",
+        gridCount: "3 Cases Active",
+        cards: [
+          {
+            id: 1,
+            title: "Multimodal Biomarker & Genomic Triage",
+            badge: "PATHOLOGY",
+            latency: "18ms",
+            status: "ANALYZED",
+            description: "High-resolution cross-referencing of blood panels, genomic variants, and metabolic markers.",
+            imageUrl: "https://images.unsplash.com/photo-1579165466791-788226ab77b6?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            id: 2,
+            title: "Neural Radiology & Imaging Scan Synthesis",
+            badge: "RADIOLOGY",
+            latency: "0.8s",
+            status: "RENDERED",
+            description: "3D volumetric anomaly detection for MRI, CT, and fluoroscopy scans with bounding overlays.",
+            imageUrl: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            id: 3,
+            title: "ICU Continuous Telemetry & Vitals Monitor",
+            badge: "ICU WARD",
+            latency: "100Hz",
+            status: "STABLE",
+            description: "Predictive decompensation alerting and continuous cardiac rhythm anomaly detection.",
+            imageUrl: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        metrics: [
+          { label: "Diagnostic Concordance", value: "99.4%", change: "+1.2%", desc: "Aligned with board-certified clinical panels" },
+          { label: "Triage Alert Latency", value: "14ms", change: "-82ms", desc: "Immediate notification for critical decompensation" },
+          { label: "EHR Documentation Time", value: "-68%", change: "Saved 2.4h/day", desc: "Automated physician clinical chart generation" },
+          { label: "HIPAA & Security Score", value: "100%", change: "Zero Leak", desc: "Full end-to-end encrypted on-prem inference" }
+        ]
+      };
+    }
+
+    const cardsJson = JSON.stringify(config.cards, null, 2);
+    const metricsJson = JSON.stringify(config.metrics, null, 2);
+    const slider2OptionsJson = JSON.stringify(config.slider2Options);
 
     // 1. /App.tsx - Master SaaS Command Center Shell
     const appContent = `import React, { useState, useEffect } from "react";
@@ -88,8 +293,8 @@ export default function App() {
   const [notification, setNotification] = useState<string | null>(null);
 
   const [logs, setLogs] = useState<Array<{ timestamp: string; level: string; agent: string; message: string }>>([
-    { timestamp: "00:00:01", level: "INFO", agent: "CoreRuntime", message: "Gemini Enterprise 1.5 Pro cluster initialized successfully (us-central1)." },
-    { timestamp: "00:00:02", level: "SYSTEM", agent: "${agents[0]?.name || 'DirectorAgent'}", message: "Standing by for autonomous pipeline execution directives." }
+    { timestamp: "00:00:01", level: "INFO", agent: "CoreRuntime", message: "${config.engineName} initialized successfully." },
+    { timestamp: "00:00:02", level: "SYSTEM", agent: "${agents[0]?.name || 'ExecutiveAgent'}", message: "Standing by for autonomous pipeline execution directives." }
   ]);
 
   const triggerPipeline = () => {
@@ -100,10 +305,10 @@ export default function App() {
     setNotification("Autonomous Pipeline Execution Started");
 
     const steps = [
-      { progress: 25, agent: "${agents[0]?.name || 'DirectorAgent'}", msg: "Parsing project parameters and constructing multi-agent graph." },
-      { progress: 50, agent: "${agents[1]?.name || 'VFXSynthesizer'}", msg: "Synthesizing multimodal assets with Gemini Enterprise & Imagen 3." },
-      { progress: 75, agent: "${agents[2]?.name || 'BudgetOptimizer'}", msg: "Optimizing token economics: 4,820 tokens utilized across 3 sub-agents." },
-      { progress: 100, agent: "${agents[3]?.name || 'AudioComposer'}", msg: "Pipeline execution verified. All production assets finalized & cached." }
+      { progress: 25, agent: "${agents[0]?.name || 'ExecutiveAgent'}", msg: "Parsing parameters and initializing multi-agent coordination graph." },
+      { progress: 50, agent: "${agents[1]?.name || 'SynthesisEngine'}", msg: "Executing autonomous domain synthesis and live workflow processing." },
+      { progress: 75, agent: "${agents[2]?.name || 'OptimizationAgent'}", msg: "Optimizing throughput, telemetry metrics and resource balance." },
+      { progress: 100, agent: "${agents[3]?.name || 'QualityAuditor'}", msg: "Pipeline execution verified. All assets and state finalized successfully." }
     ];
 
     steps.forEach((step, idx) => {
@@ -118,238 +323,213 @@ export default function App() {
 
         if (idx === steps.length - 1) {
           setIsExecuting(false);
-          setNotification("Pipeline Execution Completed Successfully!");
+          setNotification("Autonomous Pipeline Completed Successfully");
+          setTimeout(() => setNotification(null), 4000);
         }
-      }, (idx + 1) * 1200);
+      }, (idx + 1) * 900);
     });
   };
 
   return (
-    <div className="min-h-screen bg-[#090b10] text-[#f1f3f7] flex flex-col antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
-      {/* Top Navigation Bar */}
-      <header className="h-16 border-b border-white/[0.08] bg-[#0d1017]/90 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-50">
+    <div className="min-h-screen bg-[#07090e] text-gray-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+      {/* Top Notification Toast */}
+      {notification && (
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-600/90 text-white shadow-2xl backdrop-blur-md border border-indigo-400/30 animate-bounce">
+          <Sparkles className="w-5 h-5 animate-spin" />
+          <span className="text-sm font-medium">{notification}</span>
+        </div>
+      )}
+
+      {/* Global Header */}
+      <header className="border-b border-white/[0.08] bg-[#0b0e14]/80 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-4">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 ring-1 ring-white/20">
-            <Sparkles className="h-5 w-5 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+            <Zap className="w-5 h-5 text-white" />
           </div>
           <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="font-bold text-base tracking-tight text-white">${projectName}</h1>
-              <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                Enterprise
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-bold text-white tracking-tight">${projectName}</h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                PRO ENTERPRISE
               </span>
             </div>
-            <p className="text-xs text-gray-400 font-medium hidden sm:block">${tagline}</p>
+            <p className="text-xs text-gray-400 font-medium">${tagline}</p>
           </div>
         </div>
 
-        {/* Status Pills & Primary Actions */}
+        {/* Global Controls & Status */}
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs">
-            <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              Gemini Enterprise 1.5
-            </span>
-            <span className="text-white/20">|</span>
-            <span className="text-gray-400 font-mono">24ms</span>
-            <span className="text-white/20">|</span>
-            <span className="text-gray-400">us-central1</span>
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs text-gray-300">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Cluster: Online (0.24ms)</span>
           </div>
 
           <button
             onClick={triggerPipeline}
             disabled={isExecuting}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/25 border border-white/10 transition-all active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/20 transition-all disabled:opacity-50 active:scale-95 cursor-pointer"
           >
             {isExecuting ? (
               <>
-                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                <span>Running... {executionProgress}%</span>
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                <span>Synthesizing ({executionProgress}%)</span>
               </>
             ) : (
               <>
-                <Play className="h-3.5 w-3.5 fill-current" />
-                <span>Trigger Agent Orchestra</span>
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Run Pipeline</span>
               </>
             )}
           </button>
         </div>
       </header>
 
-      {/* Notification Toast */}
-      {notification && (
-        <div className="bg-indigo-950/80 border-b border-indigo-500/30 px-6 py-2 text-xs flex items-center justify-between text-indigo-200">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-indigo-400" />
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-indigo-400 hover:text-white font-mono text-[10px]">DISMISS</button>
-        </div>
-      )}
-
-      {/* Main Workspace Layout */}
+      {/* Main Layout Grid */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar */}
-        <aside className="w-64 border-r border-white/[0.08] bg-[#0b0e14]/80 backdrop-blur-md flex flex-col justify-between p-4 shrink-0">
+        {/* Left Navigation Bar */}
+        <aside className="w-64 border-r border-white/[0.08] bg-[#090c12] p-4 flex flex-col justify-between hidden md:flex">
           <div className="space-y-6">
             <div className="space-y-1">
-              <p className="px-3 text-[10px] font-bold tracking-wider uppercase text-gray-500 mb-2">Command Center</p>
+              <p className="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Workspace Modules</p>
               
               <button
                 onClick={() => setActiveTab("studio")}
                 className={\`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all \${
                   activeTab === "studio"
-                    ? "bg-indigo-600/15 text-indigo-300 border border-indigo-500/30 shadow-sm"
+                    ? "bg-indigo-600/15 text-indigo-400 border border-indigo-500/30 shadow-sm"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.03]"
                 }\`}
               >
-                <Layers className="h-4 w-4" />
-                <span>Studio Workspace</span>
+                <Layers className="w-4 h-4" />
+                <span>Live Studio Canvas</span>
               </button>
 
               <button
                 onClick={() => setActiveTab("agents")}
                 className={\`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all \${
                   activeTab === "agents"
-                    ? "bg-indigo-600/15 text-indigo-300 border border-indigo-500/30 shadow-sm"
+                    ? "bg-indigo-600/15 text-indigo-400 border border-indigo-500/30 shadow-sm"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.03]"
                 }\`}
               >
-                <Cpu className="h-4 w-4" />
-                <span>Agent Orchestra</span>
-                <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-white/5 font-mono text-gray-400">
-                  ${agents.length}
-                </span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("terminal")}
-                className={\`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all \${
-                  activeTab === "terminal"
-                    ? "bg-indigo-600/15 text-indigo-300 border border-indigo-500/30 shadow-sm"
-                    : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.03]"
-                }\`}
-              >
-                <Terminal className="h-4 w-4" />
-                <span>Live Terminal</span>
-                {isExecuting && <span className="ml-auto h-2 w-2 rounded-full bg-indigo-400 animate-ping" />}
+                <Cpu className="w-4 h-4" />
+                <span>Agent Orchestrator</span>
               </button>
 
               <button
                 onClick={() => setActiveTab("analytics")}
                 className={\`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all \${
                   activeTab === "analytics"
-                    ? "bg-indigo-600/15 text-indigo-300 border border-indigo-500/30 shadow-sm"
+                    ? "bg-indigo-600/15 text-indigo-400 border border-indigo-500/30 shadow-sm"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.03]"
                 }\`}
               >
-                <BarChart3 className="h-4 w-4" />
-                <span>Analytics & Cost</span>
+                <BarChart3 className="w-4 h-4" />
+                <span>Telemetry & Analytics</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab("terminal")}
+                className={\`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all \${
+                  activeTab === "terminal"
+                    ? "bg-indigo-600/15 text-indigo-400 border border-indigo-500/30 shadow-sm"
+                    : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.03]"
+                }\`}
+              >
+                <Terminal className="w-4 h-4" />
+                <span>Live Agent Log Terminal</span>
               </button>
             </div>
 
-            {/* Active Autonomous Agents Mini-List */}
-            <div className="border-t border-white/[0.06] pt-4">
-              <p className="px-3 text-[10px] font-bold tracking-wider uppercase text-gray-500 mb-3">Orchestrated Agents</p>
-              <div className="space-y-2">
-                ${agents.map((a, i) => `
-                <div key="${i}" className="px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="h-1.5 w-1.5 rounded-full \${activeAgentIndex === ${i} && isExecuting ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}" />
-                    <span className="text-xs font-medium text-gray-300 truncate">${a.name}</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-gray-500 shrink-0">v1.5</span>
-                </div>
-                `).join('')}
+            {/* Pipeline Stage Quick Status */}
+            <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2.5">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-semibold text-gray-300">Active Pipeline</span>
+                <span className="font-mono text-indigo-400">{executionProgress}%</span>
               </div>
+              <div className="w-full bg-white/[0.06] h-1.5 rounded-full overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-500"
+                  style={{ width: \`\${executionProgress}%\` }}
+                />
+              </div>
+              <p className="text-[10px] text-gray-400 leading-tight">
+                {isExecuting ? "Executing active micro-agent directives..." : "Ready for next autonomous run."}
+              </p>
             </div>
           </div>
 
-          {/* Footer User / Status */}
-          <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-gray-500">
-            <span className="flex items-center gap-1.5">
-              <Globe className="h-3.5 w-3.5 text-gray-400" />
-              <span>Production v2.4</span>
-            </span>
-            <span className="font-mono text-[10px] text-emerald-400/80 font-semibold">ONLINE</span>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-950/40 to-purple-950/40 border border-indigo-500/20 text-[11px] text-gray-300">
+            <p className="font-semibold text-white mb-1">Architecture Verified</p>
+            <p className="text-[10px] text-gray-400 leading-normal">
+              Autonomous multi-agent synthesis ready for production deployment.
+            </p>
           </div>
         </aside>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-8 bg-[#090b10]">
-          <div className="max-w-6xl mx-auto space-y-8">
-            {activeTab === "studio" && (
-              <StudioWorkspace 
-                onTrigger={triggerPipeline} 
-                isExecuting={isExecuting} 
-              />
-            )}
-            
-            {activeTab === "agents" && (
-              <AgentOrchestrator 
-                agents={${JSON.stringify(agents)}} 
-                isExecuting={isExecuting} 
-                activeAgentIndex={activeAgentIndex} 
-                logs={logs}
-              />
-            )}
+        {/* Dynamic Center Stage */}
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+          {activeTab === "studio" && (
+            <StudioWorkspace onTrigger={triggerPipeline} isExecuting={isExecuting} />
+          )}
 
-            {activeTab === "terminal" && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-lg font-bold text-white">Live Execution Terminal</h2>
-                    <p className="text-xs text-gray-400">Real-time reasoning stream, tool execution logs & telemetry</p>
-                  </div>
-                  <button onClick={() => setLogs([])} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 font-medium">Clear Stream</button>
+          {activeTab === "agents" && (
+            <AgentOrchestrator
+              agents={${JSON.stringify(agents, null, 2)}}
+              isExecuting={isExecuting}
+              activeAgentIndex={activeAgentIndex}
+              logs={logs}
+            />
+          )}
+
+          {activeTab === "analytics" && (
+            <AnalyticsDashboard />
+          )}
+
+          {activeTab === "terminal" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-white tracking-tight">Live Cluster Terminal</h2>
+                  <p className="text-xs text-gray-400">Verifiable trace logs, multi-agent messages and system heartbeats</p>
                 </div>
-                <div className="h-[520px] rounded-2xl bg-[#06080c] border border-white/10 p-4 font-mono text-xs overflow-y-auto space-y-2.5 shadow-2xl">
-                  {logs.map((log, index) => (
-                    <div key={index} className="flex items-start gap-3 leading-relaxed">
-                      <span className="text-gray-600 select-none">[{log.timestamp}]</span>
-                      <span className={\`font-semibold px-1.5 py-0.5 rounded text-[10px] \${
-                        log.level === "INFO" ? "bg-blue-500/10 text-blue-400" :
-                        log.level === "SYSTEM" ? "bg-purple-500/10 text-purple-400" :
-                        "bg-emerald-500/10 text-emerald-400"
-                      }\`}>{log.level}</span>
-                      <span className="text-indigo-300 font-semibold">{log.agent}:</span>
-                      <span className="text-gray-300 flex-1">{log.message}</span>
-                    </div>
-                  ))}
-                  {isExecuting && (
-                    <div className="flex items-center gap-2 text-indigo-400 animate-pulse pt-2">
-                      <span className="h-2 w-2 rounded-full bg-indigo-400" />
-                      <span>Synthesizing agent trace...</span>
-                    </div>
-                  )}
-                </div>
+                <button
+                  onClick={() => setLogs([])}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] hover:bg-white/[0.08] text-gray-300 border border-white/[0.08]"
+                >
+                  Clear Terminal
+                </button>
               </div>
-            )}
 
-            {activeTab === "analytics" && (
-              <AnalyticsDashboard />
-            )}
-          </div>
+              <div className="rounded-2xl border border-white/[0.08] bg-[#05070a] p-5 font-mono text-xs text-gray-300 h-[500px] overflow-y-auto space-y-2 shadow-2xl">
+                {logs.map((log, index) => (
+                  <div key={index} className="flex items-start gap-3 leading-relaxed hover:bg-white/[0.02] p-1 rounded transition-colors">
+                    <span className="text-gray-400 shrink-0">[{log.timestamp}]</span>
+                    <span className={\`font-semibold shrink-0 \${
+                      log.level === "SYSTEM" ? "text-purple-400" :
+                      log.level === "AGENT_EXEC" ? "text-indigo-400" : "text-emerald-400"
+                    }\`}>
+                      {log.agent}:
+                    </span>
+                    <span className="text-gray-200">{log.message}</span>
+                  </div>
+                ))}
+                {logs.length === 0 && (
+                  <p className="text-gray-400 italic">No active logs in buffer. Click 'Run Pipeline' to stream live logs.</p>
+                )}
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
   );
-}`;
+}
+`;
 
-    // 2. /components/StudioWorkspace.tsx - Operational Studio Canvas
+    // 2. /components/StudioWorkspace.tsx - Interactive Visual Workspace
     const workspaceContent = `import React, { useState } from "react";
-import {
-  Sparkles,
-  Play,
-  Sliders,
-  CheckCircle2,
-  Clock,
-  Zap,
-  ArrowRight,
-  Layers,
-  Search,
-  RefreshCw
-} from "lucide-react";
+import { Sparkles, Sliders, Play, CheckCircle2, ChevronRight, Eye, Zap, Layers, RefreshCw } from "lucide-react";
 
 interface StudioWorkspaceProps {
   onTrigger: () => void;
@@ -357,76 +537,46 @@ interface StudioWorkspaceProps {
 }
 
 export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
-  const [promptInput, setPromptInput] = useState("Autonomous multi-agent cinematic production sequence with dynamic VFX & camera tracking");
+  const [promptInput, setPromptInput] = useState("");
   const [creativity, setCreativity] = useState(75);
-  const [resolution, setResolution] = useState("4K UHD");
-  const [selectedCard, setSelectedCard] = useState<number | null>(0);
+  const [resolution, setResolution] = useState("${config.slider2Options[0]}");
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
-  const scenes = [
-    {
-      id: 1,
-      title: "Scene 01: Neon Cyber Metropolis",
-      badge: "85mm Anamorphic • Golden Hour",
-      status: "COMPLETED",
-      latency: "1.2s",
-      imageUrl: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80",
-      description: "Atmospheric aerial tracking shot over a cybernetic city with volumetric rain and dynamic neon reflections."
-    },
-    {
-      id: 2,
-      title: "Scene 02: Orbital Observatory",
-      badge: "35mm Prime • Deep Space",
-      status: "READY_TO_RENDER",
-      latency: "0.8s",
-      imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      description: "Slow orbital pan revealing deep nebula stars and high-precision sensor array telemetries."
-    },
-    {
-      id: 3,
-      title: "Scene 03: Neural Synthesis Core",
-      badge: "Macro 100mm • Sub-surface",
-      status: "IN_QUEUE",
-      latency: "2.4s",
-      imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
-      description: "Abstract generative visualization of autonomous reasoning graphs pulsing with quantum data streams."
-    }
-  ];
+  const scenes = ${cardsJson};
 
   return (
-    <div className="space-y-8">
-      {/* Studio Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-[#0d1017] border border-white/10 p-8 shadow-2xl">
-        <div className="relative z-10 max-w-2xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
-            <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-            <span>AI Production Canvas</span>
+    <div className="space-y-6">
+      {/* Workspace Header Banner */}
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-900/30 via-[#0d1017] to-purple-900/30 border border-white/[0.08] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>${config.workspaceTitle}</span>
           </div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            Direct & Synthesize Multimodal Pipelines
-          </h2>
-          <p className="text-sm text-gray-300 leading-relaxed">
-            Configure agent prompts, camera optics, and compute budgets. Trigger autonomous orchestration across Google Cloud & partner services with one click.
+          <h2 className="text-2xl font-bold text-white tracking-tight">${config.workspaceSubtitle}</h2>
+          <p className="text-xs text-gray-400 max-w-xl">
+            Autonomous multi-agent synthesis with live parameter tuning and real-time state synchronization.
           </p>
         </div>
 
         {/* Prompt Directive Bar */}
-        <div className="relative z-10 mt-6 flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 relative">
-            <input
-              type="text"
-              value={promptInput}
-              onChange={(e) => setPromptInput(e.target.value)}
-              className="w-full h-12 bg-[#06080c]/90 border border-white/15 rounded-xl px-4 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-inner"
-              placeholder="Enter master scene directive..."
-            />
-          </div>
+        <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-black/50 border border-white/[0.12] text-sm text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 transition-all font-sans"
+          />
           <button
             onClick={onTrigger}
             disabled={isExecuting}
-            className="h-12 px-6 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white text-xs font-bold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-all active:scale-95 shrink-0"
+            className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
           >
-            {isExecuting ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4 fill-current" />}
-            <span>{isExecuting ? "Synthesizing..." : "Synthesize Scene"}</span>
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
+            <span>Execute Directive</span>
           </button>
         </div>
       </div>
@@ -435,8 +585,8 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gray-300">Creative Freedom (Temp)</span>
-            <span className="font-mono text-indigo-400">{creativity}%</span>
+            <span className="font-semibold text-gray-300">${config.slider1Label}</span>
+            <span className="font-mono text-indigo-400">{creativity}${config.slider1Unit}</span>
           </div>
           <input
             type="range"
@@ -450,15 +600,15 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
 
         <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gray-300">Render Fidelity</span>
+            <span className="font-semibold text-gray-300">${config.slider2Label}</span>
             <span className="font-mono text-purple-400">{resolution}</span>
           </div>
           <div className="flex gap-2">
-            {["1080p", "4K UHD", "8K IMAX"].map((res) => (
+            {${slider2OptionsJson}.map((res) => (
               <button
                 key={res}
                 onClick={() => setResolution(res)}
-                className={\`flex-1 py-1.5 rounded-lg text-xs font-medium border transition-all \${
+                className={\`flex-1 py-1.5 rounded-lg text-[11px] font-medium border transition-all \${
                   resolution === res
                     ? "bg-indigo-600/20 text-indigo-300 border-indigo-500/40"
                     : "bg-white/[0.02] text-gray-400 border-white/[0.06] hover:bg-white/[0.05]"
@@ -473,19 +623,19 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
         <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-gray-300">Multi-Agent Engine</span>
-            <span className="font-mono text-emerald-400">Gemini 1.5 Pro</span>
+            <span className="font-mono text-emerald-400">${config.engineName}</span>
           </div>
           <p className="text-[11px] text-gray-400 leading-tight">
-            High-throughput multimodal reasoning cluster with automated tool call attribution.
+            ${config.engineDesc}
           </p>
         </div>
       </div>
 
-      {/* Scene Production Cards Grid */}
+      {/* Production Cards Grid */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-white tracking-tight">Active Production Storyboard</h3>
-          <span className="text-xs text-gray-400 font-mono">3 Scenes Generated</span>
+          <h3 className="text-base font-bold text-white tracking-tight">${config.gridTitle}</h3>
+          <span className="text-xs text-gray-400 font-mono">${config.gridCount}</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -558,47 +708,50 @@ export default function AgentOrchestrator({ agents, isExecuting, activeAgentInde
       </div>
 
       {/* Agent Topology Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {agents.map((agent, index) => {
           const isActive = isExecuting && activeAgentIndex === index;
+          const isDone = isExecuting && activeAgentIndex > index;
+
           return (
             <div
-              key={index}
-              className={\`p-6 rounded-2xl border transition-all space-y-4 \${
+              key={agent.name}
+              className={\`p-5 rounded-2xl border transition-all duration-300 relative flex flex-col justify-between \${
                 isActive
-                  ? "bg-indigo-950/40 border-indigo-500 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/50"
-                  : "bg-[#0d1017]/90 border-white/[0.08]"
+                  ? "bg-indigo-950/30 border-indigo-500/60 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/50"
+                  : isDone
+                  ? "bg-emerald-950/20 border-emerald-500/40"
+                  : "bg-[#0d1017]/80 border-white/[0.08]"
               }\`}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={\`h-10 w-10 rounded-xl flex items-center justify-center \${
-                    isActive ? "bg-indigo-600 text-white animate-pulse" : "bg-white/[0.05] text-indigo-400"
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-white/[0.05] flex items-center justify-center text-indigo-400 font-mono text-xs font-bold border border-white/[0.08]">
+                    0{index + 1}
+                  </div>
+                  <span className={\`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider \${
+                    isActive
+                      ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 animate-pulse"
+                      : isDone
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                      : "bg-white/[0.05] text-gray-400"
                   }\`}>
-                    <Cpu className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white">{agent.name}</h3>
-                    <p className="text-xs text-gray-400">{agent.role}</p>
-                  </div>
+                    {isActive ? "Executing" : isDone ? "Completed" : "Standby"}
+                  </span>
                 </div>
-                <span className={\`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full \${
-                  isActive
-                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                    : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                }\`}>
-                  {isActive ? "PROCESSING" : "STANDBY"}
-                </span>
+
+                <div>
+                  <h3 className="text-sm font-bold text-white">{agent.name}</h3>
+                  <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed">{agent.role}</p>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/[0.04] text-[11px]">
-                <div className="p-2.5 rounded-lg bg-black/40 border border-white/[0.04]">
-                  <span className="text-gray-500 font-semibold block mb-0.5">INPUTS</span>
-                  <span className="text-gray-300 font-mono">{agent.inputs}</span>
+              <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-1.5 text-[11px] font-mono">
+                <div className="text-gray-400">
+                  <span className="text-gray-400 font-sans font-semibold">Inputs:</span> {agent.inputs}
                 </div>
-                <div className="p-2.5 rounded-lg bg-black/40 border border-white/[0.04]">
-                  <span className="text-gray-500 font-semibold block mb-0.5">OUTPUTS</span>
-                  <span className="text-gray-300 font-mono">{agent.outputs}</span>
+                <div className="text-indigo-400">
+                  <span className="text-gray-400 font-sans font-semibold">Outputs:</span> {agent.outputs}
                 </div>
               </div>
             </div>
@@ -606,117 +759,112 @@ export default function AgentOrchestrator({ agents, isExecuting, activeAgentInde
         })}
       </div>
 
-      {/* Embedded Mini-Terminal */}
-      <div className="space-y-3">
+      {/* Real-Time Agent Communication Log */}
+      <div className="p-6 rounded-2xl bg-[#0d1017]/90 border border-white/[0.08] space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <Terminal className="h-4 w-4 text-indigo-400" />
-            <span>Telemetry & Reasoning Stream</span>
-          </h3>
+          <div className="flex items-center gap-2">
+            <Terminal className="w-4 h-4 text-indigo-400" />
+            <h3 className="text-sm font-bold text-white">Inter-Agent Protocol Stream</h3>
+          </div>
+          <span className="text-xs text-emerald-400 font-mono flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            Stream Connected
+          </span>
         </div>
-        <div className="h-64 rounded-2xl bg-[#06080c] border border-white/10 p-4 font-mono text-xs overflow-y-auto space-y-2 shadow-inner">
-          {logs.slice(-6).map((log, idx) => (
-            <div key={idx} className="flex items-center gap-2.5 text-gray-300">
-              <span className="text-gray-600">[{log.timestamp}]</span>
-              <span className="text-indigo-400 font-semibold">{log.agent}:</span>
-              <span className="text-gray-300 truncate">{log.message}</span>
+
+        <div className="p-4 rounded-xl bg-black/60 border border-white/[0.06] font-mono text-xs text-gray-300 space-y-2 h-48 overflow-y-auto">
+          {logs.map((l, i) => (
+            <div key={i} className="flex gap-2">
+              <span className="text-gray-400">[{l.timestamp}]</span>
+              <span className="text-indigo-400 font-bold">{l.agent}:</span>
+              <span className="text-gray-300">{l.message}</span>
             </div>
           ))}
+          {logs.length === 0 && (
+            <p className="text-gray-400 italic">No communication logs recorded yet.</p>
+          )}
         </div>
       </div>
     </div>
   );
 }`;
 
-    // 4. /components/AnalyticsDashboard.tsx - Enterprise Metrics & KPI
+    // 4. /components/AnalyticsDashboard.tsx - Telemetry & GPU Metrics
     const analyticsContent = `import React from "react";
-import { BarChart3, Cpu, Zap, Clock, CheckCircle2, ArrowRight } from "lucide-react";
+import { BarChart3, TrendingUp, Cpu, Activity, Zap, CheckCircle2, ShieldCheck } from "lucide-react";
 
 export default function AnalyticsDashboard() {
-  const metrics = [
-    { title: "GPU Cluster Utilization", value: "84.2%", change: "+4.1%", color: "text-emerald-400", progress: 84 },
-    { title: "Average Inference Latency", value: "24ms", change: "-12ms", color: "text-indigo-400", progress: 62 },
-    { title: "Autonomous Token Budget", value: "$0.042 / run", change: "-38%", color: "text-purple-400", progress: 42 },
-    { title: "Multimodal Synthesis Rate", value: "99.8%", change: "+0.3%", color: "text-cyan-400", progress: 99 }
-  ];
+  const metrics = ${metricsJson};
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-white tracking-tight">Enterprise Telemetry & Resource Economics</h2>
-        <p className="text-xs text-gray-400">Real-time compute monitoring, token efficiency metrics & SLA guarantees</p>
+        <h2 className="text-xl font-bold text-white tracking-tight">System Telemetry & Performance Matrix</h2>
+        <p className="text-xs text-gray-400">Real-time compute performance, token economy, and pipeline SLAs</p>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {metrics.map((m, i) => (
-          <div key={i} className="p-5 rounded-2xl bg-[#0d1017]/90 border border-white/[0.08] space-y-3 shadow-lg">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-gray-400">{m.title}</span>
-              <span className={\`text-[10px] font-bold font-mono px-1.5 py-0.5 rounded bg-white/[0.05] \${m.color}\`}>
-                {m.change}
-              </span>
+      {/* Metrics Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {metrics.map((m) => (
+          <div key={m.label} className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-2">
+            <div className="flex items-center justify-between text-xs text-gray-400">
+              <span>{m.label}</span>
+              <span className="text-emerald-400 font-mono font-bold">{m.change}</span>
             </div>
-            <div className="text-2xl font-extrabold text-white tracking-tight font-mono">{m.value}</div>
-            <div className="w-full bg-white/[0.05] h-1.5 rounded-full overflow-hidden">
-              <div className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full" style={{ width: \`\${m.progress}%\` }} />
-            </div>
+            <p className="text-2xl font-bold text-white tracking-tight">{m.value}</p>
+            <p className="text-[11px] text-gray-400 leading-tight">{m.desc}</p>
           </div>
         ))}
       </div>
 
-      {/* Resource Allocation Breakdown */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-6 rounded-2xl bg-[#0d1017]/90 border border-white/[0.08] space-y-4">
-          <h3 className="text-sm font-bold text-white">Compute Infrastructure Allocation</h3>
-          <div className="space-y-3 text-xs">
-            <div className="space-y-1">
-              <div className="flex justify-between text-gray-300">
-                <span>Google Cloud Vertex AI (Gemini 1.5 Pro)</span>
-                <span className="font-mono text-indigo-400">54%</span>
-              </div>
-              <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                <div className="bg-indigo-500 h-full w-[54%]" />
-              </div>
+      {/* Performance Charts Simulation */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="p-6 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Activity className="w-4 h-4 text-indigo-400" />
+              <h3 className="text-sm font-bold text-white">Latency & Throughput Profile</h3>
             </div>
+            <span className="text-xs text-indigo-400 font-mono">Real-time</span>
+          </div>
 
-            <div className="space-y-1">
-              <div className="flex justify-between text-gray-300">
-                <span>Cloud TPU v5e Multimodal Accelerators</span>
-                <span className="font-mono text-purple-400">28%</span>
+          <div className="h-44 flex items-end gap-2 pt-4">
+            {[42, 68, 55, 84, 95, 78, 62, 90, 85, 99, 74, 88].map((h, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                <div
+                  className="w-full rounded-t-lg bg-gradient-to-t from-indigo-600 to-purple-500 opacity-80 hover:opacity-100 transition-all cursor-pointer"
+                  style={{ height: \`\${h}%\` }}
+                />
+                <span className="text-[9px] font-mono text-gray-400">{i + 1}m</span>
               </div>
-              <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                <div className="bg-purple-500 h-full w-[28%]" />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex justify-between text-gray-300">
-                <span>Partner Integrations & Vector DB</span>
-                <span className="font-mono text-cyan-400">18%</span>
-              </div>
-              <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                <div className="bg-cyan-500 h-full w-[18%]" />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#0d1017]/90 border border-white/[0.08] space-y-4">
-          <h3 className="text-sm font-bold text-white">Autonomous SLA & Safety Verification</h3>
-          <div className="space-y-3 text-xs">
-            <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-emerald-300">
-              <span className="font-medium">Content Safety & Hallucination Guard</span>
-              <span className="font-mono font-bold">PASSED (100%)</span>
+        <div className="p-6 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <h3 className="text-sm font-bold text-white">Cluster Security & SLA Verification</h3>
             </div>
-            <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between text-indigo-300">
-              <span className="font-medium">Partner API Rate Limits Headroom</span>
-              <span className="font-mono font-bold">88.4% AVAILABLE</span>
-            </div>
-            <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-between text-purple-300">
-              <span className="font-medium">Deterministic Tool-Call Latency SLA</span>
-              <span className="font-mono font-bold">&lt; 50ms (99.9th %)</span>
-            </div>
+            <span className="text-xs text-emerald-400 font-mono">100% Pass</span>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            {[
+              { title: "Deterministic Cryptographic State Checks", status: "Verified" },
+              { title: "Sub-second Token Cache Layer (Redis)", status: "Active" },
+              { title: "Zero Data Leakage Sandboxed Runtime", status: "Compliant" },
+              { title: "Automated Multi-Region Failover", status: "Operational" }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] text-xs">
+                <div className="flex items-center gap-2.5 text-gray-300">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>{item.title}</span>
+                </div>
+                <span className="font-mono text-emerald-400 font-semibold">{item.status}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -724,63 +872,72 @@ export default function AnalyticsDashboard() {
   );
 }`;
 
-    // 5. /styles.css - Obsidian Global Styles
-    const stylesContent = `@tailwind base;
-@tailwind components;
-@tailwind utilities;
+    // 5. /styles.css - Global Styles
+    const stylesContent = `@import "tailwindcss";
 
-@layer base {
-  body {
-    background-color: #090b10;
-    color: #f1f3f7;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #07090e;
+  color: #f3f4f6;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Sleek Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #090b10;
+  background: rgba(255, 255, 255, 0.02);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #1a1f2c;
-  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #2b3347;
-}`;
+  background: rgba(255, 255, 255, 0.3);
+}
+`;
 
     return [
-      { path: "/App.tsx", content: appContent },
-      { path: "/components/StudioWorkspace.tsx", content: workspaceContent },
-      { path: "/components/AgentOrchestrator.tsx", content: orchestratorContent },
-      { path: "/components/AnalyticsDashboard.tsx", content: analyticsContent },
-      { path: "/styles.css", content: stylesContent }
+      { path: 'App.tsx', content: appContent },
+      { path: 'components/StudioWorkspace.tsx', content: workspaceContent },
+      { path: 'components/AgentOrchestrator.tsx', content: orchestratorContent },
+      { path: 'components/AnalyticsDashboard.tsx', content: analyticsContent },
+      { path: 'styles.css', content: stylesContent }
     ];
   }
 
   private generateReadme(bp: HackathonBlueprint): string {
     return `# ${bp.projectName}
-
 > ${bp.tagline}
 
-## 🎯 Problem Statement
-${bp.problemStatement}
-
-## 💡 Proposed Solution
+## 🚀 Overview
 ${bp.proposedSolution}
 
-## 🛠️ Tech Stack
-- **Frontend**: ${bp.techStack.frontend.join(', ')}
-- **Backend**: ${bp.techStack.backend.join(', ')}
-- **APIs**: ${bp.techStack.apis.join(', ')}
-- **Deployment**: ${bp.techStack.deployment.join(', ')}
+## 🎯 Target Hackathon Tracks
+${bp.targetTracks.map(t => `- ${t}`).join('\n')}
 
 ## 🤖 Multi-Agent Architecture
-${bp.agentArchitecture.map(a => `- **${a.name}**: ${a.role}`).join('\n')}
+${bp.agentArchitecture.map(a => `### ${a.name}
+- **Role:** ${a.role}
+- **Inputs:** ${a.inputs}
+- **Outputs:** ${a.outputs}
+`).join('\n')}
+
+## 🛠️ Tech Stack
+${bp.techStack.frontend.map(t => `- ${t}`).join('\n')}
+${bp.techStack.backend.map(t => `- ${t}`).join('\n')}
+
+## 📦 Getting Started
+\`\`\`bash
+npm install
+npm run dev
+\`\`\`
 `;
   }
 

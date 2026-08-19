@@ -5,23 +5,30 @@ import { CodeScaffoldAgent } from '@/lib/agents/CodeScaffoldAgent';
 import { SubmissionWriterAgent } from '@/lib/agents/SubmissionWriterAgent';
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
-const STATE_FILE = path.join(process.cwd(), '.orchestration_state.json');
+// Use /tmp on Vercel/serverless environments
+const STATE_FILE = process.env.VERCEL ? path.join(os.tmpdir(), '.orchestration_state.json') : path.join(process.cwd(), '.orchestration_state.json');
 
 export async function POST(req: Request) {
   if (!process.env.GROQ_API_KEY) {
     return NextResponse.json({ error: "GROQ_API_KEY is not set" }, { status: 500 });
   }
 
-  const { history } = await req.json();
-  const latestMessage = history[history.length - 1]?.content || "Build a cool AI app";
+  const body = await req.json();
+  const history = body.history || [];
+  const rawPrompt = (body.prompt || history[history.length - 1]?.content || "Build a cool AI app").trim();
 
-  // If history only has 1 message (the prompt), it's a fresh start.
-  if (history.length <= 1) {
+  // If the user typed a real instruction (and didn't just ask to resume), start fresh!
+  const isExplicitResume = rawPrompt.toLowerCase().startsWith("resume") && rawPrompt.length < 30;
+
+  if (!isExplicitResume) {
     if (fs.existsSync(STATE_FILE)) {
-      fs.unlinkSync(STATE_FILE);
+      try { fs.unlinkSync(STATE_FILE); } catch {}
     }
   }
+
+  const latestMessage = rawPrompt;
 
   const encoder = new TextEncoder();
 
