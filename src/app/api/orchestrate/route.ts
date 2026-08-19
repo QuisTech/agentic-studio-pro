@@ -10,6 +10,9 @@ import os from 'os';
 // Use /tmp on Vercel/serverless environments
 const STATE_FILE = process.env.VERCEL ? path.join(os.tmpdir(), '.orchestration_state.json') : path.join(process.cwd(), '.orchestration_state.json');
 
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
+
 export async function POST(req: Request) {
   if (!process.env.GROQ_API_KEY) {
     return NextResponse.json({ error: "GROQ_API_KEY is not set" }, { status: 500 });
