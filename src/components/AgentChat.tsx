@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare, User, BrainCircuit, Loader2 } from "lucide-react";
+import { MessageSquare, User, BrainCircuit, Loader2, Maximize2, Minimize2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Message } from "./DashboardClient";
 import { useState } from "react";
@@ -9,17 +9,21 @@ export default function AgentChat({
   messages,
   isProcessing,
   typingAgent,
-  onSendMessage
+  onSendMessage,
+  isExpanded,
+  onToggleExpand
 }: {
   messages: Message[];
   isProcessing: boolean;
   typingAgent: string | null;
   onSendMessage: (prompt: string) => void;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
 }) {
   const [input, setInput] = useState("");
 
   const handleSend = () => {
-    if (!input.trim() || isProcessing) return;
+    if (isProcessing) return;
     onSendMessage(input);
     setInput("");
   };
@@ -28,10 +32,21 @@ export default function AgentChat({
     <div className="flex flex-col h-full bg-[#12141a] border-r border-white/5 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
       
-      <div className="p-4 border-b border-white/5 glass-panel z-10 flex items-center gap-2">
-        <MessageSquare className="w-5 h-5 text-blue-400" />
-        <h2 className="font-semibold text-sm">Negotiation Protocol</h2>
-        {isProcessing && <Loader2 className="w-4 h-4 text-blue-400 animate-spin ml-auto" />}
+      <div className="p-4 border-b border-white/5 glass-panel z-10 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <MessageSquare className="w-5 h-5 text-blue-400" />
+          <h2 className="font-semibold text-sm">Negotiation Protocol</h2>
+          {isProcessing && <Loader2 className="w-4 h-4 text-blue-400 animate-spin ml-2" />}
+        </div>
+        {onToggleExpand && (
+          <button
+            onClick={onToggleExpand}
+            title={isExpanded ? "Restore Split View" : "Maximize Chat"}
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+          >
+            {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+          </button>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6 z-10 scroll-smooth">
@@ -88,7 +103,7 @@ export default function AgentChat({
           />
           <button 
             onClick={handleSend}
-            disabled={isProcessing || !input.trim()}
+            disabled={isProcessing}
             className="absolute right-2 top-2 px-3 py-1 bg-blue-600 rounded-lg text-xs font-medium hover:bg-blue-500 transition-colors disabled:opacity-50"
           >
             Send

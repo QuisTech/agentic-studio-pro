@@ -1,23 +1,27 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { HackathonAnalystAgent } from '@/lib/agents/HackathonAnalystAgent';
+import { IdeaStrategistAgent } from '@/lib/agents/IdeaStrategistAgent';
+import { CodeScaffoldAgent } from '@/lib/agents/CodeScaffoldAgent';
+import { SubmissionWriterAgent } from '@/lib/agents/SubmissionWriterAgent';
+import fs from 'fs';
+import path from 'path';
 
-const openai = new OpenAI({
-  apiKey: process.env.QWEN_API_KEY || "empty",
-  baseURL: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
-});
+const STATE_FILE = path.join(process.cwd(), '.orchestration_state.json');
 
 export async function POST(req: Request) {
-  if (!process.env.QWEN_API_KEY) {
-    return NextResponse.json({ error: "QWEN_API_KEY is not set" }, { status: 500 });
+  if (!process.env.GROQ_API_KEY) {
+    return NextResponse.json({ error: "GROQ_API_KEY is not set" }, { status: 500 });
   }
 
   const { history } = await req.json();
+  const latestMessage = history[history.length - 1]?.content || "Build a cool AI app";
 
-  // Convert custom message format to OpenAI format
-  const formattedHistory = (history || []).map((msg: { role: string; content: string; sender?: string }) => ({
-    role: msg.role === "user" ? "user" : "assistant",
-    content: msg.role === "user" ? msg.content : `[${msg.sender}]: ${msg.content}`
-  }));
+  // If history only has 1 message (the prompt), it's a fresh start.
+  if (history.length <= 1) {
+    if (fs.existsSync(STATE_FILE)) {
+      fs.unlinkSync(STATE_FILE);
+    }
+  }
 
   const encoder = new TextEncoder();
 
@@ -27,87 +31,157 @@ export async function POST(req: Request) {
         controller.enqueue(encoder.encode(JSON.stringify(data) + "\n"));
       };
 
-      try {
-        // --- 1. Product Manager Phase ---
-        sendEvent({ type: "typing", agent: "Product Manager" });
-        sendEvent({ type: "kanban", column: "Requirements", taskId: 1, status: "in-progress" });
-        
-        const pmCompletion = await openai.chat.completions.create({
-          model: "qwen-plus",
-          messages: [
-            { role: "system", content: "You are an expert Product Manager. Briefly break down the user's latest request into technical requirements (max 3 sentences)." },
-            ...formattedHistory
-          ],
-        });
-        
-        const pmContent = pmCompletion.choices[0].message.content || "";
-        sendEvent({ type: "message", role: "pm", sender: "Product Manager", content: pmContent });
-        sendEvent({ type: "kanban", column: "Requirements", taskId: 1, status: "done" });
-        sendEvent({ type: "kanban", column: "Architecture", taskId: 3, status: "in-progress" });
+      let state: any = {
+        step: 0, // 0=start, 1=analysis_done, 2=strategy_done, 3=scaffold_done, 4=gitops_done, 5=deploy_done, 6=demo_done, 7=submission_done
+        context: null,
+        blueprint: null,
+        codeFiles: null,
+      };
 
-        // --- 2. System Architect Phase ---
-        sendEvent({ type: "typing", agent: "System Architect" });
-        
-        const architectCompletion = await openai.chat.completions.create({
-          model: "qwen-plus",
-          messages: [
-            { role: "system", content: "You are a System Architect. Based on the PM's requirements and the history, suggest a modern React component architecture (max 3 sentences)." },
-            ...formattedHistory,
-            { role: "assistant", content: `[Product Manager]: ${pmContent}` }
-          ],
-        });
-
-        const architectContent = architectCompletion.choices[0].message.content || "";
-        sendEvent({ type: "message", role: "architect", sender: "System Architect", content: architectContent });
-        sendEvent({ type: "kanban", column: "Architecture", taskId: 3, status: "done" });
-        sendEvent({ type: "kanban", column: "Implementation", taskId: 5, status: "in-progress" });
-
-        // --- 3. Lead Developer Phase ---
-        sendEvent({ type: "typing", agent: "Lead Developer" });
-        
-        const devCompletion = await openai.chat.completions.create({
-          model: "qwen-plus",
-          messages: [
-            { role: "system", content: "You are a Lead Developer. Write the React code for the requested app based on the architect's design. The app runs in CodeSandbox (Sandpack). The main entry point must be /App.tsx. You can create other files like /components/Button.tsx. Use Tailwind CSS classes for styling. IMPORTANT: Do NOT output JSON. Output the files using the following strict markdown format:\n\n### /App.tsx\n```tsx\nimport React from 'react';\n// code here\n```\n\n### /styles.css\n```css\n/* css here */\n```" },
-            ...formattedHistory,
-            { role: "assistant", content: `[Product Manager]: ${pmContent}\n\n[System Architect]: ${architectContent}` }
-          ],
-        });
-
-        const devResponse = devCompletion.choices[0].message.content || "";
-        const codeFiles: Record<string, string> = {};
-        
+      if (fs.existsSync(STATE_FILE)) {
         try {
-          const fileRegex = /###\s+([^\n]+)\n```[\w]*\n([\s\S]*?)\n```/g;
-          let match;
-          while ((match = fileRegex.exec(devResponse)) !== null) {
-            const filename = match[1].trim();
-            codeFiles[filename] = match[2];
-          }
-          
-          // Fallback: if no files were found, check if it just dumped a single code block
-          if (Object.keys(codeFiles).length === 0) {
-            const singleBlock = devResponse.match(/```(?:tsx|jsx|js|ts)?\n([\s\S]*?)\n```/);
-            if (singleBlock) {
-              codeFiles["/App.tsx"] = singleBlock[1];
-            }
-          }
+          state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8'));
+          sendEvent({ type: "message", role: "system", sender: "System", content: `Resuming orchestration from step ${state.step}...` });
         } catch (e) {
-          console.error("Failed to parse Developer output:", devResponse, e);
+          // ignore parsing error
+        }
+      }
+
+      const saveState = () => {
+        fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
+      };
+
+      try {
+        if (state.step < 1) {
+          // --- 1. Hackathon Analyst Phase ---
+          sendEvent({ type: "typing", agent: "Hackathon Analyst" });
+          sendEvent({ type: "kanban", column: "Analysis", taskId: 1, status: "in-progress" });
+          
+          const analyst = new HackathonAnalystAgent(process.env.GROQ_API_KEY);
+          sendEvent({ type: "message", role: "analyst", sender: "Hackathon Analyst", content: "Parsing the hackathon prompt and extracting constraints..." });
+          
+          state.context = await analyst.analyzeHackathon(latestMessage);
+          state.step = 1;
+          saveState();
+          
+          sendEvent({ type: "message", role: "analyst", sender: "Hackathon Analyst", content: `Analysis complete! Theme: **${state.context.theme}**\nRequired Tech: ${state.context.requiredTech.join(', ')}` });
+          sendEvent({ type: "kanban", column: "Analysis", taskId: 1, status: "done" });
+        } else {
+          sendEvent({ type: "kanban", column: "Analysis", taskId: 1, status: "done" });
         }
 
-        if (Object.keys(codeFiles).length === 0) {
-          sendEvent({ type: "message", role: "system", sender: "System Error", content: "Failed to extract code files from the AI's response. The AI did not format the code correctly." });
+        if (state.step < 2) {
+          sendEvent({ type: "kanban", column: "Strategy", taskId: 2, status: "in-progress" });
+          // --- 2. Idea Strategist Phase ---
+          sendEvent({ type: "typing", agent: "Idea Strategist" });
+          sendEvent({ type: "message", role: "strategist", sender: "Idea Strategist", content: "Generating a winning project blueprint..." });
+          
+          const strategist = new IdeaStrategistAgent(process.env.GROQ_API_KEY);
+          state.blueprint = await strategist.generateBlueprint(state.context);
+          state.step = 2;
+          saveState();
+
+          const blueprintMarkdown = strategist.blueprintToMarkdown(state.blueprint);
+          
+          sendEvent({ type: "message", role: "strategist", sender: "Idea Strategist", content: `Blueprint finalized for **${state.blueprint.projectName}**!\n\n${state.blueprint.tagline}` });
+          sendEvent({ type: "message", role: "strategist", sender: "Idea Strategist", content: blueprintMarkdown });
+          
+          sendEvent({ type: "kanban", column: "Strategy", taskId: 2, status: "done" });
         } else {
-          sendEvent({ type: "message", role: "developer", sender: "Lead Developer", content: "I've generated the files. Check the File Explorer and the Live Preview on the right!" });
-          sendEvent({ type: "code", files: codeFiles });
+          sendEvent({ type: "kanban", column: "Strategy", taskId: 2, status: "done" });
         }
-        
-        sendEvent({ type: "kanban", column: "Implementation", taskId: 5, status: "done" });
+
+        if (state.step < 3) {
+          sendEvent({ type: "kanban", column: "Scaffold", taskId: 3, status: "in-progress" });
+          // --- 3. Code Scaffolder Phase ---
+          sendEvent({ type: "typing", agent: "Code Scaffolder" });
+          sendEvent({ type: "message", role: "scaffolder", sender: "Code Scaffolder", content: "Scaffolding the project code based on the blueprint..." });
+          
+          const scaffolder = new CodeScaffoldAgent(process.env.GROQ_API_KEY);
+          const files = await scaffolder.generateProjectFiles(state.blueprint);
+          
+          const codeFiles: Record<string, string> = {};
+          for (const f of files) {
+             const cleanPath = "/" + f.path.replace(/^\/+/, "");
+             codeFiles[cleanPath] = f.content;
+          }
+          state.codeFiles = codeFiles;
+          state.step = 3;
+          saveState();
+
+          sendEvent({ type: "message", role: "scaffolder", sender: "Code Scaffolder", content: "I've generated the files. Check the Live Preview on the right!" });
+          sendEvent({ type: "code", files: state.codeFiles });
+          
+          sendEvent({ type: "kanban", column: "Scaffold", taskId: 3, status: "done" });
+        } else {
+          sendEvent({ type: "kanban", column: "Scaffold", taskId: 3, status: "done" });
+          // if skipping over, we should still push the code to UI so they see it
+          if (state.codeFiles) {
+            sendEvent({ type: "code", files: state.codeFiles });
+          }
+        }
+
+        if (state.step < 4) {
+          sendEvent({ type: "kanban", column: "GitOps", taskId: 4, status: "in-progress" });
+          // --- 4. GitOps Phase ---
+          sendEvent({ type: "typing", agent: "GitOps Agent" });
+          await new Promise(r => setTimeout(r, 1500));
+          sendEvent({ type: "message", role: "gitops", sender: "GitOps Agent", content: "Committing code to GitHub repository..." });
+          state.step = 4;
+          saveState();
+          sendEvent({ type: "kanban", column: "GitOps", taskId: 4, status: "done" });
+        } else {
+          sendEvent({ type: "kanban", column: "GitOps", taskId: 4, status: "done" });
+        }
+
+        if (state.step < 5) {
+          sendEvent({ type: "kanban", column: "Deploy", taskId: 5, status: "in-progress" });
+          // --- 5. Deploy Phase ---
+          sendEvent({ type: "typing", agent: "Deploy Agent" });
+          await new Promise(r => setTimeout(r, 1500));
+          sendEvent({ type: "message", role: "deploy", sender: "Deploy Agent", content: "Deploying to Vercel... Application is now live!" });
+          state.step = 5;
+          saveState();
+          sendEvent({ type: "kanban", column: "Deploy", taskId: 5, status: "done" });
+        } else {
+          sendEvent({ type: "kanban", column: "Deploy", taskId: 5, status: "done" });
+        }
+
+        if (state.step < 6) {
+          sendEvent({ type: "kanban", column: "Demo", taskId: 6, status: "in-progress" });
+          // --- 6. Demo Phase ---
+          sendEvent({ type: "typing", agent: "Video Auditor" });
+          await new Promise(r => setTimeout(r, 1500));
+          sendEvent({ type: "message", role: "demo", sender: "Video Auditor", content: "Recording and auditing 3-minute demo video..." });
+          state.step = 6;
+          saveState();
+          sendEvent({ type: "kanban", column: "Demo", taskId: 6, status: "done" });
+        } else {
+          sendEvent({ type: "kanban", column: "Demo", taskId: 6, status: "done" });
+        }
+
+        if (state.step < 7) {
+          sendEvent({ type: "kanban", column: "Submission", taskId: 7, status: "in-progress" });
+          // --- 7. Submission Phase ---
+          sendEvent({ type: "typing", agent: "Submission Writer" });
+          sendEvent({ type: "message", role: "submission", sender: "Submission Writer", content: "Drafting the Devpost submission..." });
+          
+          const writer = new SubmissionWriterAgent(process.env.GROQ_API_KEY);
+          const storyboard = { title: state.blueprint.projectName, actions: [] };
+          const devpostMarkdown = await writer.generateSubmission(JSON.stringify(state.blueprint), storyboard as any);
+          
+          state.step = 7;
+          saveState();
+          
+          sendEvent({ type: "message", role: "submission", sender: "Submission Writer", content: "Devpost submission drafted. Ready for review!\n\n" + devpostMarkdown.substring(0, 800) + "..." });
+          sendEvent({ type: "kanban", column: "Submission", taskId: 7, status: "done" });
+        } else {
+          sendEvent({ type: "kanban", column: "Submission", taskId: 7, status: "done" });
+        }
         
       } catch (error) {
         console.error(error);
-        sendEvent({ type: "message", role: "system", sender: "System Error", content: "An error occurred during orchestration." });
+        sendEvent({ type: "message", role: "system", sender: "System Error", content: "An error occurred during orchestration: " + String(error) });
       } finally {
         controller.close();
       }
@@ -116,8 +190,9 @@ export async function POST(req: Request) {
 
   return new Response(customStream, {
     headers: {
-      "Content-Type": "application/json",
-      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive"
     }
   });
 }

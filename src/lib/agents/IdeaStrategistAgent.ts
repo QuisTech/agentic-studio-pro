@@ -1,0 +1,252 @@
+import { generateObject } from 'ai';
+import { createGroq } from '@ai-sdk/groq';
+import { z } from 'zod';
+import { HackathonContext } from './HackathonAnalystAgent';
+
+export interface HackathonBlueprint {
+  projectName: string;
+  tagline: string;
+  problemStatement: string;
+  proposedSolution: string;
+  techStack: {
+    frontend: string[];
+    backend: string[];
+    apis: string[];
+    deployment: string[];
+  };
+  agentArchitecture: {
+    name: string;
+    role: string;
+    inputs: string;
+    outputs: string;
+  }[];
+  uiBlueprint: {
+    page: string;
+    purpose: string;
+    keyComponents: string[];
+  }[];
+  demoFlow: string[];
+  scoringStrategy: string;
+}
+
+export class IdeaStrategistAgent {
+  private apiKey: string;
+
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey || process.env.GROQ_API_KEY || '';
+  }
+
+  async generateBlueprint(context: HackathonContext): Promise<HackathonBlueprint> {
+    if (!this.apiKey) {
+      throw new Error("GROQ_API_KEY is not set.");
+    }
+    
+    // Support multiple API keys separated by commas for rate limit rotation
+    const keyList = this.apiKey.split(",").map(k => k.trim()).filter(Boolean);
+    const selectedKey = keyList[Math.floor(Math.random() * keyList.length)];
+
+    const groq = createGroq({
+      apiKey: selectedKey,
+    });
+
+    const angles = [
+      "Real-time Multimodal VFX Previsualization & Dynamic Set Rigging",
+      "Autonomous Foley & Spatial Audio Synthesis Pipeline",
+      "AI Continuity & Multi-character Script Doctor with Gemini 1.5 Pro 2M Context",
+      "Real-time Multilingual Neural Dubbing, Voice Cloning & Lip Sync",
+      "Generative Storyboard & Interactive 3D Camera Path Optimizer",
+      "Autonomous Production Budget & Compute Resource Allocator",
+      "Live Actor Re-aging & Neural Relighting Engine"
+    ];
+    const selectedAngle = angles[Math.floor(Math.random() * angles.length)];
+
+    const prompt = `
+You are an elite Hackathon Strategist who has won 50+ hackathons. Given the following hackathon context, generate a UNIQUE, DISRUPTIVE, and WINNING project blueprint.
+
+--- HACKATHON CONTEXT ---
+Theme: ${context.theme}
+Sponsors: ${context.sponsors.join(', ')}
+Judging Criteria: ${context.judgingCriteria}
+Required Technologies: ${context.requiredTech.join(', ')}
+Time Constraints: ${context.timeConstraints}
+Full Prompt: ${context.rawPrompt.substring(0, 2000)}
+--- END ---
+
+🎯 CREATIVE ANGLE FOCUS FOR THIS RUN:
+Build around this specific disruptive domain: "${selectedAngle}".
+Make the idea bold, distinct, and completely different from generic co-pilots!
+
+Your goal is to design a project that solves a real-world problem with an INNOVATIVE AI edge:
+- Innovation: How does this go beyond a basic prompt? Use LLM reasoning, multi-modal capabilities, or massive context windows.
+- User Utility: Does this actually make a user's life better/easier? Focus on the end-user experience.
+- Holistic Product: Don't just build a dashboard. Plan a complete website (Landing Page + Application).
+- Technical Depth: Design a sophisticated multi-agent architecture that handles complex reasoning.
+- Visual WOW: Plan for a premium, state-of-the-art UI theme.
+
+Output a JSON object with this exact schema:
+{
+  "projectName": "Catchy and memorable product name",
+  "tagline": "Innovative one-line pitch",
+  "problemStatement": "The deep user pain point being solved (2-3 sentences)",
+  "proposedSolution": "The holistic AI-driven solution (2-3 sentences)",
+  "innovationHighlight": "What makes this disruptive and technically unique",
+  "techStack": {
+    "frontend": ["List of frontend technologies. Use Next.js, Tailwind CSS, Framer Motion, and Lucide React to showcase the user's primary UI strengths, unless the hackathon strictly dictates a different UI environment."],
+    "backend": ["List of backend systems. You MUST align this with the hackathon's required/suggested platforms (e.g., Python, Custom MCP Servers). Only add Node.js as a secondary layer if beneficial to hook up to the Next.js visual dashboard."],
+    "apis": ["List of primary APIs mandated or recommended by the hackathon. DO NOT default to any specific API unless it is a sponsor or the absolute optimal engine. Prioritize required tech!"],
+    "deployment": ["List of deployment environments strictly based on the hackathon rules."]
+  },
+  "agentArchitecture": [
+    {
+      "name": "AgentName",
+      "role": "Specific reasoning responsibility",
+      "inputs": "Context received",
+      "outputs": "Decision or data produced"
+    }
+  ],
+  "uiBlueprint": [
+    {
+      "page": "Landing Page",
+      "purpose": "Marketing and problem explanation with Hero/Features sections",
+      "keyComponents": ["HeroSection", "InnovationShowcase", "CTA"]
+    },
+    {
+      "page": "Dashboard",
+      "purpose": "The functional AI workspace showing live reasoning and actions",
+      "keyComponents": ["AgentStatusHUD", "LiveReasoningLog", "ActionCenter"]
+    }
+  ],
+  "demoFlow": [
+    "Step 1: Landing Page - Highlight the problem and the 'Innovation Highlight'",
+    "Step 2: Dashboard - Show the Multi-Agent HUD in 'Standby'",
+    "Step 3: Action - User triggers a complex task",
+    "Step 4: Reasoning - Show the live logs of agents collaborating",
+    "Step 5: Result - The high-impact resolution"
+  ],
+  "scoringStrategy": "Explain how this project achieves an 11/10 in Innovation and User Impact."
+}
+
+Return valid JSON only. Do not wrap in markdown tags like \`\`\`json.
+`;
+
+    const schema = z.object({
+      projectName: z.string(),
+      tagline: z.string(),
+      problemStatement: z.string(),
+      proposedSolution: z.string(),
+      innovationHighlight: z.string().describe("What makes this disruptive and technically unique. Leave empty if none."),
+      techStack: z.object({
+        frontend: z.array(z.string()),
+        backend: z.array(z.string()),
+        apis: z.array(z.string()),
+        deployment: z.array(z.string())
+      }),
+      agentArchitecture: z.array(z.object({
+        name: z.string(),
+        role: z.string(),
+        inputs: z.string(),
+        outputs: z.string()
+      })),
+      uiBlueprint: z.array(z.object({
+        page: z.string(),
+        purpose: z.string(),
+        keyComponents: z.array(z.string())
+      })),
+      demoFlow: z.array(z.string()),
+      scoringStrategy: z.string()
+    });
+
+    let result;
+
+    const callGenerate = async (modelName: string) => {
+      return await generateObject({
+        model: groq(modelName),
+        prompt,
+        temperature: 0.7,
+        schema,
+      });
+    };
+
+    try {
+      // Primary
+      result = await callGenerate("openai/gpt-oss-120b");
+    } catch (err1: any) {
+      console.warn("Primary model (llama-3.3-70b-versatile) failed, falling back to Catch 1", err1?.message || err1);
+      try {
+        // Catch 1 (Fallback)
+        result = await callGenerate("openai/gpt-oss-120b");
+      } catch (err2: any) {
+        console.warn("Catch 1 (llama-3.1-8b-instant) failed, falling back to Catch 2", err2?.message || err2);
+        // Catch 2 (Lightweight Fallback)
+        result = await callGenerate("openai/gpt-oss-120b");
+      }
+    }
+
+    if (!result || !result.object) {
+      throw new Error("All Groq fallback models failed to return a response.");
+    }
+
+    const bp: any = result.object;
+    
+    // Normalize missing fields
+    const normalizedBlueprint: HackathonBlueprint = {
+      projectName: bp.projectName || 'AI Project',
+      tagline: bp.tagline || 'An innovative solution',
+      problemStatement: bp.problemStatement || '',
+      proposedSolution: bp.proposedSolution || '',
+      techStack: {
+        frontend: bp.techStack?.frontend || ['Next.js', 'Tailwind CSS'],
+        backend: bp.techStack?.backend || ['Node.js'],
+        apis: bp.techStack?.apis || [],
+        deployment: bp.techStack?.deployment || ['Vercel']
+      },
+      agentArchitecture: Array.isArray(bp.agentArchitecture) ? bp.agentArchitecture : [],
+      uiBlueprint: Array.isArray(bp.uiBlueprint) ? bp.uiBlueprint : [],
+      demoFlow: Array.isArray(bp.demoFlow) ? bp.demoFlow : [],
+      scoringStrategy: bp.scoringStrategy || ''
+    };
+
+    return normalizedBlueprint;
+  }
+
+  blueprintToMarkdown(bp: HackathonBlueprint): string {
+    let md = `# 🏆 ${bp.projectName}\n\n`;
+    md += `> *${bp.tagline}*\n\n`;
+    md += `---\n\n`;
+
+    md += `## 🎯 Problem Statement\n${bp.problemStatement}\n\n`;
+    md += `## 💡 Proposed Solution\n${bp.proposedSolution}\n\n`;
+
+    md += `## 🏗️ Tech Stack\n`;
+    md += `| Layer | Technologies |\n|---|---|\n`;
+    md += `| Frontend | ${bp.techStack.frontend.join(', ')} |\n`;
+    md += `| Backend | ${bp.techStack.backend.join(', ')} |\n`;
+    md += `| APIs | ${bp.techStack.apis.join(', ')} |\n`;
+    md += `| Deployment | ${bp.techStack.deployment.join(', ')} |\n\n`;
+
+    md += `## 🤖 Agent Architecture\n`;
+    for (const agent of bp.agentArchitecture) {
+      md += `### ${agent.name}\n`;
+      md += `- **Role:** ${agent.role}\n`;
+      md += `- **Inputs:** ${agent.inputs}\n`;
+      md += `- **Outputs:** ${agent.outputs}\n\n`;
+    }
+
+    md += `## 🖥️ UI Blueprint\n`;
+    for (const page of bp.uiBlueprint) {
+      md += `### ${page.page}\n`;
+      md += `**Purpose:** ${page.purpose}\n`;
+      md += `**Components:** ${page.keyComponents.join(' · ')}\n\n`;
+    }
+
+    md += `## 🎬 Demo Flow\n`;
+    bp.demoFlow.forEach((step, i) => {
+      md += `${i + 1}. ${step}\n`;
+    });
+    md += `\n`;
+
+    md += `## 📊 Scoring Strategy\n${bp.scoringStrategy}\n`;
+
+    return md;
+  }
+}
