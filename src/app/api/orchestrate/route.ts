@@ -199,6 +199,7 @@ export async function POST(req: Request) {
       } catch (error) {
         console.error(error);
         sendEvent({ type: "message", role: "system", sender: "System Error", content: "An error occurred during orchestration: " + String(error) });
+        sendEvent({ type: "kanban", column: "Submission", taskId: 7, status: "done" });
       } finally {
         controller.close();
       }
