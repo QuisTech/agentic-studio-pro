@@ -901,7 +901,190 @@ export default function AnalyticsDashboard() {
 }
 `;
 
+    // 6. Native Source Files for Target Tech Stack (iOS Swift, Android Kotlin, Python, etc.)
+    const nativeFiles: GeneratedFile[] = [];
+    const cleanProject = (projectName || "NeuroFlowAI").replace(/[^a-zA-Z0-9]/g, "");
+
+    const isIos = fullText.includes("ios") || fullText.includes("swift") || fullText.includes("iphone") || fullText.includes("apple") || fullText.includes("xcode");
+    const isAndroid = fullText.includes("android") || fullText.includes("kotlin") || fullText.includes("java") || fullText.includes("watchos");
+    const isPython = fullText.includes("python") || fullText.includes("fastapi") || fullText.includes("django") || fullText.includes("flask");
+
+    if (isIos || (!isAndroid && !isPython)) {
+      // Generate Native iOS Swift & SwiftUI Source Files
+      nativeFiles.push({
+        path: `ios/${cleanProject}App.swift`,
+        content: `import SwiftUI
+import HealthKit
+import CoreMotion
+
+@main
+struct ${cleanProject}App: App {
+    @StateObject private var orchestrator = AgentOrchestratorEngine()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(orchestrator)
+        }
+    }
+}`
+      });
+
+      nativeFiles.push({
+        path: `ios/Views/ContentView.swift`,
+        content: `import SwiftUI
+
+struct ContentView: View {
+    @EnvironmentObject var orchestrator: AgentOrchestratorEngine
+    @State private var isExecuting = false
+
+    var body: some View {
+        NavigationView {
+            ZStack {
+                Color(red: 0.04, green: 0.05, blue: 0.08).ignoresSafeArea()
+
+                VStack(spacing: 20) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("${projectName}")
+                                .font(.system(size: 24, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                            Text("${tagline}")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.gray)
+                        }
+                        Spacer()
+                    }
+                    .padding()
+
+                    // Agent HUD
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Circle()
+                                .fill(isExecuting ? Color.green : Color.orange)
+                                .frame(width: 8, height: 8)
+                            Text(isExecuting ? "AI AGENT FLEET ACTIVE" : "STANDBY MODE")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+
+                        ProgressView(value: orchestrator.progress, total: 1.0)
+                            .tint(.purple)
+
+                        Text(orchestrator.statusMessage)
+                            .font(.system(size: 12, design: .monospaced))
+                            .foregroundColor(.gray)
+                    }
+                    .padding()
+                    .background(Color.white.opacity(0.05))
+                    .cornerRadius(16)
+                    .padding(.horizontal)
+
+                    Spacer()
+
+                    Button(action: {
+                        isExecuting.toggle()
+                        orchestrator.triggerPipeline()
+                    }) {
+                        HStack {
+                            Image(systemName: isExecuting ? "arrow.triangle.2.circlepath" : "play.fill")
+                            Text(isExecuting ? "Executing Agents..." : "Run AI Pipeline")
+                        }
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(LinearGradient(colors: [Color.indigo, Color.purple], startPoint: .leading, endPoint: .trailing))
+                        .cornerRadius(16)
+                    }
+                    .padding(.horizontal)
+                }
+            }
+        }
+    }
+}`
+      });
+
+      nativeFiles.push({
+        path: `ios/Agents/${agents[0]?.name || 'DataFusionAgent'}.swift`,
+        content: `import Foundation
+import HealthKit
+import CoreMotion
+
+/// ${agents[0]?.name || 'DataFusionAgent'}
+/// Role: ${agents[0]?.role || 'Collects raw biometric streams and fuses into cognitive state context.'}
+final class ${agents[0]?.name || 'DataFusionAgent'} {
+    private let healthStore = HKHealthStore()
+    private let motionManager = CMMotionManager()
+
+    func fuseSensorContext() async throws -> [String: Any] {
+        return [
+            "timestamp": Date().timeIntervalSince1970,
+            "hrv": 68.2,
+            "heartRate": 74.0,
+            "cognitiveFatigueIndex": 0.21,
+            "status": "OPTIMAL_HEALTH"
+        ]
+    }
+}`
+      });
+
+      nativeFiles.push({
+        path: `ios/Package.swift`,
+        content: `// swift-tools-version:5.9
+import PackageDescription
+
+let package = Package(
+    name: "${cleanProject}",
+    platforms: [.iOS(.v17), .watchOS(.v10)],
+    products: [
+        .library(name: "${cleanProject}", targets: ["${cleanProject}"])
+    ],
+    targets: [
+        .target(name: "${cleanProject}", path: "ios")
+    ]
+)`
+      });
+    }
+
+    if (isAndroid) {
+      nativeFiles.push({
+        path: `android/MainActivity.kt`,
+        content: `package com.agentic.${cleanProject.lowercase()}
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.Text
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            Text(text = "${projectName} - Autonomous Multi-Agent Command Center")
+        }
+    }
+}`
+      });
+
+      nativeFiles.push({
+        path: `android/agents/${agents[0]?.name || 'DataFusionAgent'}.kt`,
+        content: `package com.agentic.${cleanProject.lowercase()}.agents
+
+class ${agents[0]?.name || 'DataFusionAgent'} {
+    fun executeSensorFusion(): Map<String, Any> {
+        return mapOf(
+            "status" to "ONLINE",
+            "agent" to "${agents[0]?.name || 'DataFusionAgent'}",
+            "role" to "${agents[0]?.role || 'Autonomous Telemetry'}"
+        )
+    }
+}`
+      });
+    }
+
     return [
+      ...nativeFiles,
       { path: 'App.tsx', content: appContent },
       { path: 'components/StudioWorkspace.tsx', content: workspaceContent },
       { path: 'components/AgentOrchestrator.tsx', content: orchestratorContent },
