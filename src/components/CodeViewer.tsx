@@ -209,26 +209,20 @@ export default function App() {
       >
         <SandpackForceUpdater newFiles={sandpackFiles} />
         <SandpackLayout className="h-full w-full flex overflow-hidden">
-          {/* File Explorer (Shown in Code and Split modes) */}
-          {(viewMode === "code" || viewMode === "split") && (
-            <div className="w-52 shrink-0 h-full max-h-full overflow-y-auto overflow-x-auto border-r border-white/5 bg-[#0b0d13] min-h-0 flex flex-col">
-              <SandpackFileExplorer autoHiddenFiles style={{ height: "100%", overflowY: "auto" }} />
-            </div>
-          )}
+          {/* File Explorer (Hidden in Preview Only mode) */}
+          <div className={`w-52 shrink-0 h-full max-h-full overflow-y-auto overflow-x-auto border-r border-white/5 bg-[#0b0d13] min-h-0 ${viewMode === "preview" ? "hidden" : "flex flex-col"}`}>
+            <SandpackFileExplorer autoHiddenFiles style={{ height: "100%", overflowY: "auto" }} />
+          </div>
 
-          {/* Code Editor (Shown in Code and Split modes) */}
-          {(viewMode === "code" || viewMode === "split") && (
-            <div className={`flex-1 relative min-w-0 min-h-0 h-full overflow-hidden flex flex-col ${viewMode === "split" ? "border-r border-white/5" : ""}`}>
-              <SandpackCodeEditor showTabs={true} showLineNumbers={true} wrapContent={true} style={{ height: "100%" }} />
-            </div>
-          )}
+          {/* Code Editor (Hidden in Preview Only mode) */}
+          <div className={`flex-1 relative min-w-0 min-h-0 h-full overflow-hidden flex flex-col ${viewMode === "split" ? "border-r border-white/5" : ""} ${viewMode === "preview" ? "hidden" : "flex"}`}>
+            <SandpackCodeEditor showTabs={true} showLineNumbers={true} wrapContent={true} style={{ height: "100%" }} />
+          </div>
 
-          {/* Live Preview (Shown in Preview and Split modes) */}
-          {(viewMode === "preview" || viewMode === "split") && (
-            <div className="flex-1 relative min-w-0 min-h-0 h-full overflow-hidden flex flex-col bg-[#090b10]">
-              <SandpackPreview showNavigator={true} showOpenInCodeSandbox={false} style={{ height: "100%" }} />
-            </div>
-          )}
+          {/* Live Preview (Kept mounted in DOM, hidden in Code Only mode to prevent unmount white-screen glitches) */}
+          <div className={`flex-1 relative min-w-0 min-h-0 h-full overflow-hidden flex flex-col bg-[#090b10] ${viewMode === "code" ? "hidden" : "flex"}`}>
+            <SandpackPreview showNavigator={true} showOpenInCodeSandbox={false} style={{ height: "100%" }} />
+          </div>
         </SandpackLayout>
       </SandpackProvider>
     </div>
