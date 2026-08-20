@@ -67,7 +67,7 @@ export class CodeScaffoldAgent {
 
     const domainText = `${blueprint.projectName || ''} ${blueprint.tagline || ''} ${blueprint.problemStatement || ''} ${blueprint.proposedSolution || ''}`.toLowerCase();
     
-    let layoutType: "bento" | "cyber" | "dashboard" | "clinical" | "studio" | "ecommerce" | "media" | "culinary" | "realestate" | "edutech" = blueprint.layoutType || "bento";
+    let layoutType: "bento" | "cyber" | "dashboard" | "clinical" | "studio" | "ecommerce" | "media" | "culinary" | "realestate" | "edutech" | "eventmason" = blueprint.layoutType as any;
 
     if (!blueprint.layoutType) {
       if (domainText.includes("crypto") || domainText.includes("web3") || domainText.includes("solidity") || domainText.includes("security") || domainText.includes("cyber") || domainText.includes("blockchain") || domainText.includes("hack") || domainText.includes("bot")) {
@@ -365,6 +365,25 @@ export class CodeScaffoldAgent {
         cardWidgetTitle: "Mastery Engine Status",
         cardWidgetSubtext: "Self-correcting curriculum graph verified."
       },
+      eventmason: {
+        bg: "bg-[#0c0714] text-purple-100 selection:bg-amber-500 selection:text-black font-sans",
+        badgeText: "EVENT MASON OS",
+        badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+        headerIconBg: "from-amber-500 via-purple-600 to-pink-600 shadow-amber-500/25",
+        headerBg: "bg-[#180e28]/90 border-purple-900/50",
+        asideBg: "bg-[#11091e] border-purple-900/50",
+        moduleHeader: "[ EVENT ARCHITECTURE ]",
+        tab1: "Event Canvas",
+        tab2: "Vendor Fleet",
+        tab3: "Guest & RSVP Analytics",
+        tab4: "Reservation Log Stream",
+        activeTab: "bg-purple-900/80 text-amber-300 border-amber-500/40 shadow-amber-500/20",
+        buttonGradient: "from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 shadow-amber-500/25",
+        widgetTitle: "EVENT MASON PIPELINE",
+        widgetSubtext: "Automated venue & guest booking active...",
+        cardWidgetTitle: "VIP Reservation Engine",
+        cardWidgetSubtext: "Real-time vendor dispatch & budget optimization verified."
+      },
       bento: {
         bg: "bg-[#07090e] text-gray-100 selection:bg-indigo-500 selection:text-white font-sans",
         badgeText: "PRO ENTERPRISE",
@@ -390,6 +409,7 @@ export class CodeScaffoldAgent {
     const agentsJson = JSON.stringify(agents, null, 2);
 
     const headerIconTag = 
+      config.layoutType === 'eventmason' ? '<Calendar className="w-5 h-5 text-amber-300 animate-pulse" />' :
       config.layoutType === 'cyber' ? '<Shield className="w-5 h-5 text-white animate-pulse" />' :
       config.layoutType === 'clinical' ? '<Stethoscope className="w-5 h-5 text-white" />' :
       config.layoutType === 'ecommerce' ? '<ShoppingBag className="w-5 h-5 text-white" />' :
@@ -400,6 +420,7 @@ export class CodeScaffoldAgent {
       '<Zap className="w-5 h-5 text-white" />';
 
     const tab1IconTag = 
+      config.layoutType === 'eventmason' ? '<Calendar className="w-4 h-4 text-amber-300" />' :
       config.layoutType === 'cyber' ? '<Shield className="w-4 h-4" />' :
       config.layoutType === 'clinical' ? '<Stethoscope className="w-4 h-4" />' :
       config.layoutType === 'ecommerce' ? '<ShoppingBag className="w-4 h-4" />' :
@@ -410,6 +431,7 @@ export class CodeScaffoldAgent {
       '<Layers className="w-4 h-4" />';
 
     const tab2IconTag = 
+      config.layoutType === 'eventmason' ? '<Truck className="w-4 h-4" />' :
       config.layoutType === 'clinical' ? '<Activity className="w-4 h-4" />' :
       config.layoutType === 'ecommerce' ? '<Truck className="w-4 h-4" />' :
       config.layoutType === 'media' ? '<Radio className="w-4 h-4" />' :
@@ -419,6 +441,7 @@ export class CodeScaffoldAgent {
       '<Cpu className="w-4 h-4" />';
 
     const tab3IconTag = 
+      config.layoutType === 'eventmason' ? '<Heart className="w-4 h-4" />' :
       config.layoutType === 'cyber' ? '<Activity className="w-4 h-4" />' :
       config.layoutType === 'clinical' ? '<Heart className="w-4 h-4" />' :
       config.layoutType === 'media' ? '<Volume2 className="w-4 h-4" />' :
@@ -460,7 +483,8 @@ import {
   Compass,
   Eye,
   Brain,
-  BookOpen
+  BookOpen,
+  Calendar
 } from "lucide-react";
 import StudioWorkspace from "./components/StudioWorkspace";
 import AgentOrchestrator from "./components/AgentOrchestrator";
@@ -1466,6 +1490,156 @@ out
 
   private generateWorkspaceContent(config: any, cardsJson: string, slider2OptionsJson: string): string {
     const layout = config.layoutType;
+
+    if (layout === "eventmason") {
+      return `import React, { useState } from "react";
+import { Calendar, Sparkles, Clock, MapPin, Users, Ticket, Heart, Zap, RefreshCw, CheckCircle2, DollarSign } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [budgetFlex, setBudgetFlex] = useState(35);
+  const [horizon, setHorizon] = useState(${slider2OptionsJson}[0]);
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+  const nodes = ${cardsJson};
+
+  return (
+    <div className="space-y-6 font-sans text-purple-100 bg-[#0c0714] p-6 rounded-3xl border border-amber-500/30 shadow-2xl shadow-purple-950/50">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-purple-950/90 via-[#180d2c] to-amber-950/90 border border-amber-500/40 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300">
+              <Calendar className="w-6 h-6 animate-pulse" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">[ EVENT MASON ARCHITECTURE ]</span>
+              <h2 className="text-xl font-extrabold text-white tracking-wide">${config.workspaceTitle}</h2>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 text-xs">
+            <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 font-semibold flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>VIP GUEST SYNC ACTIVE</span>
+            </span>
+          </div>
+        </div>
+        <p className="text-xs text-purple-200/90 max-w-2xl leading-relaxed mb-6 font-sans">
+          ${config.workspaceSubtitle}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-black/70 border border-amber-500/40 text-sm text-purple-100 placeholder-purple-400/60 focus:outline-none focus:border-amber-400 transition-all font-sans"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 disabled:opacity-50"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-current" />}
+            <span>DEPLOY EVENT ARCHITECTURE</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-4 rounded-xl bg-[#140b24] border border-amber-500/20 space-y-2">
+          <div className="flex justify-between text-xs">
+            <span className="text-amber-300 font-bold">${config.slider1Label}</span>
+            <span className="text-amber-400 font-mono font-bold">{budgetFlex}${config.slider1Unit}</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={budgetFlex}
+            onChange={(e) => setBudgetFlex(Number(e.target.value))}
+            className="w-full accent-amber-400 cursor-pointer"
+          />
+        </div>
+        <div className="p-4 rounded-xl bg-[#140b24] border border-amber-500/20 space-y-2">
+          <div className="flex justify-between text-xs">
+            <span className="text-amber-300 font-bold">${config.slider2Label}</span>
+            <span className="text-purple-300 font-mono">{horizon}</span>
+          </div>
+          <div className="flex gap-2">
+            {${slider2OptionsJson}.map((res) => (
+              <button
+                key={res}
+                onClick={() => setHorizon(res)}
+                className={"flex-1 py-1 rounded text-[10px] font-bold border transition-all " + (horizon === res ? "bg-amber-500/20 text-amber-300 border-amber-400" : "bg-black/40 text-gray-400 border-gray-800 hover:border-gray-700")}
+              >
+                {res}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="p-4 rounded-xl bg-[#140b24] border border-amber-500/20 space-y-1">
+          <div className="flex justify-between text-xs">
+            <span className="text-amber-300 font-bold">Event Dispatch Engine</span>
+            <span className="text-amber-400">${config.engineName}</span>
+          </div>
+          <p className="text-[10px] text-gray-300 leading-tight">
+            ${config.engineDesc}
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+            <Ticket className="w-4 h-4 text-amber-400" />
+            ${config.gridTitle}
+          </h3>
+          <span className="text-xs text-amber-400/80 font-mono">${config.gridCount}</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {nodes.map((node: any) => (
+            <div
+              key={node.id}
+              onClick={() => setSelectedNode(selectedNode === node.id ? null : node.id)}
+              className={"p-4 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between space-y-3 " + (selectedNode === node.id ? "bg-amber-950/40 border-amber-400 ring-1 ring-amber-400/50" : "bg-[#140b24]/90 border-purple-900/40 hover:border-amber-500/40")}
+            >
+              <div className="space-y-2">
+                {node.imageUrl && (
+                  <div className="h-32 rounded-xl overflow-hidden mb-2 relative">
+                    <img src={node.imageUrl} alt={node.title} className="w-full h-full object-cover" />
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/80 text-black shadow-md">
+                      {node.badge}
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">{node.badge}</span>
+                  <span className="text-[10px] text-emerald-400 font-mono">{node.latency}</span>
+                </div>
+                <h4 className="text-sm font-bold text-white leading-snug">{node.title}</h4>
+                <p className="text-xs text-purple-200/80 line-clamp-2 leading-relaxed">{node.description}</p>
+              </div>
+
+              <div className="pt-2 border-t border-purple-900/40 flex items-center justify-between text-[11px] text-gray-400">
+                <span>Status: <strong className="text-emerald-400">{node.status}</strong></span>
+                <span className="text-amber-400 font-semibold">Deploy Venue →</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+`;
+    }
 
     if (layout === "cyber") {
       return `import React, { useState } from "react";

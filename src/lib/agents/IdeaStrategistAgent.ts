@@ -82,7 +82,7 @@ Output a JSON object with this exact schema:
   "problemStatement": "The deep user pain point being solved (2-3 sentences)",
   "proposedSolution": "The holistic AI-driven solution (2-3 sentences)",
   "innovationHighlight": "What makes this disruptive and technically unique",
-  "layoutType": "Choose one of: bento, cyber, dashboard, clinical, studio, ecommerce, media, culinary, realestate, edutech depending on the domain",
+  "layoutType": "Choose one of: bento, cyber, dashboard, clinical, studio, ecommerce, media, culinary, realestate, edutech, eventmason depending on the domain",
   "techStack": {
     "frontend": ["List of frontend technologies. Use Next.js, Tailwind CSS, Framer Motion, and Lucide React to showcase the user's primary UI strengths, unless the hackathon strictly dictates a different UI environment."],
     "backend": ["List of backend systems. You MUST align this with the hackathon's required/suggested platforms (e.g., Python, Custom MCP Servers). Only add Node.js as a secondary layer if beneficial to hook up to the Next.js visual dashboard."],
@@ -128,7 +128,7 @@ Return valid JSON only. Do not wrap in markdown tags like \`\`\`json.
       problemStatement: z.string(),
       proposedSolution: z.string(),
       innovationHighlight: z.string().describe("What makes this disruptive and technically unique. Leave empty if none."),
-      layoutType: z.enum(["bento", "cyber", "dashboard", "clinical", "studio", "ecommerce", "media", "culinary", "realestate", "edutech"]),
+      layoutType: z.enum(["bento", "cyber", "dashboard", "clinical", "studio", "ecommerce", "media", "culinary", "realestate", "edutech", "eventmason"]),
       techStack: z.object({
         frontend: z.array(z.string()),
         backend: z.array(z.string()),
