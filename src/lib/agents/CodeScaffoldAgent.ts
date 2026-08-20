@@ -65,7 +65,28 @@ export class CodeScaffoldAgent {
     const problem = (blueprint.problemStatement || "").replace(/"/g, '\\"');
     const solution = (blueprint.proposedSolution || "").replace(/"/g, '\\"');
 
-    const badges = ["ORCHESTRATION", "AUTOMATION", "ANALYTICS", "INTELLIGENCE", "REAL-TIME"];
+    const domainText = `${blueprint.projectName || ''} ${blueprint.tagline || ''} ${blueprint.problemStatement || ''} ${blueprint.proposedSolution || ''}`.toLowerCase();
+    
+    let layoutType: "bento" | "cyber" | "dashboard" | "studio" = "bento";
+
+    if (domainText.includes("crypto") || domainText.includes("web3") || domainText.includes("solidity") || domainText.includes("security") || domainText.includes("cyber") || domainText.includes("blockchain")) {
+      layoutType = "cyber";
+    } else if (domainText.includes("finance") || domainText.includes("health") || domainText.includes("legal") || domainText.includes("clinic") || domainText.includes("enterprise") || domainText.includes("med")) {
+      layoutType = "dashboard";
+    } else if (domainText.includes("rust") || domainText.includes("go") || domainText.includes("python") || domainText.includes("developer") || domainText.includes("cli") || domainText.includes("tool") || domainText.includes("fastapi")) {
+      layoutType = "studio";
+    } else {
+      layoutType = "bento";
+    }
+
+    const badges = layoutType === "cyber" 
+      ? ["CYBER_SENTINEL", "MEV_SHIELD", "RPC_MATRIX", "CRYPTO_NODE"]
+      : layoutType === "dashboard"
+      ? ["EXECUTIVE_PASS", "COMPLIANCE", "ANALYTICS_KPI", "SLA_VERIFIED"]
+      : layoutType === "studio"
+      ? ["NODE_TRACE", "PIPELINE_RUN", "CLI_WORKFLOW", "ASYNC_WORKER"]
+      : ["BUTLER_ASSIST", "SMART_HUB", "ROUTINE_AUTO", "PERSONAL_AI"];
+
     const latencies = ["14ms", "8ms", "22ms", "10ms"];
     const statuses = ["ONLINE", "STREAMING", "ACTIVE", "OPTIMIZED"];
     const domainImages = [
@@ -92,16 +113,17 @@ export class CodeScaffoldAgent {
     ];
 
     let config = {
-      workspaceTitle: `${cleanDomainName} • Production Canvas`,
+      layoutType,
+      workspaceTitle: `${cleanDomainName} • ${layoutType === 'bento' ? 'Bento Studio' : layoutType === 'cyber' ? 'Cyber HUD Matrix' : layoutType === 'dashboard' ? 'Executive Dashboard' : 'Telemetry Studio'}`,
       workspaceSubtitle: tagline || solution || "Autonomous multi-agent execution & real-time telemetry",
       directivePlaceholder: `Enter production directive for ${cleanDomainName} (e.g., 'Execute autonomous pipeline task...')...`,
-      slider1Label: "Automation Freedom",
+      slider1Label: layoutType === 'cyber' ? 'Risk Tolerance (VaR)' : layoutType === 'dashboard' ? 'Diagnostic Sensitivity' : 'Automation Freedom',
       slider1Unit: "%",
       slider2Label: "Execution Depth",
       slider2Options: ["Rapid (Fast)", "Balanced (Standard)", "Deep (Max Quality)"],
       engineName: `${cleanDomainName} Core Engine`,
       engineDesc: `Autonomous multi-agent orchestration engine deploying ${agents.map(a => a.name).join(", ")}.`,
-      gridTitle: "Active Intelligence Canvas",
+      gridTitle: layoutType === 'bento' ? 'Smart Bento Canvas' : layoutType === 'cyber' ? 'Active Cyber Sentinels' : layoutType === 'dashboard' ? 'Executive Operations Grid' : 'Live Node Pipeline Canvas',
       gridCount: `${cards.length} Modules Active`,
       cards,
       metrics
