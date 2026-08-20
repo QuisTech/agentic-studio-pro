@@ -909,7 +909,12 @@ export default function AnalyticsDashboard() {
     const isAndroid = fullText.includes("android") || fullText.includes("kotlin") || fullText.includes("java") || fullText.includes("watchos");
     const isPython = fullText.includes("python") || fullText.includes("fastapi") || fullText.includes("django") || fullText.includes("flask");
     const isFlutter = fullText.includes("flutter") || fullText.includes("dart");
-    const isExplicitOther = isAndroid || isPython || isFlutter;
+    const isReactNative = fullText.includes("react native") || fullText.includes("expo");
+    const isRust = fullText.includes("rust") || fullText.includes("cargo");
+    const isGo = fullText.includes("go") || fullText.includes("golang");
+    const isWeb3 = fullText.includes("solidity") || fullText.includes("ethereum") || fullText.includes("web3") || fullText.includes("hardhat") || fullText.includes("foundry");
+
+    const isExplicitOther = isAndroid || isPython || isFlutter || isReactNative || isRust || isGo || isWeb3;
 
     if (isIos || !isExplicitOther) {
       // Generate Native iOS Swift & SwiftUI Source Files
@@ -1187,6 +1192,176 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true`
+      });
+    }
+
+    if (isReactNative) {
+      nativeFiles.push({
+        path: `mobile/App.tsx`,
+        content: `import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
+
+export default function App() {
+  const [isExecuting, setIsExecuting] = useState(false);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.title}>${projectName}</Text>
+        <Text style={styles.subtitle}>${tagline}</Text>
+        
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={() => setIsExecuting(!isExecuting)}
+        >
+          <Text style={styles.buttonText}>
+            {isExecuting ? 'Executing AI Agents...' : 'Run React Native Pipeline'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#07090e' },
+  content: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#ffffff' },
+  subtitle: { fontSize: 14, color: '#9ca3af', marginTop: 8, textAlign: 'center' },
+  button: { backgroundColor: '#6366f1', paddingHorizontal: 24, paddingVertical: 14, borderRadius: 12, marginTop: 32 },
+  buttonText: { color: '#ffffff', fontWeight: 'bold', fontSize: 16 }
+});`
+      });
+
+      nativeFiles.push({
+        path: `mobile/app.json`,
+        content: JSON.stringify({
+          expo: {
+            name: projectName,
+            slug: cleanProject.toLowerCase(),
+            version: "1.0.0"
+          }
+        }, null, 2)
+      });
+    }
+
+    if (isRust) {
+      nativeFiles.push({
+        path: `src/main.rs`,
+        content: `use serde::{Serialize, Deserialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+struct AgentResponse {
+    status: String,
+    agent: String,
+    role: String,
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std.error.Error>> {
+    println!("🚀 Starting ${projectName} - Autonomous Rust Agent Fleet");
+    
+    let res = AgentResponse {
+        status: "ONLINE".to_string(),
+        agent: "${agents[0]?.name || 'DataFusionAgent'}".to_string(),
+        role: "${agents[0]?.role || 'High-performance Telemetry'}".to_string(),
+    };
+    
+    println!("{:#?}", res);
+    Ok(())
+}
+`
+      });
+
+      nativeFiles.push({
+        path: `Cargo.toml`,
+        content: `[package]
+name = "${cleanProject.toLowerCase()}"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+`
+      });
+    }
+
+    if (isGo) {
+      nativeFiles.push({
+        path: `cmd/server/main.go`,
+        content: `package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+type AgentTelemetry struct {
+	App    string \`json:"app"\`
+	Status string \`json:"status"\`
+}
+
+func main() {
+	http.HandleFunc("/telemetry", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(AgentTelemetry{
+			App:    "${projectName}",
+			Status: "ONLINE",
+		})
+	})
+
+	fmt.Println("🚀 Go Agent Server listening on :8080...")
+	http.ListenAndServe(":8080", nil)
+}
+`
+      });
+
+      nativeFiles.push({
+        path: `go.mod`,
+        content: `module github.com/agentic/${cleanProject.toLowerCase()}
+
+go 1.21
+`
+      });
+    }
+
+    if (isWeb3) {
+      nativeFiles.push({
+        path: `contracts/AgentOrchestrator.sol`,
+        content: `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract AgentOrchestrator {
+    string public name = "${projectName}";
+    address public owner;
+    
+    event AgentExecuted(string agentName, string status);
+    
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    function triggerExecution(string memory agentName) external {
+        emit AgentExecuted(agentName, "COMPLETED");
+    }
+}
+`
+      });
+
+      nativeFiles.push({
+        path: `hardhat.config.ts`,
+        content: `import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+
+const config: HardhatUserConfig = {
+  solidity: "0.8.20",
+};
+
+export default config;
+`
       });
     }
 
