@@ -15,7 +15,7 @@ export default function Header({
   systemLogCount?: number;
 }) {
   const handleDownload = () => {
-    downloadProjectAsZip(files, "agentic-generated-code");
+    downloadProjectAsZip(files);
   };
 
   return (
