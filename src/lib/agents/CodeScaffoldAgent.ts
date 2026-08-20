@@ -67,28 +67,30 @@ export class CodeScaffoldAgent {
 
     const domainText = `${blueprint.projectName || ''} ${blueprint.tagline || ''} ${blueprint.problemStatement || ''} ${blueprint.proposedSolution || ''}`.toLowerCase();
     
-    let layoutType: "bento" | "cyber" | "dashboard" | "clinical" | "studio" | "ecommerce" | "media" | "culinary" | "realestate" | "edutech" = "bento";
+    let layoutType: "bento" | "cyber" | "dashboard" | "clinical" | "studio" | "ecommerce" | "media" | "culinary" | "realestate" | "edutech" = blueprint.layoutType || "bento";
 
-    if (domainText.includes("crypto") || domainText.includes("web3") || domainText.includes("solidity") || domainText.includes("security") || domainText.includes("cyber") || domainText.includes("blockchain")) {
-      layoutType = "cyber";
-    } else if (domainText.includes("health") || domainText.includes("med") || domainText.includes("clinic") || domainText.includes("doctor") || domainText.includes("patient") || domainText.includes("pharma") || domainText.includes("care")) {
-      layoutType = "clinical";
-    } else if (domainText.includes("finance") || domainText.includes("bank") || domainText.includes("legal") || domainText.includes("enterprise") || domainText.includes("tax") || domainText.includes("invest")) {
-      layoutType = "dashboard";
-    } else if (domainText.includes("rust") || domainText.includes("go") || domainText.includes("python") || domainText.includes("developer") || domainText.includes("cli") || domainText.includes("tool") || domainText.includes("fastapi")) {
-      layoutType = "studio";
-    } else if (domainText.includes("shop") || domainText.includes("cart") || domainText.includes("store") || domainText.includes("ecommerce") || domainText.includes("retail") || domainText.includes("order") || domainText.includes("product")) {
-      layoutType = "ecommerce";
-    } else if (domainText.includes("video") || domainText.includes("audio") || domainText.includes("music") || domainText.includes("media") || domainText.includes("podcast") || domainText.includes("stream") || domainText.includes("creative")) {
-      layoutType = "media";
-    } else if (domainText.includes("coffee") || domainText.includes("restaurant") || domainText.includes("cafe") || domainText.includes("food") || domainText.includes("barista") || domainText.includes("dining") || domainText.includes("kitchen") || domainText.includes("recipe")) {
-      layoutType = "culinary";
-    } else if (domainText.includes("house") || domainText.includes("estate") || domainText.includes("realty") || domainText.includes("property") || domainText.includes("rent") || domainText.includes("home") || domainText.includes("arch")) {
-      layoutType = "realestate";
-    } else if (domainText.includes("learn") || domainText.includes("tutor") || domainText.includes("edu") || domainText.includes("school") || domainText.includes("course") || domainText.includes("study") || domainText.includes("student") || domainText.includes("quiz")) {
-      layoutType = "edutech";
-    } else {
-      layoutType = "bento";
+    if (!blueprint.layoutType) {
+      if (domainText.includes("crypto") || domainText.includes("web3") || domainText.includes("solidity") || domainText.includes("security") || domainText.includes("cyber") || domainText.includes("blockchain") || domainText.includes("hack") || domainText.includes("bot")) {
+        layoutType = "cyber";
+      } else if (domainText.includes("health") || domainText.includes("med") || domainText.includes("clinic") || domainText.includes("doctor") || domainText.includes("patient") || domainText.includes("pharma") || domainText.includes("care") || domainText.includes("dna") || domainText.includes("bio") || domainText.includes("hospital")) {
+        layoutType = "clinical";
+      } else if (domainText.includes("finance") || domainText.includes("bank") || domainText.includes("legal") || domainText.includes("enterprise") || domainText.includes("tax") || domainText.includes("invest") || domainText.includes("money") || domainText.includes("accounting") || domainText.includes("saas") || domainText.includes("analytics")) {
+        layoutType = "dashboard";
+      } else if (domainText.includes("rust") || domainText.includes("go") || domainText.includes("python") || domainText.includes("developer") || domainText.includes("cli") || domainText.includes("tool") || domainText.includes("fastapi") || domainText.includes("git") || domainText.includes("code") || domainText.includes("api") || domainText.includes("sdk") || domainText.includes("terminal")) {
+        layoutType = "studio";
+      } else if (domainText.includes("shop") || domainText.includes("cart") || domainText.includes("store") || domainText.includes("ecommerce") || domainText.includes("retail") || domainText.includes("order") || domainText.includes("product") || domainText.includes("buy") || domainText.includes("market") || domainText.includes("checkout")) {
+        layoutType = "ecommerce";
+      } else if (domainText.includes("video") || domainText.includes("audio") || domainText.includes("music") || domainText.includes("media") || domainText.includes("podcast") || domainText.includes("stream") || domainText.includes("creative") || domainText.includes("film") || domainText.includes("sound") || domainText.includes("movie") || domainText.includes("song")) {
+        layoutType = "media";
+      } else if (domainText.includes("coffee") || domainText.includes("restaurant") || domainText.includes("cafe") || domainText.includes("food") || domainText.includes("barista") || domainText.includes("dining") || domainText.includes("kitchen") || domainText.includes("recipe") || domainText.includes("cook") || domainText.includes("meal") || domainText.includes("dish") || domainText.includes("drink") || domainText.includes("menu")) {
+        layoutType = "culinary";
+      } else if (domainText.includes("house") || domainText.includes("estate") || domainText.includes("realty") || domainText.includes("property") || domainText.includes("rent") || domainText.includes("home") || domainText.includes("arch") || domainText.includes("apartment") || domainText.includes("building") || domainText.includes("land")) {
+        layoutType = "realestate";
+      } else if (domainText.includes("learn") || domainText.includes("tutor") || domainText.includes("edu") || domainText.includes("school") || domainText.includes("course") || domainText.includes("study") || domainText.includes("student") || domainText.includes("quiz") || domainText.includes("class") || domainText.includes("exam") || domainText.includes("flashcard") || domainText.includes("teacher")) {
+        layoutType = "edutech";
+      } else {
+        layoutType = "bento";
+      }
     }
 
     const badges = layoutType === "cyber" 
@@ -130,6 +132,36 @@ export class CodeScaffoldAgent {
           "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=800&q=80",
           "https://images.unsplash.com/photo-1556742049-0a67daf66f88?auto=format&fit=crop&w=800&q=80",
           "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
+        ]
+      : layoutType === "media"
+      ? [
+          "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80"
+        ]
+      : layoutType === "realestate"
+      ? [
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"
+        ]
+      : layoutType === "edutech"
+      ? [
+          "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80"
+        ]
+      : layoutType === "cyber"
+      ? [
+          "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
+        ]
+      : layoutType === "studio"
+      ? [
+          "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80"
         ]
       : [
           "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
@@ -1247,7 +1279,9 @@ out
   }
 
   private generateWorkspaceContent(config: any, cardsJson: string, slider2OptionsJson: string): string {
-    if (config.layoutType === "cyber") {
+    const layout = config.layoutType;
+
+    if (layout === "cyber") {
       return `import React, { useState } from "react";
 import { Shield, Cpu, Zap, Activity, Terminal, Play, RefreshCw, Key, Radio } from "lucide-react";
 
@@ -1266,10 +1300,8 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
 
   return (
     <div className="space-y-6 font-mono text-cyan-100 bg-[#050811] p-5 rounded-3xl border border-cyan-500/40 shadow-2xl shadow-cyan-500/10">
-      {/* Cyber Telemetry Header */}
       <div className="p-6 rounded-2xl bg-gradient-to-r from-cyan-950/80 via-[#0a0f24] to-purple-950/80 border border-cyan-500/50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-        
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-300">
@@ -1280,7 +1312,6 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
               <h2 className="text-xl font-extrabold text-white tracking-wide font-sans">${config.workspaceTitle}</h2>
             </div>
           </div>
-
           <div className="flex items-center gap-3 text-xs">
             <span className="px-2.5 py-1 rounded-md bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 flex items-center gap-1.5">
               <Radio className="w-3 h-3 text-emerald-400 animate-ping" />
@@ -1292,11 +1323,9 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
             </span>
           </div>
         </div>
-
         <p className="text-xs text-gray-300 max-w-2xl leading-relaxed mb-6 font-sans">
           ${config.workspaceSubtitle}
         </p>
-
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
@@ -1316,7 +1345,6 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
         </div>
       </div>
 
-      {/* Cyber Parameters */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 rounded-xl bg-[#090d1a] border border-cyan-500/30 space-y-2">
           <div className="flex justify-between text-xs">
@@ -1332,7 +1360,6 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
             className="w-full accent-cyan-400 cursor-pointer"
           />
         </div>
-
         <div className="p-4 rounded-xl bg-[#090d1a] border border-cyan-500/30 space-y-2">
           <div className="flex justify-between text-xs">
             <span className="text-cyan-400 font-bold">${config.slider2Label}</span>
@@ -1343,18 +1370,13 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
               <button
                 key={res}
                 onClick={() => setExecutionMode(res)}
-                className={\`flex-1 py-1 rounded text-[10px] font-bold border transition-all \${
-                  executionMode === res
-                    ? "bg-cyan-500/20 text-cyan-300 border-cyan-400"
-                    : "bg-black/40 text-gray-500 border-gray-800 hover:border-gray-700"
-                }\`}
+                className={"flex-1 py-1 rounded text-[10px] font-bold border transition-all " + (executionMode === res ? "bg-cyan-500/20 text-cyan-300 border-cyan-400" : "bg-black/40 text-gray-500 border-gray-800 hover:border-gray-700")}
               >
                 {res}
               </button>
             ))}
           </div>
         </div>
-
         <div className="p-4 rounded-xl bg-[#090d1a] border border-cyan-500/30 space-y-1">
           <div className="flex justify-between text-xs">
             <span className="text-cyan-400 font-bold">Engine Sentinel</span>
@@ -1366,7 +1388,6 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
         </div>
       </div>
 
-      {/* Cyber Sentinels Matrix Grid */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-cyan-300 uppercase tracking-wider">${config.gridTitle}</h3>
@@ -1378,11 +1399,7 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
             <div
               key={node.id}
               onClick={() => setSelectedNode(idx)}
-              className={\`p-5 rounded-2xl border transition-all cursor-pointer \${
-                selectedNode === idx
-                  ? "bg-[#0f172a] border-cyan-400 shadow-xl shadow-cyan-500/20 ring-1 ring-cyan-400"
-                  : "bg-[#090d1a] border-cyan-900/60 hover:border-cyan-500/40 hover:bg-[#0c1326]"
-              }\`}
+              className={"p-5 rounded-2xl border transition-all cursor-pointer " + (selectedNode === idx ? "bg-[#0f172a] border-cyan-400 shadow-xl shadow-cyan-500/20 ring-1 ring-cyan-400" : "bg-[#090d1a] border-cyan-900/60 hover:border-cyan-500/40 hover:bg-[#0c1326]")}
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/40">
@@ -1405,9 +1422,9 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
 }`;
     }
 
-    if (config.layoutType === "dashboard" || config.layoutType === "clinical") {
+    if (layout === "clinical") {
       return `import React, { useState } from "react";
-import { Activity, BarChart2, ShieldCheck, CheckCircle, Play, RefreshCw, FileText, TrendingUp } from "lucide-react";
+import { Activity, Stethoscope, Heart, Play, RefreshCw } from "lucide-react";
 
 interface StudioWorkspaceProps {
   onTrigger: () => void;
@@ -1416,15 +1433,565 @@ interface StudioWorkspaceProps {
 
 export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
   const [promptInput, setPromptInput] = useState("");
-  const [sensitivity, setSensitivity] = useState(90);
-  const [priority, setPriority] = useState(${slider2OptionsJson}[0]);
   const [selectedCase, setSelectedCase] = useState<number | null>(null);
 
   const cases = ${cardsJson};
 
   return (
+    <div className="space-y-6 bg-[#041411] p-5 rounded-3xl border border-emerald-500/30 text-emerald-100 shadow-2xl">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="p-4 rounded-2xl bg-[#08221d] border border-emerald-500/20 space-y-1">
+          <span className="text-[11px] font-medium text-emerald-400 uppercase tracking-wider">Diagnostic Confidence</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white tracking-tight">99.4%</span>
+            <span className="text-xs font-semibold text-emerald-400">+1.8%</span>
+          </div>
+          <p className="text-[10px] text-emerald-400/70">Validated clinical dataset</p>
+        </div>
+        <div className="p-4 rounded-2xl bg-[#08221d] border border-emerald-500/20 space-y-1">
+          <span className="text-[11px] font-medium text-emerald-400 uppercase tracking-wider">Telemetry Latency</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white tracking-tight">8ms</span>
+            <span className="text-xs font-semibold text-emerald-400">REAL-TIME</span>
+          </div>
+          <p className="text-[10px] text-emerald-400/70">ICU bedside stream</p>
+        </div>
+        <div className="p-4 rounded-2xl bg-[#08221d] border border-emerald-500/20 space-y-1">
+          <span className="text-[11px] font-medium text-emerald-400 uppercase tracking-wider">Biomarker Triage</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white tracking-tight">4 Nodes</span>
+            <span className="text-xs font-semibold text-teal-300">ACTIVE</span>
+          </div>
+          <p className="text-[10px] text-emerald-400/70">Continuous patient monitoring</p>
+        </div>
+        <div className="p-4 rounded-2xl bg-[#08221d] border border-emerald-500/20 space-y-1">
+          <span className="text-[11px] font-medium text-emerald-400 uppercase tracking-wider">HIPAA Status</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white tracking-tight">VERIFIED</span>
+            <span className="text-xs font-semibold text-emerald-400">PASSED</span>
+          </div>
+          <p className="text-[10px] text-emerald-400/70">Encrypted sandboxed execution</p>
+        </div>
+      </div>
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#062b25] via-[#09352e] to-[#041a16] border border-emerald-500/40 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 flex items-center gap-1.5 w-fit">
+              <Stethoscope className="w-3.5 h-3.5" />
+              <span>${config.workspaceTitle}</span>
+            </span>
+            <h2 className="text-xl font-bold text-white tracking-tight">${config.workspaceSubtitle}</h2>
+          </div>
+          <span className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-1.5">
+            <Activity className="w-4 h-4 text-emerald-400 animate-pulse" />
+            LIVE ICU STREAM
+          </span>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-[#03110e] border border-emerald-500/40 text-sm text-emerald-100 placeholder-emerald-700 focus:outline-none focus:border-emerald-400 transition-all font-sans"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 disabled:opacity-50 cursor-pointer"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Heart className="w-4 h-4 fill-current text-rose-400" />}
+            <span>Synthesize Clinical Case</span>
+          </button>
+        </div>
+      </div>
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-emerald-300 uppercase tracking-wider">${config.gridTitle}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {cases.map((c, idx) => (
+            <div
+              key={c.id}
+              onClick={() => setSelectedCase(idx)}
+              className={"p-5 rounded-2xl border transition-all cursor-pointer overflow-hidden " + (selectedCase === idx ? "bg-[#082923] border-emerald-400 shadow-xl shadow-emerald-500/20 ring-1 ring-emerald-400" : "bg-[#061e1a]/80 border-emerald-900/60 hover:border-emerald-500/40 hover:bg-[#082923]")}
+            >
+              <div className="relative h-36 -mx-5 -mt-5 mb-4 overflow-hidden">
+                <img src={c.imageUrl} alt={c.title} className="w-full h-full object-cover opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#061e1a] to-transparent" />
+                <span className="absolute top-3 left-3 text-[10px] font-bold text-emerald-300 bg-black/70 px-2 py-0.5 rounded border border-emerald-500/40">
+                  {c.badge}
+                </span>
+              </div>
+              <h4 className="text-sm font-bold text-white mb-1">{c.title}</h4>
+              <p className="text-xs text-emerald-200/70 leading-relaxed line-clamp-2">{c.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (layout === "ecommerce") {
+      return `import React, { useState } from "react";
+import { ShoppingBag, Truck, Play, RefreshCw, Zap } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [selectedItem, setSelectedItem] = useState<number | null>(null);
+
+  const products = ${cardsJson};
+
+  return (
+    <div className="space-y-6 bg-[#0c0a09] p-5 rounded-3xl border border-amber-500/30 text-amber-100 shadow-2xl">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#1c150c] via-[#2a1d0d] to-[#140e08] border border-amber-500/40 space-y-4 relative overflow-hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300">
+              <ShoppingBag className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">[ RETAIL COMMAND HUB ]</span>
+              <h2 className="text-xl font-extrabold text-white tracking-wide font-sans">${config.workspaceTitle}</h2>
+            </div>
+          </div>
+          <span className="px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-1.5">
+            <Truck className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+            DISPATCH ACTIVE
+          </span>
+        </div>
+        <p className="text-xs text-amber-200/80 max-w-2xl font-sans leading-relaxed">
+          ${config.workspaceSubtitle}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 pt-1">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-[#140f09] border border-amber-500/30 text-sm text-amber-100 placeholder-amber-700 focus:outline-none focus:border-amber-400 font-sans"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-600/30 disabled:opacity-50 cursor-pointer"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-current" />}
+            <span>Optimize Retail Engine</span>
+          </button>
+        </div>
+      </div>
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-amber-300 uppercase tracking-wider">${config.gridTitle}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {products.map((item, idx) => (
+            <div
+              key={item.id}
+              onClick={() => setSelectedItem(idx)}
+              className={"group rounded-2xl border transition-all cursor-pointer overflow-hidden " + (selectedItem === idx ? "bg-[#22180d] border-amber-400 shadow-xl shadow-amber-500/20 ring-1 ring-amber-400" : "bg-[#161008] border-amber-900/40 hover:border-amber-500/40 hover:bg-[#1e150b]")}
+            >
+              <div className="relative h-44 overflow-hidden">
+                <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#161008] via-transparent to-black/30" />
+                <span className="absolute top-3 left-3 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950/90 text-amber-300 border border-amber-500/40">
+                  {item.badge}
+                </span>
+                <span className="absolute bottom-3 right-3 text-[11px] font-mono font-bold text-emerald-400 bg-black/80 px-2 py-0.5 rounded">
+                  $149.00
+                </span>
+              </div>
+              <div className="p-4 space-y-1.5">
+                <h4 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">{item.title}</h4>
+                <p className="text-xs text-amber-200/70 line-clamp-2 leading-relaxed">{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (layout === "media") {
+      return `import React, { useState } from "react";
+import { Film, Radio, Play, RefreshCw, Volume2 } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [selectedStream, setSelectedStream] = useState<number | null>(null);
+
+  const streams = ${cardsJson};
+
+  return (
+    <div className="space-y-6 bg-[#0e0716] p-5 rounded-3xl border border-purple-500/30 text-purple-100 shadow-2xl">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#200d34] via-[#2c1245] to-[#160826] border border-purple-500/40 space-y-4 relative overflow-hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-purple-500/20 border border-purple-500/40 text-purple-300">
+              <Film className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">[ MEDIA RENDER STUDIO ]</span>
+              <h2 className="text-xl font-extrabold text-white tracking-wide font-sans">${config.workspaceTitle}</h2>
+            </div>
+          </div>
+          <span className="px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-1.5">
+            <Radio className="w-3.5 h-3.5 text-rose-400 animate-ping" />
+            LIVE RENDER STREAMS
+          </span>
+        </div>
+        <p className="text-xs text-purple-200/80 max-w-2xl font-sans leading-relaxed">
+          ${config.workspaceSubtitle}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 pt-1">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-[#140a21] border border-purple-500/40 text-sm text-purple-100 placeholder-purple-700 focus:outline-none focus:border-purple-400 font-sans"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-600/30 disabled:opacity-50 cursor-pointer"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
+            <span>Render Media Stream</span>
+          </button>
+        </div>
+      </div>
+      <div className="p-4 rounded-2xl bg-[#160c24] border border-purple-500/20 space-y-3">
+        <div className="flex items-center justify-between text-xs text-purple-300">
+          <span className="flex items-center gap-2 font-bold">
+            <Volume2 className="w-4 h-4 text-pink-400" />
+            Audio DSP Signal & Frequency Channels
+          </span>
+          <span className="font-mono text-emerald-400">48kHz / 24-bit Lossless</span>
+        </div>
+        <div className="h-10 flex items-end gap-1.5 pt-1">
+          {[65, 80, 45, 90, 100, 75, 60, 85, 95, 70, 50, 88, 92, 60, 78, 85].map((h, idx) => (
+            <div key={idx} className="flex-1 bg-gradient-to-t from-purple-600 via-pink-500 to-cyan-400 rounded-t-sm" style={{ height: h + "%" }} />
+          ))}
+        </div>
+      </div>
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-purple-300 uppercase tracking-wider">${config.gridTitle}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {streams.map((stream, idx) => (
+            <div
+              key={stream.id}
+              onClick={() => setSelectedStream(idx)}
+              className={"group rounded-2xl border transition-all cursor-pointer overflow-hidden " + (selectedStream === idx ? "bg-[#25123d] border-purple-400 shadow-xl shadow-purple-500/20 ring-1 ring-purple-400" : "bg-[#170b26] border-purple-900/50 hover:border-purple-500/40 hover:bg-[#200e35]")}
+            >
+              <div className="relative h-44 overflow-hidden">
+                <img src={stream.imageUrl} alt={stream.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#170b26] via-transparent to-black/30" />
+                <span className="absolute top-3 left-3 px-2 py-0.5 rounded text-[10px] font-bold bg-purple-950/90 text-purple-300 border border-purple-500/40">
+                  {stream.badge}
+                </span>
+                <span className="absolute bottom-3 right-3 text-[10px] font-mono text-purple-300 bg-black/80 px-2 py-0.5 rounded">
+                  {stream.latency}
+                </span>
+              </div>
+              <div className="p-4 space-y-1.5">
+                <h4 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">{stream.title}</h4>
+                <p className="text-xs text-purple-200/70 line-clamp-2 leading-relaxed">{stream.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (layout === "culinary") {
+      return `import React, { useState } from "react";
+import { Utensils, Coffee, Flame, RefreshCw } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [selectedPass, setSelectedPass] = useState<number | null>(null);
+
+  const passes = ${cardsJson};
+
+  return (
+    <div className="space-y-6 bg-[#160c07] p-5 rounded-3xl border border-orange-500/30 text-amber-100 shadow-2xl">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#2c170d] via-[#3a1d0f] to-[#210f07] border border-orange-500/40 space-y-4 relative overflow-hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-orange-500/20 border border-orange-500/40 text-orange-300">
+              <Utensils className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">[ CULINARY PASS CANVAS ]</span>
+              <h2 className="text-xl font-extrabold text-white tracking-wide font-sans">${config.workspaceTitle}</h2>
+            </div>
+          </div>
+          <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-1.5">
+            <Flame className="w-3.5 h-3.5 text-orange-400 animate-bounce" />
+            KITCHEN PASS LIVE
+          </span>
+        </div>
+        <p className="text-xs text-amber-200/80 max-w-2xl font-sans leading-relaxed">
+          ${config.workspaceSubtitle}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 pt-1">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-[#21110a] border border-orange-500/40 text-sm text-amber-100 placeholder-amber-700 focus:outline-none focus:border-orange-400 font-sans"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-600/30 disabled:opacity-50 cursor-pointer"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Coffee className="w-4 h-4 fill-current" />}
+            <span>Execute Kitchen Pass</span>
+          </button>
+        </div>
+      </div>
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-orange-300 uppercase tracking-wider">${config.gridTitle}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {passes.map((pass, idx) => (
+            <div
+              key={pass.id}
+              onClick={() => setSelectedPass(idx)}
+              className={"group rounded-2xl border transition-all cursor-pointer overflow-hidden " + (selectedPass === idx ? "bg-[#331c10] border-orange-400 shadow-xl shadow-orange-500/20 ring-1 ring-orange-400" : "bg-[#21120a] border-orange-900/40 hover:border-orange-500/40 hover:bg-[#2c170d]")}
+            >
+              <div className="relative h-44 overflow-hidden">
+                <img src={pass.imageUrl} alt={pass.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#21120a] via-transparent to-black/30" />
+                <span className="absolute top-3 left-3 px-2 py-0.5 rounded text-[10px] font-bold bg-orange-950/90 text-orange-300 border border-orange-500/40">
+                  {pass.badge}
+                </span>
+                <span className="absolute bottom-3 right-3 text-[10px] font-mono text-emerald-400 bg-black/80 px-2 py-0.5 rounded">
+                  {pass.status}
+                </span>
+              </div>
+              <div className="p-4 space-y-1.5">
+                <h4 className="text-sm font-bold text-white group-hover:text-orange-300 transition-colors">{pass.title}</h4>
+                <p className="text-xs text-amber-200/70 line-clamp-2 leading-relaxed">{pass.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (layout === "realestate") {
+      return `import React, { useState } from "react";
+import { Building2, Eye, RefreshCw, Compass } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
+
+  const properties = ${cardsJson};
+
+  return (
+    <div className="space-y-6 bg-[#080d19] p-5 rounded-3xl border border-sky-500/30 text-sky-100 shadow-2xl">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#0d1b33] via-[#122445] to-[#091326] border border-sky-500/40 space-y-4 relative overflow-hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-sky-500/20 border border-sky-500/40 text-sky-300">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest">[ SPATIAL PROPERTY RADAR ]</span>
+              <h2 className="text-xl font-extrabold text-white tracking-wide font-sans">${config.workspaceTitle}</h2>
+            </div>
+          </div>
+          <span className="px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-300 text-xs font-bold flex items-center gap-1.5">
+            <Compass className="w-3.5 h-3.5 text-teal-400 animate-spin" />
+            3D SPATIAL RADAR
+          </span>
+        </div>
+        <p className="text-xs text-sky-200/80 max-w-2xl font-sans leading-relaxed">
+          ${config.workspaceSubtitle}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 pt-1">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-[#0b1426] border border-sky-500/40 text-sm text-sky-100 placeholder-sky-700 focus:outline-none focus:border-sky-400 font-sans"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-sky-600/30 disabled:opacity-50 cursor-pointer"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Eye className="w-4 h-4" />}
+            <span>Run Property Radar</span>
+          </button>
+        </div>
+      </div>
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-sky-300 uppercase tracking-wider">${config.gridTitle}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {properties.map((prop, idx) => (
+            <div
+              key={prop.id}
+              onClick={() => setSelectedProperty(idx)}
+              className={"group rounded-2xl border transition-all cursor-pointer overflow-hidden " + (selectedProperty === idx ? "bg-[#132545] border-sky-400 shadow-xl shadow-sky-500/20 ring-1 ring-sky-400" : "bg-[#0c182e] border-sky-900/40 hover:border-sky-500/40 hover:bg-[#11213f]")}
+            >
+              <div className="relative h-44 overflow-hidden">
+                <img src={prop.imageUrl} alt={prop.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c182e] via-transparent to-black/30" />
+                <span className="absolute top-3 left-3 px-2 py-0.5 rounded text-[10px] font-bold bg-sky-950/90 text-sky-300 border border-sky-500/40">
+                  {prop.badge}
+                </span>
+                <span className="absolute bottom-3 right-3 text-[11px] font-mono font-bold text-emerald-400 bg-black/80 px-2 py-0.5 rounded">
+                  $2.4M Valued
+                </span>
+              </div>
+              <div className="p-4 space-y-1.5">
+                <h4 className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors">{prop.title}</h4>
+                <p className="text-xs text-sky-200/70 line-clamp-2 leading-relaxed">{prop.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (layout === "edutech") {
+      return `import React, { useState } from "react";
+import { GraduationCap, BookOpen, Brain, RefreshCw } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+  const nodes = ${cardsJson};
+
+  return (
+    <div className="space-y-6 bg-[#090714] p-5 rounded-3xl border border-violet-500/30 text-violet-100 shadow-2xl">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#1b1038] via-[#26164d] to-[#120a28] border border-violet-500/40 space-y-4 relative overflow-hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-violet-500/20 border border-violet-500/40 text-violet-300">
+              <GraduationCap className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest">[ KNOWLEDGE SYNTHESIZER ]</span>
+              <h2 className="text-xl font-extrabold text-white tracking-wide font-sans">${config.workspaceTitle}</h2>
+            </div>
+          </div>
+          <span className="px-3 py-1 rounded-full bg-sky-500/20 border border-sky-500/40 text-sky-300 text-xs font-bold flex items-center gap-1.5">
+            <Brain className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
+            NEURAL TUTOR ACTIVE
+          </span>
+        </div>
+        <p className="text-xs text-violet-200/80 max-w-2xl font-sans leading-relaxed">
+          ${config.workspaceSubtitle}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 pt-1">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-[#130b29] border border-violet-500/40 text-sm text-violet-100 placeholder-violet-700 focus:outline-none focus:border-violet-400 font-sans"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-600/30 disabled:opacity-50 cursor-pointer"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <BookOpen className="w-4 h-4" />}
+            <span>Synthesize Knowledge Unit</span>
+          </button>
+        </div>
+      </div>
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-violet-300 uppercase tracking-wider">${config.gridTitle}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {nodes.map((node, idx) => (
+            <div
+              key={node.id}
+              onClick={() => setSelectedNode(idx)}
+              className={"group rounded-2xl border transition-all cursor-pointer overflow-hidden " + (selectedNode === idx ? "bg-[#25154d] border-violet-400 shadow-xl shadow-violet-500/20 ring-1 ring-violet-400" : "bg-[#140b2b] border-violet-900/40 hover:border-violet-500/40 hover:bg-[#1d103f]")}
+            >
+              <div className="relative h-44 overflow-hidden">
+                <img src={node.imageUrl} alt={node.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#140b2b] via-transparent to-black/30" />
+                <span className="absolute top-3 left-3 px-2 py-0.5 rounded text-[10px] font-bold bg-violet-950/90 text-violet-300 border border-violet-500/40">
+                  {node.badge}
+                </span>
+                <span className="absolute bottom-3 right-3 text-[10px] font-mono text-emerald-400 bg-black/80 px-2 py-0.5 rounded">
+                  {node.status}
+                </span>
+              </div>
+              <div className="p-4 space-y-1.5">
+                <h4 className="text-sm font-bold text-white group-hover:text-violet-300 transition-colors">{node.title}</h4>
+                <p className="text-xs text-violet-200/70 line-clamp-2 leading-relaxed">{node.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (layout === "dashboard") {
+      return `import React, { useState } from "react";
+import { Activity, BarChart2, ShieldCheck, Play, RefreshCw } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [selectedCase, setSelectedCase] = useState<number | null>(null);
+  const cases = ${cardsJson};
+
+  return (
     <div className="space-y-6 bg-slate-950 p-5 rounded-3xl border border-slate-800 text-slate-100 shadow-2xl">
-      {/* Executive Metric KPI Bar Top */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-1">
           <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Target Success SLA</span>
@@ -1463,15 +2030,9 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
         </div>
       </div>
 
-      {/* Operational Header */}
       <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
         <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 border border-blue-500/20 text-blue-400">
-              ${config.workspaceTitle}
-            </span>
-            <h2 className="text-xl font-bold text-white tracking-tight">${config.workspaceSubtitle}</h2>
-          </div>
+          <h2 className="text-xl font-bold text-white tracking-tight">${config.workspaceTitle}</h2>
           <span className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4" />
             COMPLIANCE VERIFIED
@@ -1497,7 +2058,6 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
         </div>
       </div>
 
-      {/* Grid of Operations */}
       <div className="space-y-3">
         <h3 className="text-sm font-bold text-white tracking-tight">${config.gridTitle}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -1505,11 +2065,7 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
             <div
               key={c.id}
               onClick={() => setSelectedCase(idx)}
-              className={\`p-5 rounded-2xl border transition-all cursor-pointer \${
-                selectedCase === idx
-                  ? "bg-slate-900 border-blue-500 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500"
-                  : "bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900"
-              }\`}
+              className={"p-5 rounded-2xl border transition-all cursor-pointer " + (selectedCase === idx ? "bg-slate-900 border-blue-500 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500" : "bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900")}
             >
               <div className="flex justify-between items-center mb-3">
                 <span className="text-[10px] font-bold text-blue-400 bg-blue-950 px-2 py-0.5 rounded border border-blue-800">
@@ -1528,9 +2084,9 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
 }`;
     }
 
-    if (config.layoutType === "studio") {
+    if (layout === "studio") {
       return `import React, { useState } from "react";
-import { Terminal, Cpu, Play, RefreshCw, Code, CheckCircle, Zap } from "lucide-react";
+import { Terminal, Play, RefreshCw } from "lucide-react";
 
 interface StudioWorkspaceProps {
   onTrigger: () => void;
@@ -1545,7 +2101,6 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
 
   return (
     <div className="space-y-6 font-mono text-gray-200 bg-[#030712] p-5 rounded-3xl border border-gray-800 shadow-2xl">
-      {/* Studio Header */}
       <div className="p-6 rounded-2xl bg-[#0b0f19] border border-gray-800 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -1582,17 +2137,12 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
         </div>
       </div>
 
-      {/* Nodes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {nodes.map((node, idx) => (
           <div
             key={node.id}
             onClick={() => setSelectedNode(idx)}
-            className={\`p-5 rounded-2xl border transition-all cursor-pointer \${
-              selectedNode === idx
-                ? "bg-[#0b0f19] border-indigo-500 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500"
-                : "bg-[#070a12] border-gray-800 hover:border-gray-700 hover:bg-[#0b0f19]"
-            }\`}
+            className={"p-5 rounded-2xl border transition-all cursor-pointer " + (selectedNode === idx ? "bg-[#0b0f19] border-indigo-500 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500" : "bg-[#070a12] border-gray-800 hover:border-gray-700 hover:bg-[#0b0f19]")}
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] font-bold text-indigo-400 bg-indigo-950/80 px-2 py-0.5 rounded border border-indigo-800">
@@ -1610,9 +2160,9 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
 }`;
     }
 
-    // Default Bento Studio Workspace (for Butler, Personal Assistant, Consumer, Fitness, etc.)
+    // Default Bento Studio Workspace
     return `import React, { useState } from "react";
-import { Sparkles, Sliders, Play, CheckCircle2, ChevronRight, Eye, Zap, Layers, RefreshCw } from "lucide-react";
+import { Sparkles, Play, RefreshCw } from "lucide-react";
 
 interface StudioWorkspaceProps {
   onTrigger: () => void;
@@ -1621,18 +2171,14 @@ interface StudioWorkspaceProps {
 
 export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
   const [promptInput, setPromptInput] = useState("");
-  const [creativity, setCreativity] = useState(75);
-  const [resolution, setResolution] = useState(${slider2OptionsJson}[0]);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const scenes = ${cardsJson};
 
   return (
     <div className="space-y-6">
-      {/* Bento Workspace Header Banner */}
       <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-900/30 via-[#0d1017] to-purple-900/30 border border-white/[0.08] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        
         <div className="relative z-10 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5" />
@@ -1644,7 +2190,6 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
           </p>
         </div>
 
-        {/* Prompt Directive Bar */}
         <div className="mt-6 flex flex-col sm:flex-row gap-3">
           <input
             type="text"
@@ -1664,57 +2209,6 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
         </div>
       </div>
 
-      {/* Parameter Sliders & Configuration Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gray-300">${config.slider1Label}</span>
-            <span className="font-mono text-indigo-400">{creativity}${config.slider1Unit}</span>
-          </div>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={creativity}
-            onChange={(e) => setCreativity(Number(e.target.value))}
-            className="w-full accent-indigo-500 cursor-pointer"
-          />
-        </div>
-
-        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gray-300">${config.slider2Label}</span>
-            <span className="font-mono text-purple-400">{resolution}</span>
-          </div>
-          <div className="flex gap-2">
-            {${slider2OptionsJson}.map((res) => (
-              <button
-                key={res}
-                onClick={() => setResolution(res)}
-                className={\`flex-1 py-1.5 rounded-lg text-[11px] font-medium border transition-all \${
-                  resolution === res
-                    ? "bg-indigo-600/20 text-indigo-300 border-indigo-500/40"
-                    : "bg-white/[0.02] text-gray-400 border-white/[0.06] hover:bg-white/[0.05]"
-                }\`}
-              >
-                {res}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gray-300">Multi-Agent Engine</span>
-            <span className="font-mono text-emerald-400">${config.engineName}</span>
-          </div>
-          <p className="text-[11px] text-gray-400 leading-tight">
-            ${config.engineDesc}
-          </p>
-        </div>
-      </div>
-
-      {/* Production Cards Grid */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-white tracking-tight">${config.gridTitle}</h3>
@@ -1726,11 +2220,7 @@ export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorksp
             <div
               key={scene.id}
               onClick={() => setSelectedCard(idx)}
-              className={\`group rounded-2xl overflow-hidden border transition-all cursor-pointer \${
-                selectedCard === idx
-                  ? "bg-[#131722] border-indigo-500/60 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/40"
-                  : "bg-[#0d1017]/90 border-white/[0.08] hover:border-white/20 hover:bg-[#11151f]"
-              }\`}
+              className={"group rounded-2xl overflow-hidden border transition-all cursor-pointer " + (selectedCard === idx ? "bg-[#131722] border-indigo-500/60 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/40" : "bg-[#0d1017]/90 border-white/[0.08] hover:border-white/20 hover:bg-[#11151f]")}
             >
               <div className="relative h-48 overflow-hidden">
                 <img

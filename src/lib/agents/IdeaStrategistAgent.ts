@@ -8,6 +8,7 @@ export interface HackathonBlueprint {
   tagline: string;
   problemStatement: string;
   proposedSolution: string;
+  layoutType?: "bento" | "cyber" | "dashboard" | "clinical" | "studio" | "ecommerce" | "media" | "culinary" | "realestate" | "edutech";
   techStack: {
     frontend: string[];
     backend: string[];
@@ -81,6 +82,7 @@ Output a JSON object with this exact schema:
   "problemStatement": "The deep user pain point being solved (2-3 sentences)",
   "proposedSolution": "The holistic AI-driven solution (2-3 sentences)",
   "innovationHighlight": "What makes this disruptive and technically unique",
+  "layoutType": "Choose one of: bento, cyber, dashboard, clinical, studio, ecommerce, media, culinary, realestate, edutech depending on the domain",
   "techStack": {
     "frontend": ["List of frontend technologies. Use Next.js, Tailwind CSS, Framer Motion, and Lucide React to showcase the user's primary UI strengths, unless the hackathon strictly dictates a different UI environment."],
     "backend": ["List of backend systems. You MUST align this with the hackathon's required/suggested platforms (e.g., Python, Custom MCP Servers). Only add Node.js as a secondary layer if beneficial to hook up to the Next.js visual dashboard."],
@@ -126,6 +128,7 @@ Return valid JSON only. Do not wrap in markdown tags like \`\`\`json.
       problemStatement: z.string(),
       proposedSolution: z.string(),
       innovationHighlight: z.string().describe("What makes this disruptive and technically unique. Leave empty if none."),
+      layoutType: z.enum(["bento", "cyber", "dashboard", "clinical", "studio", "ecommerce", "media", "culinary", "realestate", "edutech"]).optional(),
       techStack: z.object({
         frontend: z.array(z.string()),
         backend: z.array(z.string()),
@@ -213,6 +216,7 @@ Return valid JSON only. Do not wrap in markdown tags like \`\`\`json.
       tagline: bp.tagline || 'An innovative solution',
       problemStatement: bp.problemStatement || '',
       proposedSolution: bp.proposedSolution || '',
+      layoutType: bp.layoutType || undefined,
       techStack: {
         frontend: bp.techStack?.frontend || ['Next.js', 'Tailwind CSS'],
         backend: bp.techStack?.backend || ['Node.js'],
