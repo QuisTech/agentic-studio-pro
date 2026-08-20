@@ -22,9 +22,11 @@ export interface HackathonContext {
 
 export class HackathonAnalystAgent {
   private apiKey: string;
+  private onTelemetry?: (msg: string) => void;
 
-  constructor(apiKey?: string) {
+  constructor(apiKey?: string, onTelemetry?: (msg: string) => void) {
     this.apiKey = apiKey || process.env.GROQ_API_KEY || '';
+    this.onTelemetry = onTelemetry;
   }
 
   async analyzeHackathon(rawText: string): Promise<HackathonContext> {
@@ -34,11 +36,10 @@ export class HackathonAnalystAgent {
     
     // Support multiple API keys separated by commas for rate limit rotation
     const keyList = this.apiKey.split(",").map(k => k.trim()).filter(Boolean);
-    const selectedKey = keyList[Math.floor(Math.random() * keyList.length)];
-
-    const groq = createGroq({
-      apiKey: selectedKey,
-    });
+    const MODEL_NAME = "openai/gpt-oss-120b";
+    const maskKey = (k: string) => k.length > 10 ? `${k.substring(0, 7)}...${k.substring(k.length - 4)}` : k;
+    let result: any = null;
+    let lastError: any = null;
 
     const prompt = `
 You are a Hackathon Intelligence Analyst. Parse the following hackathon prompt/rubric and extract structured information.
@@ -110,13 +111,15 @@ Return valid JSON only. Do not wrap in markdown tags like \`\`\`json.
       })
     });
 
-    const MODEL_NAME = "openai/gpt-oss-120b";
-    let result: any = null;
-    let lastError: any = null;
-
     for (let attempts = 0; attempts < Math.max(keyList.length * 2, 4); attempts++) {
+      const keyIndex = (attempts % keyList.length) + 1;
       const currentKey = keyList[attempts % keyList.length];
       const groq = createGroq({ apiKey: currentKey });
+      
+      if (this.onTelemetry) {
+        this.onTelemetry(`🔑 Key Pool: Attempt ${attempts + 1} using Key ${keyIndex} of ${keyList.length} (${maskKey(currentKey)}) for \`${MODEL_NAME}\`...`);
+      }
+      
       try {
         result = await generateObject({
           model: groq(MODEL_NAME),
@@ -124,10 +127,22 @@ Return valid JSON only. Do not wrap in markdown tags like \`\`\`json.
           temperature: 0.3,
           schema,
         });
-        if (result && result.object) break;
+        if (result && result.object) {
+          if (this.onTelemetry) {
+            this.onTelemetry(`✅ Key ${keyIndex} (${maskKey(currentKey)}) succeeded for \`${MODEL_NAME}\`.`);
+          }
+          break;
+        }
       } catch (err: any) {
         lastError = err;
-        console.warn(`⚠️ Groq API call attempt ${attempts + 1} failed for ${MODEL_NAME}: ${err?.message || err}`);
+        const isRateLimit = String(err?.message || err).toLowerCase().includes('rate limit') || String(err?.message || err).includes('200000');
+        if (this.onTelemetry) {
+          if (isRateLimit) {
+            this.onTelemetry(`⚠️ **Key ${keyIndex} (${maskKey(currentKey)}) hit rate limit!** Rotating to Key ${(keyIndex % keyList.length) + 1}...`);
+          } else {
+            this.onTelemetry(`⚠️ Attempt ${attempts + 1} via Key ${keyIndex} failed (${err?.message || 'Error'}). Retrying...`);
+          }
+        }
         if (attempts < Math.max(keyList.length * 2, 4) - 1) {
           await new Promise(r => setTimeout(r, 1000 * (attempts + 1)));
         }

@@ -68,13 +68,21 @@ export async function POST(req: Request) {
         } catch {}
       };
 
+      const sendTelemetry = (content: string) => {
+        sendEvent({ type: "message", role: "system", sender: "System Telemetry", content });
+      };
+
+      const keyList = (process.env.GROQ_API_KEY || '').split(',').map(k => k.trim()).filter(Boolean);
+      const maskKey = (k: string) => k.length > 10 ? `${k.substring(0, 7)}...${k.substring(k.length - 4)}` : k;
+
       try {
         if (state.step < 1) {
+          sendTelemetry(`🔑 **Key Pool Active**: Detected ${keyList.length} Groq API key(s) (${keyList.map(maskKey).join(', ')}). Target Model: \`openai/gpt-oss-120b\`.`);
           // --- 1. Hackathon Analyst Phase ---
           sendEvent({ type: "typing", agent: "Hackathon Analyst" });
           sendEvent({ type: "kanban", column: "Analysis", taskId: 1, status: "in-progress" });
           
-          const analyst = new HackathonAnalystAgent(process.env.GROQ_API_KEY);
+          const analyst = new HackathonAnalystAgent(process.env.GROQ_API_KEY, sendTelemetry);
           sendEvent({ type: "message", role: "analyst", sender: "Hackathon Analyst", content: "Parsing the hackathon prompt and extracting constraints..." });
           
           state.context = await analyst.analyzeHackathon(latestMessage);
@@ -83,6 +91,7 @@ export async function POST(req: Request) {
           
           sendEvent({ type: "message", role: "analyst", sender: "Hackathon Analyst", content: `Analysis complete! Theme: **${state.context.theme}**\nRequired Tech: ${state.context.requiredTech.join(', ')}` });
           sendEvent({ type: "kanban", column: "Analysis", taskId: 1, status: "done" });
+          sendTelemetry("📊 **Stage 1 (Analysis) Complete**. Advancing to Stage 2 (Strategy)...");
         } else {
           sendEvent({ type: "kanban", column: "Analysis", taskId: 1, status: "done" });
         }
@@ -93,7 +102,7 @@ export async function POST(req: Request) {
           sendEvent({ type: "typing", agent: "Idea Strategist" });
           sendEvent({ type: "message", role: "strategist", sender: "Idea Strategist", content: "Generating a winning project blueprint..." });
           
-          const strategist = new IdeaStrategistAgent(process.env.GROQ_API_KEY);
+          const strategist = new IdeaStrategistAgent(process.env.GROQ_API_KEY, sendTelemetry);
           state.blueprint = await strategist.generateBlueprint(state.context);
           state.step = 2;
           saveState();
@@ -104,6 +113,7 @@ export async function POST(req: Request) {
           sendEvent({ type: "message", role: "strategist", sender: "Idea Strategist", content: blueprintMarkdown });
           
           sendEvent({ type: "kanban", column: "Strategy", taskId: 2, status: "done" });
+          sendTelemetry("📊 **Stage 2 (Strategy Blueprint) Complete**. Advancing to Stage 3 (Code Scaffolding)...");
         } else {
           sendEvent({ type: "kanban", column: "Strategy", taskId: 2, status: "done" });
         }
@@ -130,9 +140,9 @@ export async function POST(req: Request) {
           sendEvent({ type: "code", files: state.codeFiles });
           
           sendEvent({ type: "kanban", column: "Scaffold", taskId: 3, status: "done" });
+          sendTelemetry(`📊 **Stage 3 (Scaffolding) Complete**. Generated ${files.length} native & web files.`);
         } else {
           sendEvent({ type: "kanban", column: "Scaffold", taskId: 3, status: "done" });
-          // if skipping over, we should still push the code to UI so they see it
           if (state.codeFiles) {
             sendEvent({ type: "code", files: state.codeFiles });
           }
@@ -147,6 +157,7 @@ export async function POST(req: Request) {
           state.step = 4;
           saveState();
           sendEvent({ type: "kanban", column: "GitOps", taskId: 4, status: "done" });
+          sendTelemetry("📊 **Stage 4 (GitOps) Complete**. Repository synchronized.");
         } else {
           sendEvent({ type: "kanban", column: "GitOps", taskId: 4, status: "done" });
         }
@@ -160,6 +171,7 @@ export async function POST(req: Request) {
           state.step = 5;
           saveState();
           sendEvent({ type: "kanban", column: "Deploy", taskId: 5, status: "done" });
+          sendTelemetry("📊 **Stage 5 (Deployment) Complete**. Production preview active.");
         } else {
           sendEvent({ type: "kanban", column: "Deploy", taskId: 5, status: "done" });
         }
@@ -173,6 +185,7 @@ export async function POST(req: Request) {
           state.step = 6;
           saveState();
           sendEvent({ type: "kanban", column: "Demo", taskId: 6, status: "done" });
+          sendTelemetry("📊 **Stage 6 (Video Audit) Complete**. Demo video validated.");
         } else {
           sendEvent({ type: "kanban", column: "Demo", taskId: 6, status: "done" });
         }
@@ -183,7 +196,7 @@ export async function POST(req: Request) {
           sendEvent({ type: "typing", agent: "Submission Writer" });
           sendEvent({ type: "message", role: "submission", sender: "Submission Writer", content: "Drafting the Devpost submission..." });
           
-          const writer = new SubmissionWriterAgent(process.env.GROQ_API_KEY);
+          const writer = new SubmissionWriterAgent(process.env.GROQ_API_KEY, sendTelemetry);
           const storyboard = { title: state.blueprint.projectName, actions: [] };
           const devpostMarkdown = await writer.generateSubmission(JSON.stringify(state.blueprint), storyboard as any);
           
@@ -192,6 +205,7 @@ export async function POST(req: Request) {
           
           sendEvent({ type: "message", role: "submission", sender: "Submission Writer", content: "Devpost submission drafted. Ready for review!\n\n" + devpostMarkdown.substring(0, 800) + "..." });
           sendEvent({ type: "kanban", column: "Submission", taskId: 7, status: "done" });
+          sendTelemetry("🎉 **Stage 7 (Devpost Writeup) Complete**. Orchestration pipeline finished 100%!");
         } else {
           sendEvent({ type: "kanban", column: "Submission", taskId: 7, status: "done" });
         }
