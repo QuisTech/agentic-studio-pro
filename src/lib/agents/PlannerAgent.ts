@@ -82,35 +82,26 @@ Guidelines:
       }))
     });
 
-    let result;
+    const MODEL_NAME = "openai/gpt-oss-120b";
+    let result: any = null;
+    let lastError: any = null;
 
-    const callGenerate = async (modelName: string) => {
-      return await generateObject({
-        model: groq(modelName),
-        prompt,
-        temperature: 0.3,
-        schema,
-      });
-    };
-
-    // Multi-Tier Fallback Cascade for Groq with distinct model quotas
-    try {
-      // Primary (Llama 3.3 70B Versatile)
-      result = await callGenerate("llama-3.3-70b-versatile");
-    } catch (err1: any) {
-      console.warn("Primary model (llama-3.3-70b-versatile) failed, falling back to Catch 1", err1?.message || err1);
+    for (let attempts = 0; attempts < Math.max(keyList.length * 2, 4); attempts++) {
+      const currentKey = keyList[attempts % keyList.length];
+      const groq = createGroq({ apiKey: currentKey });
       try {
-        // Catch 1 (Llama 3.1 8B Instant)
-        result = await callGenerate("llama-3.1-8b-instant");
-      } catch (err2: any) {
-        console.warn("Catch 1 (llama-3.1-8b-instant) failed, falling back to Catch 2", err2?.message || err2);
-        try {
-          // Catch 2 (Mixtral 8x7B)
-          result = await callGenerate("mixtral-8x7b-32768");
-        } catch (err3: any) {
-          console.warn("Catch 2 (mixtral-8x7b-32768) failed, falling back to Catch 3", err3?.message || err3);
-          // Catch 3 (Gemma 2 9B)
-          result = await callGenerate("gemma2-9b-it");
+        result = await generateObject({
+          model: groq(MODEL_NAME),
+          prompt,
+          temperature: 0.3,
+          schema,
+        });
+        if (result && result.object) break;
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`⚠️ Groq API call attempt ${attempts + 1} failed for ${MODEL_NAME}: ${err?.message || err}`);
+        if (attempts < Math.max(keyList.length * 2, 4) - 1) {
+          await new Promise(r => setTimeout(r, 1000 * (attempts + 1)));
         }
       }
     }
