@@ -236,19 +236,14 @@ export class CodeScaffoldAgent {
         bg: "bg-[#03060d] text-cyan-100 selection:bg-cyan-500 selection:text-black font-mono",
         badgeText: "CYBER PROTOCOL v3.4",
         badgeClass: "bg-cyan-950/80 text-cyan-400 border-cyan-500/40",
-        headerIcon: "Shield",
         headerIconBg: "from-cyan-600 via-blue-600 to-purple-600 shadow-cyan-500/25",
         headerBg: "bg-[#060c1c]/90 border-cyan-900/50",
         asideBg: "bg-[#050914] border-cyan-900/50",
         moduleHeader: "[ MATRIX MODULES ]",
         tab1: "Matrix Console",
-        tab1Icon: "Shield",
         tab2: "Sentinel Mesh",
-        tab2Icon: "Cpu",
         tab3: "Signal Telemetry",
-        tab3Icon: "Activity",
         tab4: "Audit Log Stream",
-        tab4Icon: "Terminal",
         activeTab: "bg-cyan-950/90 text-cyan-300 border-cyan-500/50 shadow-cyan-500/20",
         buttonGradient: "from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 shadow-cyan-500/25",
         widgetTitle: "CYBER MATRIX PIPELINE",
@@ -260,19 +255,14 @@ export class CodeScaffoldAgent {
         bg: "bg-[#02120e] text-emerald-100 selection:bg-emerald-500 selection:text-black font-sans",
         badgeText: "ICU CLINICAL OS",
         badgeClass: "bg-emerald-950/80 text-emerald-400 border-emerald-500/40",
-        headerIcon: "Stethoscope",
         headerIconBg: "from-emerald-600 via-teal-600 to-cyan-600 shadow-emerald-500/25",
         headerBg: "bg-[#05241e]/90 border-emerald-900/50",
         asideBg: "bg-[#041a15] border-emerald-900/50",
         moduleHeader: "CLINICAL TRIAGE MODULES",
         tab1: "Patient Diagnostics",
-        tab1Icon: "Stethoscope",
         tab2: "Biomarker Agents",
-        tab2Icon: "Activity",
         tab3: "ICU Telemetry",
-        tab3Icon: "Heart",
         tab4: "HIPAA Audit Log",
-        tab4Icon: "Terminal",
         activeTab: "bg-emerald-950/90 text-emerald-300 border-emerald-500/50 shadow-emerald-500/20",
         buttonGradient: "from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-emerald-600/30",
         widgetTitle: "Bedside Triage Stream",
@@ -284,19 +274,14 @@ export class CodeScaffoldAgent {
         bg: "bg-[#0a0806] text-amber-100 selection:bg-amber-500 selection:text-black font-sans",
         badgeText: "RETAIL COMMAND HUB",
         badgeClass: "bg-amber-950/80 text-amber-400 border-amber-500/40",
-        headerIcon: "ShoppingBag",
         headerIconBg: "from-amber-600 via-orange-600 to-rose-600 shadow-amber-500/25",
         headerBg: "bg-[#17110a]/90 border-amber-900/50",
         asideBg: "bg-[#110d08] border-amber-900/50",
         moduleHeader: "RETAIL COMMAND MODULES",
         tab1: "Store Operations",
-        tab1Icon: "ShoppingBag",
         tab2: "Fulfillment Fleet",
-        tab2Icon: "Truck",
         tab3: "Revenue Telemetry",
-        tab3Icon: "BarChart3",
         tab4: "Dispatch Stream",
-        tab4Icon: "Terminal",
         activeTab: "bg-amber-950/90 text-amber-300 border-amber-500/50 shadow-amber-500/20",
         buttonGradient: "from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 shadow-amber-600/30",
         widgetTitle: "Dispatch Pipeline",
@@ -308,19 +293,14 @@ export class CodeScaffoldAgent {
         bg: "bg-[#0a0512] text-purple-100 selection:bg-pink-500 selection:text-white font-sans",
         badgeText: "RENDER STUDIO PRO",
         badgeClass: "bg-purple-950/80 text-purple-300 border-purple-500/40",
-        headerIcon: "Film",
         headerIconBg: "from-purple-600 via-pink-600 to-rose-600 shadow-purple-500/25",
         headerBg: "bg-[#190a2b]/90 border-purple-900/50",
         asideBg: "bg-[#11071e] border-purple-900/50",
         moduleHeader: "STUDIO RENDER MODULES",
         tab1: "Render Canvas",
-        tab1Icon: "Film",
         tab2: "Pipeline Engine",
-        tab2Icon: "Radio",
         tab3: "DSP Audio Telemetry",
-        tab3Icon: "Volume2",
         tab4: "Render Log Stream",
-        tab4Icon: "Terminal",
         activeTab: "bg-purple-950/90 text-purple-300 border-purple-500/50 shadow-purple-500/20",
         buttonGradient: "from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 shadow-purple-600/30",
         widgetTitle: "Live Media Stream",
@@ -332,19 +312,14 @@ export class CodeScaffoldAgent {
         bg: "bg-[#0f0804] text-amber-100 selection:bg-orange-500 selection:text-black font-sans",
         badgeText: "KITCHEN PASS OS",
         badgeClass: "bg-orange-950/80 text-orange-400 border-orange-500/40",
-        headerIcon: "Utensils",
         headerIconBg: "from-orange-600 via-amber-600 to-yellow-600 shadow-orange-500/25",
         headerBg: "bg-[#211109]/90 border-orange-900/50",
         asideBg: "bg-[#170c07] border-orange-900/50",
         moduleHeader: "KITCHEN PASS MODULES",
         tab1: "Pass Canvas",
-        tab1Icon: "Utensils",
         tab2: "Kitchen Fire Line",
-        tab2Icon: "Flame",
         tab3: "Barista & Service",
-        tab3Icon: "Coffee",
         tab4: "Ticket Log Stream",
-        tab4Icon: "Terminal",
         activeTab: "bg-orange-950/90 text-orange-300 border-orange-500/50 shadow-orange-500/20",
         buttonGradient: "from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 shadow-orange-600/30",
         widgetTitle: "Kitchen Pass Stream",
@@ -356,19 +331,14 @@ export class CodeScaffoldAgent {
         bg: "bg-[#050a14] text-sky-100 selection:bg-sky-500 selection:text-black font-sans",
         badgeText: "SPATIAL RADAR v2",
         badgeClass: "bg-sky-950/80 text-sky-300 border-sky-500/40",
-        headerIcon: "Building2",
         headerIconBg: "from-sky-600 via-teal-600 to-emerald-600 shadow-sky-500/25",
         headerBg: "bg-[#0f1d3b]/90 border-sky-900/50",
         asideBg: "bg-[#0a1326] border-sky-900/50",
         moduleHeader: "SPATIAL RADAR MODULES",
         tab1: "Property Canvas",
-        tab1Icon: "Building2",
         tab2: "3D Spatial Mesh",
-        tab2Icon: "Compass",
         tab3: "Valuation Telemetry",
-        tab3Icon: "Eye",
         tab4: "Radar Log Stream",
-        tab4Icon: "Terminal",
         activeTab: "bg-sky-950/90 text-sky-300 border-sky-500/50 shadow-sky-500/20",
         buttonGradient: "from-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 shadow-sky-600/30",
         widgetTitle: "GIS Radar Stream",
@@ -380,19 +350,14 @@ export class CodeScaffoldAgent {
         bg: "bg-[#060410] text-violet-100 selection:bg-violet-500 selection:text-white font-sans",
         badgeText: "NEURAL ACADEMY OS",
         badgeClass: "bg-violet-950/80 text-violet-300 border-violet-500/40",
-        headerIcon: "GraduationCap",
         headerIconBg: "from-violet-600 via-indigo-600 to-purple-600 shadow-violet-500/25",
         headerBg: "bg-[#150f36]/90 border-violet-900/50",
         asideBg: "bg-[#0e0a24] border-violet-900/50",
         moduleHeader: "KNOWLEDGE MODULES",
         tab1: "Knowledge Canvas",
-        tab1Icon: "GraduationCap",
         tab2: "Tutor Mesh",
-        tab2Icon: "Brain",
         tab3: "Mastery Analytics",
-        tab3Icon: "BookOpen",
         tab4: "Synthesis Stream",
-        tab4Icon: "Terminal",
         activeTab: "bg-violet-950/90 text-violet-300 border-violet-500/50 shadow-violet-500/20",
         buttonGradient: "from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-violet-600/30",
         widgetTitle: "Neural Tutor Stream",
@@ -404,19 +369,14 @@ export class CodeScaffoldAgent {
         bg: "bg-[#07090e] text-gray-100 selection:bg-indigo-500 selection:text-white font-sans",
         badgeText: "PRO ENTERPRISE",
         badgeClass: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-        headerIcon: "Zap",
         headerIconBg: "from-indigo-600 via-purple-600 to-pink-500 shadow-indigo-500/25",
         headerBg: "bg-[#0b0e14]/80 border-white/[0.08]",
         asideBg: "bg-[#090c12] border-white/[0.08]",
         moduleHeader: "WORKSPACE MODULES",
         tab1: "Live Studio Canvas",
-        tab1Icon: "Layers",
         tab2: "Agent Orchestrator",
-        tab2Icon: "Cpu",
         tab3: "Telemetry & Analytics",
-        tab3Icon: "BarChart3",
         tab4: "Live Agent Log Terminal",
-        tab4Icon: "Terminal",
         activeTab: "bg-indigo-600/15 text-indigo-400 border-indigo-500/30 shadow-sm",
         buttonGradient: "from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 shadow-indigo-500/20",
         widgetTitle: "Active Pipeline",
@@ -428,6 +388,44 @@ export class CodeScaffoldAgent {
 
     const sh = shellConfig[config.layoutType] || shellConfig.bento;
     const agentsJson = JSON.stringify(agents, null, 2);
+
+    const headerIconTag = 
+      config.layoutType === 'cyber' ? '<Shield className="w-5 h-5 text-white animate-pulse" />' :
+      config.layoutType === 'clinical' ? '<Stethoscope className="w-5 h-5 text-white" />' :
+      config.layoutType === 'ecommerce' ? '<ShoppingBag className="w-5 h-5 text-white" />' :
+      config.layoutType === 'media' ? '<Film className="w-5 h-5 text-white" />' :
+      config.layoutType === 'culinary' ? '<Utensils className="w-5 h-5 text-white" />' :
+      config.layoutType === 'realestate' ? '<Building2 className="w-5 h-5 text-white" />' :
+      config.layoutType === 'edutech' ? '<GraduationCap className="w-5 h-5 text-white" />' :
+      '<Zap className="w-5 h-5 text-white" />';
+
+    const tab1IconTag = 
+      config.layoutType === 'cyber' ? '<Shield className="w-4 h-4" />' :
+      config.layoutType === 'clinical' ? '<Stethoscope className="w-4 h-4" />' :
+      config.layoutType === 'ecommerce' ? '<ShoppingBag className="w-4 h-4" />' :
+      config.layoutType === 'media' ? '<Film className="w-4 h-4" />' :
+      config.layoutType === 'culinary' ? '<Utensils className="w-4 h-4" />' :
+      config.layoutType === 'realestate' ? '<Building2 className="w-4 h-4" />' :
+      config.layoutType === 'edutech' ? '<GraduationCap className="w-4 h-4" />' :
+      '<Layers className="w-4 h-4" />';
+
+    const tab2IconTag = 
+      config.layoutType === 'clinical' ? '<Activity className="w-4 h-4" />' :
+      config.layoutType === 'ecommerce' ? '<Truck className="w-4 h-4" />' :
+      config.layoutType === 'media' ? '<Radio className="w-4 h-4" />' :
+      config.layoutType === 'culinary' ? '<Flame className="w-4 h-4" />' :
+      config.layoutType === 'realestate' ? '<Compass className="w-4 h-4" />' :
+      config.layoutType === 'edutech' ? '<Brain className="w-4 h-4" />' :
+      '<Cpu className="w-4 h-4" />';
+
+    const tab3IconTag = 
+      config.layoutType === 'cyber' ? '<Activity className="w-4 h-4" />' :
+      config.layoutType === 'clinical' ? '<Heart className="w-4 h-4" />' :
+      config.layoutType === 'media' ? '<Volume2 className="w-4 h-4" />' :
+      config.layoutType === 'culinary' ? '<Coffee className="w-4 h-4" />' :
+      config.layoutType === 'realestate' ? '<Eye className="w-4 h-4" />' :
+      config.layoutType === 'edutech' ? '<BookOpen className="w-4 h-4" />' :
+      '<BarChart3 className="w-4 h-4" />';
 
     const appContent = `import React, { useState, useEffect } from "react";
 import {
@@ -527,14 +525,7 @@ export default function App() {
       <header className="border-b ${sh.headerBg} backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr ${sh.headerIconBg} flex items-center justify-center">
-            {config.layoutType === 'cyber' && <Shield className="w-5 h-5 text-white animate-pulse" />}
-            {config.layoutType === 'clinical' && <Stethoscope className="w-5 h-5 text-white" />}
-            {config.layoutType === 'ecommerce' && <ShoppingBag className="w-5 h-5 text-white" />}
-            {config.layoutType === 'media' && <Film className="w-5 h-5 text-white" />}
-            {config.layoutType === 'culinary' && <Utensils className="w-5 h-5 text-white" />}
-            {config.layoutType === 'realestate' && <Building2 className="w-5 h-5 text-white" />}
-            {config.layoutType === 'edutech' && <GraduationCap className="w-5 h-5 text-white" />}
-            {['bento', 'dashboard', 'studio'].includes(config.layoutType) && <Zap className="w-5 h-5 text-white" />}
+            ${headerIconTag}
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -586,14 +577,7 @@ export default function App() {
                 onClick={() => setActiveTab("studio")}
                 className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all " + (activeTab === "studio" ? "${sh.activeTab}" : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.03]")}
               >
-                {config.layoutType === 'cyber' && <Shield className="w-4 h-4" />}
-                {config.layoutType === 'clinical' && <Stethoscope className="w-4 h-4" />}
-                {config.layoutType === 'ecommerce' && <ShoppingBag className="w-4 h-4" />}
-                {config.layoutType === 'media' && <Film className="w-4 h-4" />}
-                {config.layoutType === 'culinary' && <Utensils className="w-4 h-4" />}
-                {config.layoutType === 'realestate' && <Building2 className="w-4 h-4" />}
-                {config.layoutType === 'edutech' && <GraduationCap className="w-4 h-4" />}
-                {['bento', 'dashboard', 'studio'].includes(config.layoutType) && <Layers className="w-4 h-4" />}
+                ${tab1IconTag}
                 <span>${sh.tab1}</span>
               </button>
 
@@ -601,13 +585,7 @@ export default function App() {
                 onClick={() => setActiveTab("agents")}
                 className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all " + (activeTab === "agents" ? "${sh.activeTab}" : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.03]")}
               >
-                {config.layoutType === 'clinical' && <Activity className="w-4 h-4" />}
-                {config.layoutType === 'ecommerce' && <Truck className="w-4 h-4" />}
-                {config.layoutType === 'media' && <Radio className="w-4 h-4" />}
-                {config.layoutType === 'culinary' && <Flame className="w-4 h-4" />}
-                {config.layoutType === 'realestate' && <Compass className="w-4 h-4" />}
-                {config.layoutType === 'edutech' && <Brain className="w-4 h-4" />}
-                {['cyber', 'bento', 'dashboard', 'studio'].includes(config.layoutType) && <Cpu className="w-4 h-4" />}
+                ${tab2IconTag}
                 <span>${sh.tab2}</span>
               </button>
 
@@ -615,13 +593,7 @@ export default function App() {
                 onClick={() => setActiveTab("analytics")}
                 className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all " + (activeTab === "analytics" ? "${sh.activeTab}" : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.03]")}
               >
-                {config.layoutType === 'cyber' && <Activity className="w-4 h-4" />}
-                {config.layoutType === 'clinical' && <Heart className="w-4 h-4" />}
-                {config.layoutType === 'media' && <Volume2 className="w-4 h-4" />}
-                {config.layoutType === 'culinary' && <Coffee className="w-4 h-4" />}
-                {config.layoutType === 'realestate' && <Eye className="w-4 h-4" />}
-                {config.layoutType === 'edutech' && <BookOpen className="w-4 h-4" />}
-                {['ecommerce', 'bento', 'dashboard', 'studio'].includes(config.layoutType) && <BarChart3 className="w-4 h-4" />}
+                ${tab3IconTag}
                 <span>${sh.tab3}</span>
               </button>
 
