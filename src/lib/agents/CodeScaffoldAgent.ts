@@ -60,204 +60,52 @@ export class CodeScaffoldAgent {
 
     const fullText = `${blueprint.projectName || ''} ${blueprint.tagline || ''} ${blueprint.problemStatement || ''} ${blueprint.proposedSolution || ''}`.toLowerCase();
 
-    // Context-aware domain configurations
+    // Dynamic domain synthesis based on the project blueprint & agent architecture
+    const cleanDomainName = projectName;
+    const problem = (blueprint.problemStatement || "").replace(/"/g, '\\"');
+    const solution = (blueprint.proposedSolution || "").replace(/"/g, '\\"');
+
+    const badges = ["ORCHESTRATION", "AUTOMATION", "ANALYTICS", "INTELLIGENCE", "REAL-TIME"];
+    const latencies = ["14ms", "8ms", "22ms", "10ms"];
+    const statuses = ["ONLINE", "STREAMING", "ACTIVE", "OPTIMIZED"];
+    const domainImages = [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
+    ];
+
+    const cards = agents.slice(0, 3).map((ag, idx) => ({
+      id: idx + 1,
+      title: `${ag.name} • ${(ag.role || 'Agent Module').split('.')[0]}`,
+      badge: badges[idx % badges.length],
+      latency: latencies[idx % latencies.length],
+      status: statuses[idx % statuses.length],
+      description: `Inputs: ${ag.inputs || 'Context Stream'} → Outputs: ${ag.outputs || 'Action Decision'}`,
+      imageUrl: domainImages[idx % domainImages.length]
+    }));
+
+    const metrics = [
+      { label: `${cleanDomainName} Success Rate`, value: "99.8%", change: "+2.4%", desc: `Autonomous run completion for ${cleanDomainName}` },
+      { label: "Execution Latency", value: "14ms", change: "-18%", desc: "Sub-second streaming token response" },
+      { label: "Active Sub-Agent Fleet", value: `${agents.length} Nodes`, change: "Active", desc: agents.map(a => a.name).join(", ") },
+      { label: "Workflow Efficiency", value: "+88%", change: "Optimized", desc: `Automated task synthesis for ${cleanDomainName}` }
+    ];
+
     let config = {
-      workspaceTitle: "AI Production & Strategy Canvas",
-      workspaceSubtitle: "Direct & synthesize multimodal autonomous workflows",
-      directivePlaceholder: "Enter production directive (e.g., 'Generate multi-agent execution pipeline...')...",
-      slider1Label: "Optimization Freedom",
+      workspaceTitle: `${cleanDomainName} • Production Canvas`,
+      workspaceSubtitle: tagline || solution || "Autonomous multi-agent execution & real-time telemetry",
+      directivePlaceholder: `Enter production directive for ${cleanDomainName} (e.g., 'Execute autonomous pipeline task...')...`,
+      slider1Label: "Automation Freedom",
       slider1Unit: "%",
       slider2Label: "Execution Depth",
       slider2Options: ["Rapid (Fast)", "Balanced (Standard)", "Deep (Max Quality)"],
-      engineName: "Gemini 1.5 Pro Cluster",
-      engineDesc: "Autonomous multi-agent orchestration engine with real-time feedback loops.",
+      engineName: `${cleanDomainName} Core Engine`,
+      engineDesc: `Autonomous multi-agent orchestration engine deploying ${agents.map(a => a.name).join(", ")}.`,
       gridTitle: "Active Intelligence Canvas",
-      gridCount: "3 Modules Active",
-      cards: [
-        {
-          id: 1,
-          title: "Neural Pipeline Synthesis",
-          badge: "ORCHESTRATION",
-          latency: "14ms",
-          status: "ONLINE",
-          description: "Autonomous multi-agent execution cluster routing tasks across distributed sub-systems.",
-          imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          id: 2,
-          title: "Real-time Telemetry & State",
-          badge: "MONITORING",
-          latency: "8ms",
-          status: "STREAMING",
-          description: "Sub-second event streaming with verifiable cryptographic logs and state checkpointing.",
-          imageUrl: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          id: 3,
-          title: "High-Throughput Computation",
-          badge: "ACCELERATION",
-          latency: "22ms",
-          status: "OPTIMIZED",
-          description: "Parallel token scheduling and automated resource allocation for maximum efficiency.",
-          imageUrl: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
-        }
-      ],
-      metrics: [
-        { label: "Pipeline Success Rate", value: "99.8%", change: "+2.4%", desc: "Autonomous run completion across 2,400+ jobs" },
-        { label: "Average Execution Latency", value: "24ms", change: "-18%", desc: "Sub-second streaming token response" },
-        { label: "Compute Efficiency SLA", value: "98.4%", change: "+5.1%", desc: "Optimal GPU & memory load balancing" },
-        { label: "Active Sub-Agent Fleet", value: "12 Nodes", change: "Active", desc: "Coordinated micro-agents in live topology" }
-      ]
+      gridCount: `${cards.length} Modules Active`,
+      cards,
+      metrics
     };
-
-    if (fullText.includes("coffee") || fullText.includes("restaurant") || fullText.includes("cafe") || fullText.includes("food") || fullText.includes("barista") || fullText.includes("dining") || fullText.includes("kitchen") || fullText.includes("roast") || fullText.includes("menu")) {
-      config = {
-        workspaceTitle: "Artisan Coffee & Culinary Command Canvas",
-        workspaceSubtitle: "Autonomous sensory extraction, live kitchen stream & inventory dispatch",
-        directivePlaceholder: "Enter roast curve, seasonal menu pairings, or order dispatch directives...",
-        slider1Label: "Roast & Extraction Profile",
-        slider1Unit: "°C / Yield",
-        slider2Label: "Service Velocity",
-        slider2Options: ["Artisan Pour (Slow)", "Peak Rush (Fast)", "Tasting Flight (Deep)"],
-        engineName: "Sensory AI & Order Hub",
-        engineDesc: "Autonomous sensory roast modeling, real-time ticket dispatch, and intelligent inventory tracking.",
-        gridTitle: "Active Kitchen & Barista Station",
-        gridCount: "3 Stations Live",
-        cards: [
-          {
-            id: 1,
-            title: "Ethiopia Yirgacheffe • Single Origin Pour-Over",
-            badge: "BARISTA BAR",
-            latency: "1:45 min",
-            status: "BREWING",
-            description: "Floral jasmine & bergamot tasting notes with precise 93.5°C PID temperature profiling.",
-            imageUrl: "https://images.unsplash.com/photo-1509785307050-d4066910ec1e?auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 2,
-            title: "Kyoto-Style Nitrogen Cold Drip Infusion",
-            badge: "SPECIALTY ROAST",
-            latency: "Cold Extract",
-            status: "SERVED",
-            description: "12-hour slow single-origin extraction infused with micro-nitrogen bubbles for velvet crema.",
-            imageUrl: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 3,
-            title: "Artisan Culinary Pairing & Truffle Flight",
-            badge: "CHEF PASS",
-            latency: "3:20 min",
-            status: "EXPEDITING",
-            description: "Handmade tagliolini with shaved black winter truffles paired with biodynamic reserve espresso.",
-            imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
-          }
-        ],
-        metrics: [
-          { label: "Order Velocity & Turn", value: "1.8 min", change: "-35s avg", desc: "Average table ticket-to-pass delivery time" },
-          { label: "Bean Freshness SLA", value: "100%", change: "Optimal", desc: "48h post-roast degas threshold compliance" },
-          { label: "Daily Customer Satisfaction", value: "4.98 ★", change: "+0.3%", desc: "Based on 340+ verified digital table reviews" },
-          { label: "Inventory Waste Reduction", value: "-42.6%", change: "Saved $1.4k", desc: "AI predictive batch brewing & ingredient scheduling" }
-        ]
-      };
-    } else if (fullText.includes("finance") || fullText.includes("crypto") || fullText.includes("defi") || fullText.includes("trading") || fullText.includes("invest") || fullText.includes("stock")) {
-      config = {
-        workspaceTitle: "Algorithmic Market & Portfolio Matrix",
-        workspaceSubtitle: "Autonomous cross-chain liquidity sentinel & quantitative execution hub",
-        directivePlaceholder: "Enter market hedge parameters, yield rebalancing or risk thresholds...",
-        slider1Label: "Risk Tolerance (VaR)",
-        slider1Unit: "%",
-        slider2Label: "Execution Horizon",
-        slider2Options: ["High-Frequency (10ms)", "Intraday (1h)", "Macro Swing (24h)"],
-        engineName: "Quant Alpha Engine",
-        engineDesc: "Sub-millisecond volatility analysis, MEV-shielded liquidity routing, and automated delta hedging.",
-        gridTitle: "Active Strategy Sentinel",
-        gridCount: "3 Vaults Live",
-        cards: [
-          {
-            id: 1,
-            title: "Arbitrage & Liquidity Pool Sentinel",
-            badge: "DEFI MATRIX",
-            latency: "4ms",
-            status: "ACTIVE",
-            description: "Continuous automated scanning across concentrated liquidity pools and flash loans.",
-            imageUrl: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 2,
-            title: "Dynamic Delta-Neutral Yield Vault",
-            badge: "ALGO TRADING",
-            latency: "Real-time",
-            status: "HEDGED",
-            description: "Automated collateral re-pegging and perpetual futures basis funding arbitrage.",
-            imageUrl: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 3,
-            title: "Institutional Risk & Exposure Radar",
-            badge: "RISK DESK",
-            latency: "12ms",
-            status: "PROTECTED",
-            description: "Multi-factor stress testing against tail-risk volatility and black swan liquidity shocks.",
-            imageUrl: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80"
-          }
-        ],
-        metrics: [
-          { label: "Portfolio Sharpe Ratio", value: "3.42", change: "+0.84", desc: "Risk-adjusted performance above benchmark" },
-          { label: "Execution Slippage", value: "-0.012%", change: "Optimized", desc: "Saved $18,400 via private RPC bundle routing" },
-          { label: "Total Value Protected", value: "$8.42M", change: "100% Insured", desc: "Locked across smart contract vaults" },
-          { label: "Automated Profit Realized", value: "+34.8% APY", change: "+4.2% MoM", desc: "Net algorithmic return after gas fees" }
-        ]
-      };
-    } else if (fullText.includes("health") || fullText.includes("med") || fullText.includes("clinic") || fullText.includes("patient") || fullText.includes("doctor") || fullText.includes("pharma") || fullText.includes("care")) {
-      config = {
-        workspaceTitle: "Clinical Intelligence & Diagnostic Canvas",
-        workspaceSubtitle: "Multimodal biomarker triage, patient telemetry & automated EHR synthesis",
-        directivePlaceholder: "Enter clinical triage protocol, imaging scan directives or EHR analysis query...",
-        slider1Label: "Diagnostic Sensitivity",
-        slider1Unit: "%",
-        slider2Label: "Triage Priority",
-        slider2Options: ["Routine (P3)", "Urgent (P2)", "Critical ICU (P1)"],
-        engineName: "Clinical AI Copilot",
-        engineDesc: "HIPAA-compliant multimodal medical synthesis supporting physicians with evidence-based diagnostics.",
-        gridTitle: "Active Patient Diagnostic Streams",
-        gridCount: "3 Cases Active",
-        cards: [
-          {
-            id: 1,
-            title: "Multimodal Biomarker & Genomic Triage",
-            badge: "PATHOLOGY",
-            latency: "18ms",
-            status: "ANALYZED",
-            description: "High-resolution cross-referencing of blood panels, genomic variants, and metabolic markers.",
-            imageUrl: "https://images.unsplash.com/photo-1579165466791-788226ab77b6?auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 2,
-            title: "Neural Radiology & Imaging Scan Synthesis",
-            badge: "RADIOLOGY",
-            latency: "0.8s",
-            status: "RENDERED",
-            description: "3D volumetric anomaly detection for MRI, CT, and fluoroscopy scans with bounding overlays.",
-            imageUrl: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 3,
-            title: "ICU Continuous Telemetry & Vitals Monitor",
-            badge: "ICU WARD",
-            latency: "100Hz",
-            status: "STABLE",
-            description: "Predictive decompensation alerting and continuous cardiac rhythm anomaly detection.",
-            imageUrl: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80"
-          }
-        ],
-        metrics: [
-          { label: "Diagnostic Concordance", value: "99.4%", change: "+1.2%", desc: "Aligned with board-certified clinical panels" },
-          { label: "Triage Alert Latency", value: "14ms", change: "-82ms", desc: "Immediate notification for critical decompensation" },
-          { label: "EHR Documentation Time", value: "-68%", change: "Saved 2.4h/day", desc: "Automated physician clinical chart generation" },
-          { label: "HIPAA & Security Score", value: "100%", change: "Zero Leak", desc: "Full end-to-end encrypted on-prem inference" }
-        ]
-      };
-    }
 
     const cardsJson = JSON.stringify(config.cards, null, 2);
     const metricsJson = JSON.stringify(config.metrics, null, 2);
