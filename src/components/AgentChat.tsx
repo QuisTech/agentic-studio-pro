@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Message } from "./DashboardClient";
 import { useState } from "react";
 
+import { useRef, useEffect } from "react";
+
 export default function AgentChat({
   messages,
   isProcessing,
@@ -21,11 +23,29 @@ export default function AgentChat({
   onToggleExpand?: () => void;
 }) {
   const [input, setInput] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 180)}px`;
+    }
+  }, [input]);
 
   const handleSend = () => {
-    if (isProcessing) return;
+    if (isProcessing || !input.trim()) return;
     onSendMessage(input);
     setInput("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   return (
@@ -91,20 +111,21 @@ export default function AgentChat({
       </div>
       
       <div className="p-4 border-t border-white/5 glass-panel z-10">
-        <div className="relative">
-          <input 
-            type="text" 
+        <div className="relative flex items-end bg-black/40 border border-white/10 rounded-xl p-2 focus-within:border-blue-500/50 transition-colors">
+          <textarea 
+            ref={textareaRef}
+            rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            onKeyDown={handleKeyDown}
             disabled={isProcessing}
-            placeholder={isProcessing ? "Agents are negotiating..." : "Request an application build..."}
-            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500/50 transition-colors disabled:opacity-50"
+            placeholder={isProcessing ? "Agents are negotiating..." : "Request an application build... (Shift+Enter for new line)"}
+            className="w-full bg-transparent border-0 px-3 py-1.5 text-sm focus:outline-none text-gray-100 placeholder-gray-500 resize-none overflow-y-auto max-h-[180px] leading-relaxed disabled:opacity-50"
           />
           <button 
             onClick={handleSend}
-            disabled={isProcessing}
-            className="absolute right-2 top-2 px-3 py-1 bg-blue-600 rounded-lg text-xs font-medium hover:bg-blue-500 transition-colors disabled:opacity-50"
+            disabled={isProcessing || !input.trim()}
+            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-medium transition-colors shrink-0 disabled:opacity-40 disabled:hover:bg-blue-600 mb-0.5 ml-2"
           >
             Send
           </button>
