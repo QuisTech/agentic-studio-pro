@@ -73,7 +73,13 @@ export default function DashboardClient() {
     const savedLogs = localStorage.getItem("agentic_system_logs");
     
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (savedMessages) setMessages(JSON.parse(savedMessages));
+    if (savedMessages) {
+      try {
+        const parsedMsgs: Message[] = JSON.parse(savedMessages);
+        // Filter out system telemetry messages from chat history
+        setMessages(parsedMsgs.filter(m => m.role !== "system"));
+      } catch {}
+    }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedColumns) setColumns(JSON.parse(savedColumns));
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -99,7 +105,7 @@ export default function DashboardClient() {
   // Save to local storage
   useEffect(() => {
     if (isHydrated) {
-      localStorage.setItem("agentic_messages", JSON.stringify(messages));
+      localStorage.setItem("agentic_messages", JSON.stringify(messages.filter(m => m.role !== "system")));
       localStorage.setItem("agentic_columns", JSON.stringify(columns));
       localStorage.setItem("agentic_files", JSON.stringify(files));
       localStorage.setItem("agentic_system_logs", JSON.stringify(systemLogs));
@@ -175,18 +181,18 @@ export default function DashboardClient() {
                     id: String(Date.now() + Math.random()),
                     timestamp: new Date().toLocaleTimeString(),
                     type: logType,
-                    sender: data.sender || "System",
+                    sender: data.sender || "System Telemetry",
                     message: data.content
                   }
                 ]);
+              } else {
+                setMessages(prev => [...prev, {
+                  id: Date.now() + Math.random(),
+                  role: data.role,
+                  sender: data.sender,
+                  content: data.content
+                }]);
               }
-
-              setMessages(prev => [...prev, {
-                id: Date.now() + Math.random(),
-                role: data.role,
-                sender: data.sender,
-                content: data.content
-              }]);
             } else if (data.type === "typing") {
               setCurrentTypingAgent(data.agent);
             } else if (data.type === "kanban") {
