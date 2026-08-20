@@ -1050,7 +1050,7 @@ let package = Package(
     if (isAndroid) {
       nativeFiles.push({
         path: `android/MainActivity.kt`,
-        content: `package com.agentic.${cleanProject.lowercase()}
+        content: `package com.agentic.${cleanProject.toLowerCase()}
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -1069,7 +1069,7 @@ class MainActivity : ComponentActivity() {
 
       nativeFiles.push({
         path: `android/agents/${agents[0]?.name || 'DataFusionAgent'}.kt`,
-        content: `package com.agentic.${cleanProject.lowercase()}.agents
+        content: `package com.agentic.${cleanProject.toLowerCase()}.agents
 
 class ${agents[0]?.name || 'DataFusionAgent'} {
     fun executeSensorFusion(): Map<String, Any> {
