@@ -71,18 +71,25 @@ Output ONLY the Markdown content. Do not output JSON. Do not wrap in markdown co
       });
     };
 
+    // Multi-Tier Fallback Cascade for Groq with distinct model quotas
     try {
-      // Primary
-      result = await callGenerate("openai/gpt-oss-120b");
+      // Primary (Llama 3.3 70B Versatile)
+      result = await callGenerate("llama-3.3-70b-versatile");
     } catch (err1: any) {
       console.warn("Primary model (llama-3.3-70b-versatile) failed, falling back to Catch 1", err1?.message || err1);
       try {
-        // Catch 1 (Fallback)
-        result = await callGenerate("openai/gpt-oss-120b");
+        // Catch 1 (Llama 3.1 8B Instant)
+        result = await callGenerate("llama-3.1-8b-instant");
       } catch (err2: any) {
         console.warn("Catch 1 (llama-3.1-8b-instant) failed, falling back to Catch 2", err2?.message || err2);
-        // Catch 2 (Lightweight Fallback)
-        result = await callGenerate("openai/gpt-oss-120b");
+        try {
+          // Catch 2 (Mixtral 8x7B)
+          result = await callGenerate("mixtral-8x7b-32768");
+        } catch (err3: any) {
+          console.warn("Catch 2 (mixtral-8x7b-32768) failed, falling back to Catch 3", err3?.message || err3);
+          // Catch 3 (Gemma 2 9B)
+          result = await callGenerate("gemma2-9b-it");
+        }
       }
     }
 
