@@ -1,6 +1,7 @@
 import { generateText } from 'ai';
 import { createGroq } from '@ai-sdk/groq';
 import { DemoStoryboard } from '../types';
+import { KeyPoolManager } from '../KeyPoolManager';
 
 export class SubmissionWriterAgent {
   private apiKey: string;
@@ -20,8 +21,7 @@ export class SubmissionWriterAgent {
     }
     
     const keyList = this.apiKey.split(",").map(k => k.trim()).filter(Boolean);
-    const MODEL_NAME = "openai/gpt-oss-120b";
-    const maskKey = (k: string) => k.length > 10 ? `${k.substring(0, 7)}...${k.substring(k.length - 4)}` : k;
+    const models = ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"];
     let result: any = null;
     let lastError: any = null;
 
@@ -62,39 +62,55 @@ Use the following classic Devpost sections:
 Output ONLY the Markdown content. Do not output JSON. Do not wrap in markdown code blocks (\`\`\`markdown). Just the raw markdown text.
 `;
 
-    for (let attempts = 0; attempts < Math.max(keyList.length * 2, 4); attempts++) {
-      const keyIndex = (attempts % keyList.length) + 1;
-      const currentKey = keyList[attempts % keyList.length];
-      const groq = createGroq({ apiKey: currentKey });
-      
-      if (this.onTelemetry) {
-        this.onTelemetry(`🔑 Key Pool: Attempt ${attempts + 1} using Key ${keyIndex} of ${keyList.length} (${maskKey(currentKey)}) for \`${MODEL_NAME}\`...`);
-      }
+    const startIdx = KeyPoolManager.getActiveIndex(keyList.length);
 
-      try {
-        result = await generateText({
-          model: groq(MODEL_NAME),
-          prompt,
-          temperature: 0.3,
-        });
-        if (result && result.text) {
+    for (const modelName of models) {
+      if (result && result.text) break;
+
+      for (let i = 0; i < keyList.length; i++) {
+        const attemptIdx = (startIdx + i) % keyList.length;
+        const currentKey = keyList[attemptIdx];
+        const keyNum = attemptIdx + 1;
+        const masked = KeyPoolManager.maskKey(currentKey);
+
+        if (KeyPoolManager.isKeyExhausted(currentKey) && modelName === "openai/gpt-oss-120b") {
           if (this.onTelemetry) {
-            this.onTelemetry(`✅ Key ${keyIndex} (${maskKey(currentKey)}) succeeded for \`${MODEL_NAME}\`.`);
+            this.onTelemetry(`⚡ Skipping Key ${keyNum} (${masked}) - marked rate-limited for today.`);
           }
-          break;
+          continue;
         }
-      } catch (err: any) {
-        lastError = err;
-        const isRateLimit = String(err?.message || err).toLowerCase().includes('rate limit') || String(err?.message || err).includes('200000');
+
         if (this.onTelemetry) {
-          if (isRateLimit) {
-            this.onTelemetry(`⚠️ **Key ${keyIndex} (${maskKey(currentKey)}) hit rate limit!** Rotating to Key ${(keyIndex % keyList.length) + 1}...`);
-          } else {
-            this.onTelemetry(`⚠️ Attempt ${attempts + 1} via Key ${keyIndex} failed (${err?.message || 'Error'}). Retrying...`);
-          }
+          this.onTelemetry(`🔑 Key Pool: Using Key ${keyNum} of ${keyList.length} (${masked}) for \`${modelName}\`...`);
         }
-        if (attempts < Math.max(keyList.length * 2, 4) - 1) {
-          await new Promise(r => setTimeout(r, 1000 * (attempts + 1)));
+
+        const groq = createGroq({ apiKey: currentKey });
+        try {
+          result = await generateText({
+            model: groq(modelName),
+            prompt,
+            temperature: 0.3,
+          });
+          if (result && result.text) {
+            KeyPoolManager.setActiveIndex(attemptIdx, keyList.length);
+            if (this.onTelemetry) {
+              this.onTelemetry(`✅ Key ${keyNum} (${masked}) succeeded for \`${modelName}\`.`);
+            }
+            break;
+          }
+        } catch (err: any) {
+          lastError = err;
+          const isRateLimit = String(err?.message || err).toLowerCase().includes('rate limit') || String(err?.message || err).includes('200000');
+          if (isRateLimit) {
+            KeyPoolManager.markKeyExhausted(currentKey);
+            if (this.onTelemetry) {
+              this.onTelemetry(`⚠️ **Key ${keyNum} (${masked}) hit daily rate limit!** Marking key exhausted & rotating...`);
+            }
+          } else {
+            if (this.onTelemetry) {
+              this.onTelemetry(`⚠️ Key ${keyNum} (${masked}) failed (${err?.message || 'Error'}). Retrying...`);
+            }
+          }
         }
       }
     }
