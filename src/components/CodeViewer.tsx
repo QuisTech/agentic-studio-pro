@@ -201,7 +201,7 @@ export default function App() {
           ],
           classes: {
             "sp-layout": "h-full w-full !border-0 !rounded-none",
-            "sp-file-explorer": "bg-[#0d1017] overflow-y-auto",
+            "sp-file-explorer": "bg-[#0d1017] !h-full !max-h-full !overflow-y-auto !overflow-x-auto min-h-0",
             "sp-editor": "border-r border-white/5 h-full font-mono text-xs overflow-y-auto",
             "sp-preview": "bg-[#0a0c10] h-full overflow-y-auto",
           }
@@ -211,8 +211,8 @@ export default function App() {
         <SandpackLayout className="h-full w-full flex overflow-hidden">
           {/* File Explorer (Shown in Code and Split modes) */}
           {(viewMode === "code" || viewMode === "split") && (
-            <div className="w-44 shrink-0 overflow-y-auto border-r border-white/5 bg-[#0b0d13]">
-              <SandpackFileExplorer autoHiddenFiles />
+            <div className="w-52 shrink-0 h-full max-h-full overflow-y-auto overflow-x-auto border-r border-white/5 bg-[#0b0d13] min-h-0 flex flex-col">
+              <SandpackFileExplorer autoHiddenFiles style={{ height: "100%", overflowY: "auto" }} />
             </div>
           )}
 

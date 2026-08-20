@@ -120,28 +120,41 @@ body {
 }
 
 /* File Explorer Scrollbar & Overflow */
-.sp-file-explorer {
+.sp-file-explorer,
+.sp-explorer,
+[class*="sp-file-explorer"],
+[class*="sp-explorer"],
+[role="tree"] {
   height: 100% !important;
   max-height: 100% !important;
   overflow-y: auto !important;
-  overflow-x: hidden !important;
+  overflow-x: auto !important;
+  overscroll-behavior: contain;
 }
 
-.sp-file-explorer::-webkit-scrollbar {
+.sp-file-explorer::-webkit-scrollbar,
+.sp-explorer::-webkit-scrollbar,
+[class*="sp-file-explorer"]::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-.sp-file-explorer::-webkit-scrollbar-track {
+.sp-file-explorer::-webkit-scrollbar-track,
+.sp-explorer::-webkit-scrollbar-track,
+[class*="sp-file-explorer"]::-webkit-scrollbar-track {
   background: #0b0d13;
 }
 
-.sp-file-explorer::-webkit-scrollbar-thumb {
+.sp-file-explorer::-webkit-scrollbar-thumb,
+.sp-explorer::-webkit-scrollbar-thumb,
+[class*="sp-file-explorer"]::-webkit-scrollbar-thumb {
   background: #2e323b;
   border-radius: 3px;
 }
 
-.sp-file-explorer::-webkit-scrollbar-thumb:hover {
+.sp-file-explorer::-webkit-scrollbar-thumb:hover,
+.sp-explorer::-webkit-scrollbar-thumb:hover,
+[class*="sp-file-explorer"]::-webkit-scrollbar-thumb:hover {
   background: #4b5563;
 }
 
