@@ -463,158 +463,7 @@ export default function App() {
 `;
 
     // 2. /components/StudioWorkspace.tsx - Interactive Visual Workspace
-    const workspaceContent = `import React, { useState } from "react";
-import { Sparkles, Sliders, Play, CheckCircle2, ChevronRight, Eye, Zap, Layers, RefreshCw } from "lucide-react";
-
-interface StudioWorkspaceProps {
-  onTrigger: () => void;
-  isExecuting: boolean;
-}
-
-export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
-  const [promptInput, setPromptInput] = useState("");
-  const [creativity, setCreativity] = useState(75);
-  const [resolution, setResolution] = useState("${config.slider2Options[0]}");
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
-
-  const scenes = ${cardsJson};
-
-  return (
-    <div className="space-y-6">
-      {/* Workspace Header Banner */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-900/30 via-[#0d1017] to-purple-900/30 border border-white/[0.08] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="relative z-10 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>${config.workspaceTitle}</span>
-          </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">${config.workspaceSubtitle}</h2>
-          <p className="text-xs text-gray-400 max-w-xl">
-            Autonomous multi-agent synthesis with live parameter tuning and real-time state synchronization.
-          </p>
-        </div>
-
-        {/* Prompt Directive Bar */}
-        <div className="mt-6 flex flex-col sm:flex-row gap-3">
-          <input
-            type="text"
-            value={promptInput}
-            onChange={(e) => setPromptInput(e.target.value)}
-            placeholder="${config.directivePlaceholder}"
-            className="flex-1 px-4 py-3 rounded-xl bg-black/50 border border-white/[0.12] text-sm text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 transition-all font-sans"
-          />
-          <button
-            onClick={onTrigger}
-            disabled={isExecuting}
-            className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
-          >
-            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
-            <span>Execute Directive</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Parameter Sliders & Configuration Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gray-300">${config.slider1Label}</span>
-            <span className="font-mono text-indigo-400">{creativity}${config.slider1Unit}</span>
-          </div>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={creativity}
-            onChange={(e) => setCreativity(Number(e.target.value))}
-            className="w-full accent-indigo-500 cursor-pointer"
-          />
-        </div>
-
-        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gray-300">${config.slider2Label}</span>
-            <span className="font-mono text-purple-400">{resolution}</span>
-          </div>
-          <div className="flex gap-2">
-            {${slider2OptionsJson}.map((res) => (
-              <button
-                key={res}
-                onClick={() => setResolution(res)}
-                className={\`flex-1 py-1.5 rounded-lg text-[11px] font-medium border transition-all \${
-                  resolution === res
-                    ? "bg-indigo-600/20 text-indigo-300 border-indigo-500/40"
-                    : "bg-white/[0.02] text-gray-400 border-white/[0.06] hover:bg-white/[0.05]"
-                }\`}
-              >
-                {res}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gray-300">Multi-Agent Engine</span>
-            <span className="font-mono text-emerald-400">${config.engineName}</span>
-          </div>
-          <p className="text-[11px] text-gray-400 leading-tight">
-            ${config.engineDesc}
-          </p>
-        </div>
-      </div>
-
-      {/* Production Cards Grid */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-white tracking-tight">${config.gridTitle}</h3>
-          <span className="text-xs text-gray-400 font-mono">${config.gridCount}</span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {scenes.map((scene, idx) => (
-            <div
-              key={scene.id}
-              onClick={() => setSelectedCard(idx)}
-              className={\`group rounded-2xl overflow-hidden border transition-all cursor-pointer \${
-                selectedCard === idx
-                  ? "bg-[#131722] border-indigo-500/60 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/40"
-                  : "bg-[#0d1017]/90 border-white/[0.08] hover:border-white/20 hover:bg-[#11151f]"
-              }\`}
-            >
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={scene.imageUrl}
-                  alt={scene.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0d1017] via-transparent to-black/40" />
-                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-white border border-white/10">
-                  {scene.status}
-                </span>
-                <span className="absolute bottom-3 right-3 text-[10px] font-mono text-gray-300 bg-black/70 px-2 py-0.5 rounded">
-                  {scene.latency}
-                </span>
-              </div>
-
-              <div className="p-5 space-y-2.5">
-                <p className="text-[11px] font-mono text-indigo-400 font-semibold">{scene.badge}</p>
-                <h4 className="text-sm font-bold text-white group-hover:text-indigo-200 transition-colors">
-                  {scene.title}
-                </h4>
-                <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">
-                  {scene.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}`;
+    const workspaceContent = this.generateWorkspaceContent(config, cardsJson, slider2OptionsJson);
 
     // 3. /components/AgentOrchestrator.tsx - Multi-Agent Visual Topology
     const orchestratorContent = `import React from "react";
@@ -1395,5 +1244,524 @@ out
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
+  }
+
+  private generateWorkspaceContent(config: any, cardsJson: string, slider2OptionsJson: string): string {
+    if (config.layoutType === "cyber") {
+      return `import React, { useState } from "react";
+import { Shield, Cpu, Zap, Activity, Terminal, Play, RefreshCw, Key, Radio } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [riskVar, setRiskVar] = useState(15);
+  const [executionMode, setExecutionMode] = useState(${slider2OptionsJson}[0]);
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+  const nodes = ${cardsJson};
+
+  return (
+    <div className="space-y-6 font-mono text-cyan-100 bg-[#050811] p-5 rounded-3xl border border-cyan-500/40 shadow-2xl shadow-cyan-500/10">
+      {/* Cyber Telemetry Header */}
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-cyan-950/80 via-[#0a0f24] to-purple-950/80 border border-cyan-500/50 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-300">
+              <Shield className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">[ CYBER HUD MATRIX ]</span>
+              <h2 className="text-xl font-extrabold text-white tracking-wide font-sans">${config.workspaceTitle}</h2>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 text-xs">
+            <span className="px-2.5 py-1 rounded-md bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 flex items-center gap-1.5">
+              <Radio className="w-3 h-3 text-emerald-400 animate-ping" />
+              <span>RPC LIVE: 0.18ms</span>
+            </span>
+            <span className="px-2.5 py-1 rounded-md bg-purple-950/80 border border-purple-500/50 text-purple-300 flex items-center gap-1.5">
+              <Key className="w-3 h-3 text-purple-400" />
+              <span>MEV_SHIELDED</span>
+            </span>
+          </div>
+        </div>
+
+        <p className="text-xs text-gray-300 max-w-2xl leading-relaxed mb-6 font-sans">
+          ${config.workspaceSubtitle}
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-black/80 border border-cyan-500/40 text-sm text-cyan-200 placeholder-cyan-700 focus:outline-none focus:border-cyan-400 transition-all font-mono"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 disabled:opacity-50"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-current" />}
+            <span>DEPLOY MATRIX DIRECTIVE</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Cyber Parameters */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-4 rounded-xl bg-[#090d1a] border border-cyan-500/30 space-y-2">
+          <div className="flex justify-between text-xs">
+            <span className="text-cyan-400 font-bold">${config.slider1Label}</span>
+            <span className="text-emerald-400 font-mono">{riskVar}${config.slider1Unit}</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={riskVar}
+            onChange={(e) => setRiskVar(Number(e.target.value))}
+            className="w-full accent-cyan-400 cursor-pointer"
+          />
+        </div>
+
+        <div className="p-4 rounded-xl bg-[#090d1a] border border-cyan-500/30 space-y-2">
+          <div className="flex justify-between text-xs">
+            <span className="text-cyan-400 font-bold">${config.slider2Label}</span>
+            <span className="text-purple-400 font-mono">{executionMode}</span>
+          </div>
+          <div className="flex gap-2">
+            {${slider2OptionsJson}.map((res) => (
+              <button
+                key={res}
+                onClick={() => setExecutionMode(res)}
+                className={\`flex-1 py-1 rounded text-[10px] font-bold border transition-all \${
+                  executionMode === res
+                    ? "bg-cyan-500/20 text-cyan-300 border-cyan-400"
+                    : "bg-black/40 text-gray-500 border-gray-800 hover:border-gray-700"
+                }\`}
+              >
+                {res}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl bg-[#090d1a] border border-cyan-500/30 space-y-1">
+          <div className="flex justify-between text-xs">
+            <span className="text-cyan-400 font-bold">Engine Sentinel</span>
+            <span className="text-emerald-400">${config.engineName}</span>
+          </div>
+          <p className="text-[10px] text-gray-400 leading-tight font-sans">
+            ${config.engineDesc}
+          </p>
+        </div>
+      </div>
+
+      {/* Cyber Sentinels Matrix Grid */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-cyan-300 uppercase tracking-wider">${config.gridTitle}</h3>
+          <span className="text-xs text-cyan-500">{nodes.length} SENTINELS ACTIVE</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {nodes.map((node, idx) => (
+            <div
+              key={node.id}
+              onClick={() => setSelectedNode(idx)}
+              className={\`p-5 rounded-2xl border transition-all cursor-pointer \${
+                selectedNode === idx
+                  ? "bg-[#0f172a] border-cyan-400 shadow-xl shadow-cyan-500/20 ring-1 ring-cyan-400"
+                  : "bg-[#090d1a] border-cyan-900/60 hover:border-cyan-500/40 hover:bg-[#0c1326]"
+              }\`}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/40">
+                  {node.badge}
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400">{node.status}</span>
+              </div>
+              <h4 className="text-sm font-bold text-white font-sans mb-2">{node.title}</h4>
+              <p className="text-xs text-gray-400 font-sans leading-relaxed line-clamp-2">{node.description}</p>
+              <div className="mt-4 pt-3 border-t border-cyan-900/40 flex justify-between items-center text-[10px] text-cyan-500 font-mono">
+                <span>LATENCY: {node.latency}</span>
+                <span className="text-cyan-400 font-bold">VERIFIED ✓</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (config.layoutType === "dashboard" || config.layoutType === "clinical") {
+      return `import React, { useState } from "react";
+import { Activity, BarChart2, ShieldCheck, CheckCircle, Play, RefreshCw, FileText, TrendingUp } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [sensitivity, setSensitivity] = useState(90);
+  const [priority, setPriority] = useState(${slider2OptionsJson}[0]);
+  const [selectedCase, setSelectedCase] = useState<number | null>(null);
+
+  const cases = ${cardsJson};
+
+  return (
+    <div className="space-y-6 bg-slate-950 p-5 rounded-3xl border border-slate-800 text-slate-100 shadow-2xl">
+      {/* Executive Metric KPI Bar Top */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-1">
+          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Target Success SLA</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white tracking-tight">99.8%</span>
+            <span className="text-xs font-semibold text-emerald-400 flex items-center gap-0.5">+2.4%</span>
+          </div>
+          <p className="text-[10px] text-slate-400 line-clamp-1">Verified production run benchmark</p>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-1">
+          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Avg Latency</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white tracking-tight">14ms</span>
+            <span className="text-xs font-semibold text-emerald-400 flex items-center gap-0.5">-18%</span>
+          </div>
+          <p className="text-[10px] text-slate-400 line-clamp-1">Sub-second token response</p>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-1">
+          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Active Agent Fleet</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white tracking-tight">4 Nodes</span>
+            <span className="text-xs font-semibold text-blue-400">ACTIVE</span>
+          </div>
+          <p className="text-[10px] text-slate-400 line-clamp-1">Coordinated agent topology</p>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-1">
+          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Efficiency Index</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white tracking-tight">+88%</span>
+            <span className="text-xs font-semibold text-emerald-400">OPTIMIZED</span>
+          </div>
+          <p className="text-[10px] text-slate-400 line-clamp-1">Resource allocation score</p>
+        </div>
+      </div>
+
+      {/* Operational Header */}
+      <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 border border-blue-500/20 text-blue-400">
+              ${config.workspaceTitle}
+            </span>
+            <h2 className="text-xl font-bold text-white tracking-tight">${config.workspaceSubtitle}</h2>
+          </div>
+          <span className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4" />
+            COMPLIANCE VERIFIED
+          </span>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 disabled:opacity-50"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
+            <span>Execute Analysis</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Grid of Operations */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-white tracking-tight">${config.gridTitle}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {cases.map((c, idx) => (
+            <div
+              key={c.id}
+              onClick={() => setSelectedCase(idx)}
+              className={\`p-5 rounded-2xl border transition-all cursor-pointer \${
+                selectedCase === idx
+                  ? "bg-slate-900 border-blue-500 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500"
+                  : "bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900"
+              }\`}
+            >
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[10px] font-bold text-blue-400 bg-blue-950 px-2 py-0.5 rounded border border-blue-800">
+                  {c.badge}
+                </span>
+                <span className="text-[10px] font-semibold text-emerald-400">{c.status}</span>
+              </div>
+              <h4 className="text-sm font-bold text-white mb-2">{c.title}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">{c.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (config.layoutType === "studio") {
+      return `import React, { useState } from "react";
+import { Terminal, Cpu, Play, RefreshCw, Code, CheckCircle, Zap } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
+  const nodes = ${cardsJson};
+
+  return (
+    <div className="space-y-6 font-mono text-gray-200 bg-[#030712] p-5 rounded-3xl border border-gray-800 shadow-2xl">
+      {/* Studio Header */}
+      <div className="p-6 rounded-2xl bg-[#0b0f19] border border-gray-800 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-indigo-500/20 border border-indigo-500/30 text-indigo-400">
+              <Terminal className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">[ TELEMETRY STUDIO ]</span>
+              <h2 className="text-xl font-bold text-white tracking-tight font-sans">${config.workspaceTitle}</h2>
+            </div>
+          </div>
+
+          <span className="px-3 py-1 rounded-md bg-gray-900 border border-gray-700 text-xs font-mono text-gray-400">
+            git: main (57cd356)
+          </span>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-black border border-gray-800 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-500 font-mono"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 disabled:opacity-50"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
+            <span>RUN PIPELINE</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Nodes Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {nodes.map((node, idx) => (
+          <div
+            key={node.id}
+            onClick={() => setSelectedNode(idx)}
+            className={\`p-5 rounded-2xl border transition-all cursor-pointer \${
+              selectedNode === idx
+                ? "bg-[#0b0f19] border-indigo-500 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500"
+                : "bg-[#070a12] border-gray-800 hover:border-gray-700 hover:bg-[#0b0f19]"
+            }\`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-bold text-indigo-400 bg-indigo-950/80 px-2 py-0.5 rounded border border-indigo-800">
+                {node.badge}
+              </span>
+              <span className="text-[10px] font-mono text-emerald-400">{node.status}</span>
+            </div>
+            <h4 className="text-sm font-bold text-white font-sans mb-1">{node.title}</h4>
+            <p className="text-xs text-gray-400 font-sans line-clamp-2">{node.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    // Default Bento Studio Workspace (for Butler, Personal Assistant, Consumer, Fitness, etc.)
+    return `import React, { useState } from "react";
+import { Sparkles, Sliders, Play, CheckCircle2, ChevronRight, Eye, Zap, Layers, RefreshCw } from "lucide-react";
+
+interface StudioWorkspaceProps {
+  onTrigger: () => void;
+  isExecuting: boolean;
+}
+
+export default function StudioWorkspace({ onTrigger, isExecuting }: StudioWorkspaceProps) {
+  const [promptInput, setPromptInput] = useState("");
+  const [creativity, setCreativity] = useState(75);
+  const [resolution, setResolution] = useState(${slider2OptionsJson}[0]);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+
+  const scenes = ${cardsJson};
+
+  return (
+    <div className="space-y-6">
+      {/* Bento Workspace Header Banner */}
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-900/30 via-[#0d1017] to-purple-900/30 border border-white/[0.08] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>${config.workspaceTitle}</span>
+          </div>
+          <h2 className="text-2xl font-bold text-white tracking-tight">${config.workspaceSubtitle}</h2>
+          <p className="text-xs text-gray-400 max-w-xl">
+            Autonomous multi-agent synthesis with live parameter tuning and real-time state synchronization.
+          </p>
+        </div>
+
+        {/* Prompt Directive Bar */}
+        <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          <input
+            type="text"
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="${config.directivePlaceholder}"
+            className="flex-1 px-4 py-3 rounded-xl bg-black/50 border border-white/[0.12] text-sm text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 transition-all font-sans"
+          />
+          <button
+            onClick={onTrigger}
+            disabled={isExecuting}
+            className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
+          >
+            {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
+            <span>Execute Directive</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Parameter Sliders & Configuration Bar */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-gray-300">${config.slider1Label}</span>
+            <span className="font-mono text-indigo-400">{creativity}${config.slider1Unit}</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={creativity}
+            onChange={(e) => setCreativity(Number(e.target.value))}
+            className="w-full accent-indigo-500 cursor-pointer"
+          />
+        </div>
+
+        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-gray-300">${config.slider2Label}</span>
+            <span className="font-mono text-purple-400">{resolution}</span>
+          </div>
+          <div className="flex gap-2">
+            {${slider2OptionsJson}.map((res) => (
+              <button
+                key={res}
+                onClick={() => setResolution(res)}
+                className={\`flex-1 py-1.5 rounded-lg text-[11px] font-medium border transition-all \${
+                  resolution === res
+                    ? "bg-indigo-600/20 text-indigo-300 border-indigo-500/40"
+                    : "bg-white/[0.02] text-gray-400 border-white/[0.06] hover:bg-white/[0.05]"
+                }\`}
+              >
+                {res}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-[#0d1017]/80 border border-white/[0.08] space-y-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-gray-300">Multi-Agent Engine</span>
+            <span className="font-mono text-emerald-400">${config.engineName}</span>
+          </div>
+          <p className="text-[11px] text-gray-400 leading-tight">
+            ${config.engineDesc}
+          </p>
+        </div>
+      </div>
+
+      {/* Production Cards Grid */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-bold text-white tracking-tight">${config.gridTitle}</h3>
+          <span className="text-xs text-gray-400 font-mono">${config.gridCount}</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {scenes.map((scene, idx) => (
+            <div
+              key={scene.id}
+              onClick={() => setSelectedCard(idx)}
+              className={\`group rounded-2xl overflow-hidden border transition-all cursor-pointer \${
+                selectedCard === idx
+                  ? "bg-[#131722] border-indigo-500/60 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/40"
+                  : "bg-[#0d1017]/90 border-white/[0.08] hover:border-white/20 hover:bg-[#11151f]"
+              }\`}
+            >
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={scene.imageUrl}
+                  alt={scene.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d1017] via-transparent to-black/40" />
+                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-white border border-white/10">
+                  {scene.status}
+                </span>
+                <span className="absolute bottom-3 right-3 text-[10px] font-mono text-gray-300 bg-black/70 px-2 py-0.5 rounded">
+                  {scene.latency}
+                </span>
+              </div>
+
+              <div className="p-5 space-y-2.5">
+                <p className="text-[11px] font-mono text-indigo-400 font-semibold">{scene.badge}</p>
+                <h4 className="text-sm font-bold text-white group-hover:text-indigo-200 transition-colors">
+                  {scene.title}
+                </h4>
+                <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">
+                  {scene.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`;
   }
 }
