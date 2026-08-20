@@ -67,33 +67,75 @@ export class CodeScaffoldAgent {
 
     const domainText = `${blueprint.projectName || ''} ${blueprint.tagline || ''} ${blueprint.problemStatement || ''} ${blueprint.proposedSolution || ''}`.toLowerCase();
     
-    let layoutType: "bento" | "cyber" | "dashboard" | "studio" = "bento";
+    let layoutType: "bento" | "cyber" | "dashboard" | "clinical" | "studio" | "ecommerce" | "media" | "culinary" | "realestate" | "edutech" = "bento";
 
     if (domainText.includes("crypto") || domainText.includes("web3") || domainText.includes("solidity") || domainText.includes("security") || domainText.includes("cyber") || domainText.includes("blockchain")) {
       layoutType = "cyber";
-    } else if (domainText.includes("finance") || domainText.includes("health") || domainText.includes("legal") || domainText.includes("clinic") || domainText.includes("enterprise") || domainText.includes("med")) {
+    } else if (domainText.includes("health") || domainText.includes("med") || domainText.includes("clinic") || domainText.includes("doctor") || domainText.includes("patient") || domainText.includes("pharma") || domainText.includes("care")) {
+      layoutType = "clinical";
+    } else if (domainText.includes("finance") || domainText.includes("bank") || domainText.includes("legal") || domainText.includes("enterprise") || domainText.includes("tax") || domainText.includes("invest")) {
       layoutType = "dashboard";
     } else if (domainText.includes("rust") || domainText.includes("go") || domainText.includes("python") || domainText.includes("developer") || domainText.includes("cli") || domainText.includes("tool") || domainText.includes("fastapi")) {
       layoutType = "studio";
+    } else if (domainText.includes("shop") || domainText.includes("cart") || domainText.includes("store") || domainText.includes("ecommerce") || domainText.includes("retail") || domainText.includes("order") || domainText.includes("product")) {
+      layoutType = "ecommerce";
+    } else if (domainText.includes("video") || domainText.includes("audio") || domainText.includes("music") || domainText.includes("media") || domainText.includes("podcast") || domainText.includes("stream") || domainText.includes("creative")) {
+      layoutType = "media";
+    } else if (domainText.includes("coffee") || domainText.includes("restaurant") || domainText.includes("cafe") || domainText.includes("food") || domainText.includes("barista") || domainText.includes("dining") || domainText.includes("kitchen") || domainText.includes("recipe")) {
+      layoutType = "culinary";
+    } else if (domainText.includes("house") || domainText.includes("estate") || domainText.includes("realty") || domainText.includes("property") || domainText.includes("rent") || domainText.includes("home") || domainText.includes("arch")) {
+      layoutType = "realestate";
+    } else if (domainText.includes("learn") || domainText.includes("tutor") || domainText.includes("edu") || domainText.includes("school") || domainText.includes("course") || domainText.includes("study") || domainText.includes("student") || domainText.includes("quiz")) {
+      layoutType = "edutech";
     } else {
       layoutType = "bento";
     }
 
     const badges = layoutType === "cyber" 
       ? ["CYBER_SENTINEL", "MEV_SHIELD", "RPC_MATRIX", "CRYPTO_NODE"]
+      : layoutType === "clinical"
+      ? ["BIOMARKER_TRIAGE", "RADIOLOGY_3D", "ICU_TELEMETRY", "EHR_SYNTHESIS"]
       : layoutType === "dashboard"
       ? ["EXECUTIVE_PASS", "COMPLIANCE", "ANALYTICS_KPI", "SLA_VERIFIED"]
       : layoutType === "studio"
       ? ["NODE_TRACE", "PIPELINE_RUN", "CLI_WORKFLOW", "ASYNC_WORKER"]
+      : layoutType === "ecommerce"
+      ? ["INVENTORY_DISPATCH", "CART_OPTIMIZER", "FULFILLMENT_HUB", "RETAIL_AI"]
+      : layoutType === "media"
+      ? ["RENDER_ENGINE", "AUDIO_DSP", "STREAM_NODE", "MEDIA_SYNTH"]
+      : layoutType === "culinary"
+      ? ["BARISTA_PASS", "ROAST_CURVE", "KITCHEN_STREAM", "RECIPE_AI"]
+      : layoutType === "realestate"
+      ? ["PROPERTY_RADAR", "SPATIAL_3D", "VALUATION_ENGINE", "AR_VIEW"]
+      : layoutType === "edutech"
+      ? ["TUTOR_NODE", "QUIZ_SYNTHESIZER", "FLASHCARD_HUB", "KNOWLEDGE_MAP"]
       : ["BUTLER_ASSIST", "SMART_HUB", "ROUTINE_AUTO", "PERSONAL_AI"];
 
     const latencies = ["14ms", "8ms", "22ms", "10ms"];
     const statuses = ["ONLINE", "STREAMING", "ACTIVE", "OPTIMIZED"];
-    const domainImages = [
-      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
-    ];
+    const domainImages = layoutType === "clinical"
+      ? [
+          "https://images.unsplash.com/photo-1579165466791-788226ab77b6?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80"
+        ]
+      : layoutType === "culinary"
+      ? [
+          "https://images.unsplash.com/photo-1509785307050-d4066910ec1e?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+        ]
+      : layoutType === "ecommerce"
+      ? [
+          "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1556742049-0a67daf66f88?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
+        ]
+      : [
+          "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
+        ];
 
     const cards = agents.slice(0, 3).map((ag, idx) => ({
       id: idx + 1,
@@ -114,16 +156,39 @@ export class CodeScaffoldAgent {
 
     let config = {
       layoutType,
-      workspaceTitle: `${cleanDomainName} • ${layoutType === 'bento' ? 'Bento Studio' : layoutType === 'cyber' ? 'Cyber HUD Matrix' : layoutType === 'dashboard' ? 'Executive Dashboard' : 'Telemetry Studio'}`,
+      workspaceTitle: `${cleanDomainName} • ${
+        layoutType === 'bento' ? 'Bento Studio' :
+        layoutType === 'cyber' ? 'Cyber HUD Matrix' :
+        layoutType === 'clinical' ? 'Clinical Diagnostic Canvas' :
+        layoutType === 'dashboard' ? 'Executive Dashboard' :
+        layoutType === 'studio' ? 'Telemetry Studio' :
+        layoutType === 'ecommerce' ? 'Retail Command Hub' :
+        layoutType === 'media' ? 'Media Render Studio' :
+        layoutType === 'culinary' ? 'Culinary Pass Canvas' :
+        layoutType === 'realestate' ? 'Spatial Property Radar' : 'EduTech Knowledge Hub'
+      }`,
       workspaceSubtitle: tagline || solution || "Autonomous multi-agent execution & real-time telemetry",
       directivePlaceholder: `Enter production directive for ${cleanDomainName} (e.g., 'Execute autonomous pipeline task...')...`,
-      slider1Label: layoutType === 'cyber' ? 'Risk Tolerance (VaR)' : layoutType === 'dashboard' ? 'Diagnostic Sensitivity' : 'Automation Freedom',
+      slider1Label: 
+        layoutType === 'cyber' ? 'Risk Tolerance (VaR)' : 
+        layoutType === 'clinical' ? 'Diagnostic Sensitivity' : 
+        layoutType === 'culinary' ? 'Roast Curve Profile' : 
+        layoutType === 'ecommerce' ? 'Inventory Margin Target' : 'Automation Freedom',
       slider1Unit: "%",
       slider2Label: "Execution Depth",
       slider2Options: ["Rapid (Fast)", "Balanced (Standard)", "Deep (Max Quality)"],
       engineName: `${cleanDomainName} Core Engine`,
       engineDesc: `Autonomous multi-agent orchestration engine deploying ${agents.map(a => a.name).join(", ")}.`,
-      gridTitle: layoutType === 'bento' ? 'Smart Bento Canvas' : layoutType === 'cyber' ? 'Active Cyber Sentinels' : layoutType === 'dashboard' ? 'Executive Operations Grid' : 'Live Node Pipeline Canvas',
+      gridTitle: 
+        layoutType === 'bento' ? 'Smart Bento Canvas' : 
+        layoutType === 'cyber' ? 'Active Cyber Sentinels' : 
+        layoutType === 'clinical' ? 'Active Clinical Diagnostic Cases' : 
+        layoutType === 'dashboard' ? 'Executive Operations Grid' : 
+        layoutType === 'studio' ? 'Live Node Pipeline Canvas' : 
+        layoutType === 'ecommerce' ? 'Live Fulfillment Nodes' : 
+        layoutType === 'media' ? 'Active Render Streams' : 
+        layoutType === 'culinary' ? 'Kitchen & Barista Passes' : 
+        layoutType === 'realestate' ? 'Live Property Scans' : 'Active Learning Nodes',
       gridCount: `${cards.length} Modules Active`,
       cards,
       metrics
