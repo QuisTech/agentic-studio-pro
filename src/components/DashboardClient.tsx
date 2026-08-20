@@ -72,7 +72,19 @@ export default function DashboardClient() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedColumns) setColumns(JSON.parse(savedColumns));
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (savedFiles) setFiles(JSON.parse(savedFiles));
+    if (savedFiles) {
+      try {
+        const parsed = JSON.parse(savedFiles);
+        for (const k of Object.keys(parsed)) {
+          if (k.endsWith('.css') && typeof parsed[k] === 'string') {
+            parsed[k] = parsed[k]
+              .replace(/@import\b[^;\n]*;?/gi, '')
+              .replace(/@tailwind\b[^;\n]*;?/gi, '');
+          }
+        }
+        setFiles(parsed);
+      } catch {}
+    }
     
     setIsHydrated(true);
   }, []);
@@ -159,7 +171,15 @@ export default function DashboardClient() {
                 return newCols;
               });
             } else if (data.type === "code") {
-              setFiles(data.files);
+              const cleanFiles = { ...data.files };
+              for (const k of Object.keys(cleanFiles)) {
+                if (k.endsWith('.css') && typeof cleanFiles[k] === 'string') {
+                  cleanFiles[k] = cleanFiles[k]
+                    .replace(/@import\b[^;\n]*;?/gi, '')
+                    .replace(/@tailwind\b[^;\n]*;?/gi, '');
+                }
+              }
+              setFiles(cleanFiles);
             }
           } catch {
             console.error("Failed to parse chunk", line);
