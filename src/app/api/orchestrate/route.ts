@@ -7,8 +7,11 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 
-// Use /tmp on Vercel/serverless environments
-const STATE_FILE = process.env.VERCEL ? path.join(os.tmpdir(), '.orchestration_state.json') : path.join(process.cwd(), '.orchestration_state.json');
+function getStateFile(): string {
+  const tmpDir = process.env.VERCEL ? (os.tmpdir() || '/tmp') : (process.cwd() || '.');
+  const safeDir = typeof tmpDir === 'string' && tmpDir ? tmpDir : '/tmp';
+  return path.join(safeDir, '.orchestration_state.json');
+}
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -26,8 +29,9 @@ export async function POST(req: Request) {
   const isExplicitResume = rawPrompt.toLowerCase().startsWith("resume") && rawPrompt.length < 30;
 
   if (!isExplicitResume) {
-    if (fs.existsSync(STATE_FILE)) {
-      try { fs.unlinkSync(STATE_FILE); } catch {}
+    const stateFile = getStateFile();
+    if (fs.existsSync(stateFile)) {
+      try { fs.unlinkSync(stateFile); } catch {}
     }
   }
 
@@ -48,9 +52,10 @@ export async function POST(req: Request) {
         codeFiles: null,
       };
 
-      if (fs.existsSync(STATE_FILE)) {
+      const stateFile = getStateFile();
+      if (fs.existsSync(stateFile)) {
         try {
-          state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8'));
+          state = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
           sendEvent({ type: "message", role: "system", sender: "System", content: `Resuming orchestration from step ${state.step}...` });
         } catch (e) {
           // ignore parsing error
@@ -58,7 +63,9 @@ export async function POST(req: Request) {
       }
 
       const saveState = () => {
-        fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
+        try {
+          fs.writeFileSync(getStateFile(), JSON.stringify(state, null, 2));
+        } catch {}
       };
 
       try {

@@ -49,7 +49,7 @@ const DEFAULT_COLUMNS: Column[] = [
 
 const DEFAULT_FILES: Record<string, string> = {
   "/App.tsx": `import React from 'react';\n\nexport default function App() {\n  return (\n    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">\n      <div className="bg-gray-800 p-8 rounded-2xl shadow-xl text-center max-w-md w-full border border-gray-700">\n        <h1 className="text-3xl font-bold text-white mb-2">Hackathon Dashboard</h1>\n        <p className="text-gray-400 mb-6">Agents are assembling...</p>\n      </div>\n    </div>\n  );\n}`,
-  "/styles.css": `@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\nbody {\n  margin: 0;\n}`
+  "/styles.css": `body {\n  margin: 0;\n  background-color: #090b10;\n  color: #fff;\n}`
 };
 
 export default function DashboardClient() {

@@ -54,6 +54,13 @@ export default function CodeViewer({ files }: { files: Record<string, string> })
         );
       }
       
+      // Strip ALL @import and @tailwind directives to prevent Sandpack PostCSS path.isAbsolute(null) errors ("Path must be a string. Received null")
+      if (normalizedPath.endsWith('.css')) {
+        safeContent = safeContent
+          .replace(/@import\b[^;\n]*;?/gi, '')
+          .replace(/@tailwind\b[^;\n]*;?/gi, '');
+      }
+
       formatted[normalizedPath] = safeContent;
     }
 
@@ -80,6 +87,17 @@ export default function App() {
   return <AppMain />;
 }`;
       }
+    }
+
+    // Provide default clean /styles.css to override Sandpack's fallback
+    if (!formatted['/styles.css'] && !formatted['/src/styles.css']) {
+      formatted['/styles.css'] = `body {
+  margin: 0;
+  padding: 0;
+  background-color: #07090e;
+  color: #f3f4f6;
+  font-family: system-ui, -apple-system, sans-serif;
+}`;
     }
 
     // Configure tsconfig.json for module resolution

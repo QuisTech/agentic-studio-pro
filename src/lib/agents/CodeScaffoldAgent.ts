@@ -873,9 +873,7 @@ export default function AnalyticsDashboard() {
 }`;
 
     // 5. /styles.css - Global Styles
-    const stylesContent = `@import "tailwindcss";
-
-body {
+    const stylesContent = `body {
   margin: 0;
   padding: 0;
   background-color: #07090e;
