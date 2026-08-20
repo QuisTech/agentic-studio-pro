@@ -64,9 +64,15 @@ export class CodeScaffoldAgent {
         layoutType = "feed";
       } else if (domainText.includes("table") || domainText.includes("grid") || domainText.includes("crm") || domainText.includes("database") || domainText.includes("row") || domainText.includes("admin") || domainText.includes("record")) {
         layoutType = "datatable";
+      } else if (domainText.includes("code") || domainText.includes("editor") || domainText.includes("ide") || domainText.includes("workspace") || domainText.includes("dev") || domainText.includes("terminal") || domainText.includes("git")) {
+        layoutType = "workspace";
+      } else if (domainText.includes("chat") || domainText.includes("assistant") || domainText.includes("bot") || domainText.includes("message") || domainText.includes("conversation")) {
+        layoutType = "chat";
+      } else if (domainText.includes("video") || domainText.includes("stream") || domainText.includes("audio") || domainText.includes("music") || domainText.includes("media") || domainText.includes("podcast") || domainText.includes("youtube")) {
+        layoutType = "streaming";
       } else {
-        const archetypePool: Array<"landing" | "storefront" | "kanban" | "feed" | "datatable" | "dashboard"> = [
-          "landing", "storefront", "kanban", "feed", "datatable", "dashboard"
+        const archetypePool: Array<"landing" | "storefront" | "kanban" | "feed" | "datatable" | "workspace" | "chat" | "streaming" | "dashboard"> = [
+          "landing", "storefront", "kanban", "feed", "datatable", "workspace", "chat", "streaming", "dashboard"
         ];
         let hash = 0;
         for (let i = 0; i < domainText.length; i++) {
@@ -140,112 +146,49 @@ export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const faqs = [
-    { q: "How does ${projectName} handle multi-agent orchestration?", a: "Our platform uses neural directive decomposition to automatically break down high-level user goals into parallel micro-agent execution graphs with zero-trust audit compliance." },
-    { q: "Can I integrate custom APIs into the execution pipeline?", a: "Yes! ${projectName} supports custom REST, GraphQL, Web3 RPC, and WebSocket protocol adapters out of the box." },
-    { q: "What is the expected latency for live streaming tokens?", a: "Sub-second streaming token response with average latency under 14ms across our global edge node network." },
-    { q: "Is enterprise security and data privacy guaranteed?", a: "All agent memory vectors and telemetry logs are encrypted end-to-end using AES-256 with optional MEV & zero-knowledge privacy shields." }
+    { q: "How does ${projectName} handle multi-agent orchestration?", a: "Our platform uses neural directive decomposition to automatically break down high-level user goals into parallel micro-agent execution graphs." },
+    { q: "Can I integrate custom APIs into the execution pipeline?", a: "Yes! ${projectName} supports custom REST, GraphQL, Web3 RPC, and WebSocket protocol adapters." },
+    { q: "What is the expected latency for live streaming tokens?", a: "Sub-second streaming token response with average latency under 14ms across our global edge node network." }
   ];
 
   return (
     <div className="min-h-screen bg-[#07090e] text-gray-100 font-sans selection:bg-indigo-500 selection:text-white">
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-2.5 text-center text-xs font-bold text-white flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-2.5 text-center text-xs font-bold text-white flex items-center justify-center gap-2 shadow-lg">
         <Sparkles className="w-4 h-4 animate-spin" />
         <span>PRODUCTION LAUNCH: ${projectName} Enterprise v4.2 is live!</span>
-        <button className="underline hover:text-gray-200 ml-2 cursor-pointer">Explore Platform →</button>
       </div>
 
       <nav className="border-b border-white/[0.08] bg-[#0b0e14]/90 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-500/30">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
             <Zap className="w-5 h-5 fill-current" />
           </div>
           <div>
             <h1 className="text-base font-bold text-white tracking-tight">${projectName}</h1>
-            <p className="text-[10px] text-indigo-400 font-mono flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              GLOBAL EDGE ACTIVE
-            </p>
+            <p className="text-[10px] text-indigo-400 font-mono">GLOBAL EDGE ACTIVE</p>
           </div>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-xs text-gray-300 font-semibold">
-          <a href="#features" className="hover:text-indigo-400 transition-colors">Capabilities</a>
-          <a href="#architecture" className="hover:text-indigo-400 transition-colors">Architecture</a>
-          <a href="#pricing" className="hover:text-indigo-400 transition-colors">Pricing</a>
-          <a href="#faq" className="hover:text-indigo-400 transition-colors">FAQ</a>
-        </div>
         <div className="flex items-center gap-3">
-          <button onClick={() => setActiveDemo(!activeDemo)} className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.05] hover:bg-white/[0.1] text-gray-200 border border-white/[0.1] transition-all flex items-center gap-2 cursor-pointer">
-            <Play className="w-3.5 h-3.5 fill-current text-indigo-400" />
-            <span>{activeDemo ? "Hide Playground" : "Live Playground"}</span>
+          <button onClick={() => setActiveDemo(!activeDemo)} className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.05] hover:bg-white/[0.1] text-gray-200 border border-white/[0.1] transition-all cursor-pointer">
+            {activeDemo ? "Hide Playground" : "Live Playground"}
           </button>
-          <button className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 hover:opacity-95 text-white shadow-xl shadow-indigo-500/25 transition-all cursor-pointer">
+          <button className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 text-white shadow-xl cursor-pointer">
             Get Started Free
           </button>
         </div>
       </nav>
 
-      <section className="px-6 py-24 md:py-32 max-w-6xl mx-auto text-center space-y-8 relative">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-wider shadow-inner">
-          <Sparkles className="w-4 h-4 text-indigo-400" />
-          <span>${tagline}</span>
-        </div>
-
+      <section className="px-6 py-24 md:py-32 max-w-6xl mx-auto text-center space-y-8">
         <h1 className="text-4xl md:text-7xl font-extrabold text-white tracking-tight leading-tight max-w-5xl mx-auto">
           The World-Class AI Engine for <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">${projectName}</span>
         </h1>
-
-        <p className="text-base md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-          Decompose directives, orchestrate autonomous multi-agent reasoning graphs, and deploy production-ready web platforms with real-time telemetry.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <button className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 hover:opacity-95 text-white font-bold text-sm shadow-2xl shadow-indigo-500/30 flex items-center justify-center gap-2 transition-all cursor-pointer">
-            <span>Launch Production Directive</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-          <button onClick={() => setActiveDemo(true)} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] text-gray-200 font-bold text-sm border border-white/[0.1] flex items-center justify-center gap-2 transition-all cursor-pointer">
-            <Play className="w-4 h-4 fill-current text-indigo-400" />
-            <span>Watch Live Demonstration</span>
-          </button>
-        </div>
-
+        <p className="text-base md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">${tagline}</p>
         {activeDemo && (
           <div className="mt-12 text-left animate-fadeIn">
             <StudioWorkspace onTrigger={() => {}} isExecuting={false} />
           </div>
         )}
       </section>
-
-      <section className="border-y border-white/[0.08] bg-[#0b0e14]/60 py-12 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div className="p-4 rounded-2xl bg-black/40 border border-white/[0.05]">
-            <p className="text-3xl md:text-4xl font-extrabold text-white">99.98%</p>
-            <p className="text-xs text-gray-400 font-medium mt-1">Autonomous Accuracy SLA</p>
-          </div>
-          <div className="p-4 rounded-2xl bg-black/40 border border-white/[0.05]">
-            <p className="text-3xl md:text-4xl font-extrabold text-indigo-400">&lt;14ms</p>
-            <p className="text-xs text-gray-400 font-medium mt-1">Streaming Token Latency</p>
-          </div>
-          <div className="p-4 rounded-2xl bg-black/40 border border-white/[0.05]">
-            <p className="text-3xl md:text-4xl font-extrabold text-purple-400">2.5B+</p>
-            <p className="text-xs text-gray-400 font-medium mt-1">Tokens Synthesized</p>
-          </div>
-          <div className="p-4 rounded-2xl bg-black/40 border border-white/[0.05]">
-            <p className="text-3xl md:text-4xl font-extrabold text-pink-400">50,000+</p>
-            <p className="text-xs text-gray-400 font-medium mt-1">Active Enterprise Fleets</p>
-          </div>
-        </div>
-      </section>
-
-      <footer className="border-t border-white/[0.08] bg-[#090c12] py-16 px-6 text-xs text-gray-500">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold"><Zap className="w-4 h-4 fill-current" /></div>
-            <span className="text-white font-bold text-sm">${projectName}</span>
-          </div>
-          <p>© 2026 ${projectName} Enterprise Inc. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 }`;
@@ -253,62 +196,239 @@ export default function App() {
 
     if (layoutType === "storefront") {
       return `import React, { useState } from "react";
-import { ShoppingBag, Search, Filter, Star, ShoppingCart, Heart, CheckCircle2, ChevronRight, Sparkles, X, SlidersHorizontal, ArrowRight } from "lucide-react";
+import { ShoppingBag, Search, Filter, Star, ShoppingCart, Sparkles, X } from "lucide-react";
 
 export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([
-    { id: 1, title: "Neural Pro Headset X1", price: 299.00, qty: 1, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" },
-    { id: 2, title: "Autonomous Studio Keyboard", price: 189.00, qty: 1, image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80" }
+  const [cartItems] = useState([
+    { id: 1, title: "Neural Pro Headset X1", price: "$299.00", qty: 1 }
   ]);
-  const [category, setCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
 
   const products = [
-    { id: 1, title: "Neural Pro Headset X1", price: "$299.00", rating: "4.9", category: "Hardware", badge: "TOP SELLER", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" },
-    { id: 2, title: "Autonomous Studio Keyboard", price: "$189.00", rating: "4.8", category: "Hardware", badge: "NEW", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80" },
-    { id: 3, title: "Quantum Telemetry Monitor 4K", price: "$499.00", rating: "5.0", category: "Displays", badge: "PRO CHOICE", image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80" },
-    { id: 4, title: "Smart Ergonomic Agent Desk", price: "$349.00", rating: "4.7", category: "Furniture", badge: "FEATURED", image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=600&q=80" }
+    { id: 1, title: "Neural Pro Headset X1", price: "$299.00", rating: "4.9", category: "Hardware", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" },
+    { id: 2, title: "Autonomous Studio Keyboard", price: "$189.00", rating: "4.8", category: "Hardware", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80" }
   ];
 
   return (
     <div className="min-h-screen bg-[#09080c] text-amber-100 font-sans">
-      <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-black font-bold text-xs px-4 py-2 text-center flex items-center justify-center gap-2 shadow-md">
-        <Sparkles className="w-4 h-4" />
-        <span>EXPRESS GLOBAL SHIPPING: Free delivery on all orders over $150! Code: EXPRESSSHIP</span>
-      </div>
       <header className="border-b border-amber-900/40 bg-[#120b18]/90 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-40">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-black font-bold text-lg shadow-lg shadow-amber-500/25">
-            <ShoppingBag className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-base font-bold text-white tracking-tight">${projectName}</h1>
-            <p className="text-[10px] text-amber-400 font-mono">WORLD-CLASS STOREFRONT & MARKETPLACE</p>
-          </div>
-        </div>
-        <button onClick={() => setCartOpen(true)} className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-black text-xs font-bold flex items-center gap-2 hover:opacity-95 transition-all cursor-pointer relative shadow-lg shadow-amber-500/20">
-          <ShoppingCart className="w-4 h-4 fill-current" />
-          <span>Cart ({cartItems.length})</span>
+        <h1 className="text-base font-bold text-white tracking-tight">${projectName} • Storefront</h1>
+        <button onClick={() => setCartOpen(true)} className="px-4 py-2 rounded-xl bg-amber-500 text-black text-xs font-bold flex items-center gap-2">
+          <ShoppingCart className="w-4 h-4" /> Cart ({cartItems.length})
         </button>
       </header>
-      <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-        <aside className="space-y-6">
-          <div className="p-6 rounded-2xl bg-[#140b1e] border border-amber-900/40 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2"><Filter className="w-4 h-4 text-amber-400" /> Catalog Filter</h3>
+      <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {products.map(p => (
+          <div key={p.id} className="p-4 rounded-2xl bg-[#140b1e] border border-amber-900/40 space-y-3">
+            <img src={p.image} alt={p.title} className="w-full h-48 object-cover rounded-xl" />
+            <h3 className="text-sm font-bold text-white">{p.title}</h3>
+            <p className="text-amber-300 font-bold">{p.price}</p>
           </div>
-        </aside>
-        <section className="md:col-span-3 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((p) => (
-              <div key={p.id} className="p-4 rounded-2xl bg-[#140b1e] border border-amber-900/40 space-y-3">
-                <img src={p.image} alt={p.title} className="w-full h-44 object-cover rounded-xl" />
-                <h3 className="text-sm font-bold text-white">{p.title}</h3>
-                <p className="text-amber-300 font-bold">{p.price}</p>
+        ))}
+      </main>
+    </div>
+  );
+}`;
+    }
+
+    if (layoutType === "kanban") {
+      return `import React, { useState } from "react";
+import { Layers, Plus, User, CheckCircle2 } from "lucide-react";
+
+export default function App() {
+  const [tasks] = useState([
+    { id: 1, title: "Initialize Neural Graph", col: "backlog", assignee: "Alex" },
+    { id: 2, title: "Synthesize Directives", col: "progress", assignee: "Sarah" },
+    { id: 3, title: "Zero-Trust Audit", col: "review", assignee: "David" },
+    { id: 4, title: "Deploy Global Edge", col: "done", assignee: "Elena" }
+  ]);
+
+  return (
+    <div className="min-h-screen bg-[#080910] text-purple-100 font-sans">
+      <header className="border-b border-purple-900/40 bg-[#101222]/90 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-40">
+        <h1 className="text-base font-bold text-white tracking-tight">${projectName} • Task Kanban</h1>
+      </header>
+      <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+        {["backlog", "progress", "review", "done"].map(c => (
+          <div key={c} className="p-4 rounded-2xl bg-[#0f1126] border border-purple-900/40 space-y-3">
+            <h3 className="text-xs font-bold text-white uppercase">{c}</h3>
+            {tasks.filter(t => t.col === c).map(t => (
+              <div key={t.id} className="p-3 rounded-xl bg-black/60 border border-purple-900/30">
+                <p className="text-xs font-bold text-white">{t.title}</p>
+                <p className="text-[10px] text-purple-400 mt-1">Assignee: {t.assignee}</p>
               </div>
             ))}
           </div>
-        </section>
+        ))}
+      </main>
+    </div>
+  );
+}`;
+    }
+
+    if (layoutType === "feed") {
+      return `import React, { useState } from "react";
+import { MessageSquare, Heart, Share2, Sparkles } from "lucide-react";
+
+export default function App() {
+  const [posts] = useState([
+    { id: 1, author: "Agentic Pro", text: "Autonomous multi-agent synthesis running live!", likes: 142, comments: 28 },
+    { id: 2, author: "Tech Arch", text: "Generative web app layouts deployed instantly.", likes: 89, comments: 14 }
+  ]);
+
+  return (
+    <div className="min-h-screen bg-[#07090e] text-cyan-100 font-sans">
+      <header className="border-b border-cyan-900/40 bg-[#0c121e]/90 backdrop-blur-xl px-6 py-4 sticky top-0 z-40">
+        <h1 className="text-base font-bold text-white">${projectName} • Community Feed</h1>
+      </header>
+      <main className="max-w-4xl mx-auto px-6 py-8 space-y-4">
+        {posts.map(p => (
+          <div key={p.id} className="p-5 rounded-2xl bg-[#0f172a] border border-cyan-900/40 space-y-3">
+            <h4 className="font-bold text-white text-xs">{p.author}</h4>
+            <p className="text-xs text-gray-300">{p.text}</p>
+            <div className="flex gap-4 text-xs text-gray-400 pt-2 border-t border-cyan-900/30">
+              <span>❤️ {p.likes}</span>
+              <span>💬 {p.comments}</span>
+            </div>
+          </div>
+        ))}
+      </main>
+    </div>
+  );
+}`;
+    }
+
+    if (layoutType === "datatable") {
+      return `import React, { useState } from "react";
+import { Database, Search, Download, Plus } from "lucide-react";
+
+export default function App() {
+  const [records] = useState([
+    { id: "REC-101", name: "Telemetry Node X", category: "Directives", status: "ACTIVE", value: "$14,200" },
+    { id: "REC-102", name: "Audit Compliance Log", category: "Security", status: "COMPLETED", value: "$8,500" }
+  ]);
+
+  return (
+    <div className="min-h-screen bg-[#07090e] text-emerald-100 font-sans">
+      <header className="border-b border-emerald-900/40 bg-[#0c1410]/90 backdrop-blur-xl px-6 py-4 sticky top-0 z-40">
+        <h1 className="text-base font-bold text-white">${projectName} • Enterprise Data Table</h1>
+      </header>
+      <main className="max-w-6xl mx-auto px-6 py-8 space-y-4">
+        <div className="rounded-2xl border border-emerald-900/40 bg-[#0e1713] overflow-hidden">
+          <table className="w-full text-left text-xs text-gray-300">
+            <thead className="bg-black/60 text-emerald-400 font-bold border-b border-emerald-900/40">
+              <tr><th className="p-4">ID</th><th className="p-4">Name</th><th className="p-4">Category</th><th className="p-4">Status</th><th className="p-4">Value</th></tr>
+            </thead>
+            <tbody className="divide-y divide-emerald-900/30">
+              {records.map(r => (
+                <tr key={r.id}>
+                  <td className="p-4 font-mono font-bold text-white">{r.id}</td>
+                  <td className="p-4 text-white">{r.name}</td>
+                  <td className="p-4 text-emerald-400">{r.category}</td>
+                  <td className="p-4 font-bold text-emerald-300">{r.status}</td>
+                  <td className="p-4 text-white font-bold">{r.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  );
+}`;
+    }
+
+    if (layoutType === "workspace") {
+      return `import React, { useState } from "react";
+import { Terminal, FileCode, Play, FolderTree, Cpu } from "lucide-react";
+
+export default function App() {
+  const [activeFile, setActiveFile] = useState("App.tsx");
+
+  return (
+    <div className="min-h-screen bg-[#050811] text-cyan-100 font-mono flex flex-col">
+      <header className="border-b border-cyan-900/40 bg-[#0a0f1d] px-6 py-3 flex items-center justify-between">
+        <h1 className="text-sm font-bold text-white tracking-tight">${projectName} • IDE Workspace</h1>
+        <button className="px-4 py-1.5 bg-cyan-600 text-black font-bold text-xs rounded-lg flex items-center gap-2"><Play className="w-3.5 h-3.5 fill-current" /> Run Pipeline</button>
+      </header>
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-4">
+        <aside className="border-r border-cyan-900/40 p-4 space-y-3 bg-[#080d19]">
+          <h4 className="text-xs font-bold text-cyan-400 uppercase flex items-center gap-2"><FolderTree className="w-4 h-4" /> Explorer</h4>
+          {["App.tsx", "StudioWorkspace.tsx", "config.json"].map(f => (
+            <button key={f} onClick={() => setActiveFile(f)} className={"w-full text-left px-3 py-1.5 rounded text-xs " + (activeFile === f ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40" : "text-gray-400 hover:text-white")}>{f}</button>
+          ))}
+        </aside>
+        <main className="md:col-span-3 p-6 bg-[#04060d]">
+          <h3 className="text-xs text-gray-500 mb-4">// Viewing {activeFile}</h3>
+          <pre className="text-xs text-emerald-400 font-mono bg-black/60 p-4 rounded-xl border border-cyan-900/40 overflow-x-auto">export default function App() &#123; return &lt;StudioWorkspace /&gt;; &#125;</pre>
+        </main>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (layoutType === "chat") {
+      return `import React, { useState } from "react";
+import { MessageSquare, Send, Bot, User, Sparkles } from "lucide-react";
+
+export default function App() {
+  const [messages, setMessages] = useState([
+    { role: "assistant", text: "Hello! I am your autonomous AI copilot for ${projectName}. How can I assist your directive graph today?" }
+  ]);
+  const [input, setInput] = useState("");
+
+  return (
+    <div className="min-h-screen bg-[#090a10] text-purple-100 font-sans flex flex-col">
+      <header className="border-b border-purple-900/40 bg-[#101222]/90 px-6 py-4 sticky top-0 z-40 flex justify-between items-center">
+        <h1 className="text-base font-bold text-white tracking-tight">${projectName} • AI Conversation Portal</h1>
+        <span className="text-xs text-emerald-400 font-mono flex items-center gap-1.5"><Bot className="w-4 h-4" /> Copilot Active</span>
+      </header>
+      <main className="flex-1 max-w-4xl mx-auto w-full p-6 space-y-4">
+        {messages.map((m, idx) => (
+          <div key={idx} className={"flex gap-3 text-xs p-4 rounded-2xl border " + (m.role === "user" ? "bg-purple-950/40 border-purple-500/40 ml-12" : "bg-black/60 border-purple-900/30 mr-12")}>
+            <span className="font-bold text-purple-300 uppercase">{m.role}:</span>
+            <p className="text-gray-200">{m.text}</p>
+          </div>
+        ))}
+      </main>
+      <div className="p-6 border-t border-purple-900/40 bg-[#101222]/90 max-w-4xl mx-auto w-full flex gap-3">
+        <input type="text" value={input} onChange={e => setInput(e.target.value)} placeholder="Type a message or directive..." className="flex-1 bg-black/60 border border-purple-900/40 p-3 rounded-xl text-xs text-white focus:outline-none" />
+        <button onClick={() => { if(input) { setMessages([...messages, { role: "user", text: input }, { role: "assistant", text: "Directive received! Autonomous agent graph is executing..." }]); setInput(""); } }} className="px-5 py-3 bg-purple-600 text-white font-bold text-xs rounded-xl flex items-center gap-2"><Send className="w-4 h-4" /> Send</button>
+      </div>
+    </div>
+  );
+}`;
+    }
+
+    if (layoutType === "streaming") {
+      return `import React, { useState } from "react";
+import { Play, ThumbsUp, Share2, Volume2, Film } from "lucide-react";
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-[#08070c] text-red-100 font-sans">
+      <header className="border-b border-red-900/40 bg-[#140b15]/90 px-6 py-4 sticky top-0 z-40">
+        <h1 className="text-base font-bold text-white tracking-tight">${projectName} • Media Stream Stage</h1>
+      </header>
+      <main className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-4">
+          <div className="h-96 rounded-3xl overflow-hidden relative border border-red-900/40 bg-black flex items-center justify-center">
+            <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80" alt="Stream" className="w-full h-full object-cover opacity-60" />
+            <button className="absolute p-5 rounded-full bg-red-600 text-white shadow-2xl hover:scale-110 transition-transform"><Play className="w-8 h-8 fill-current" /></button>
+          </div>
+          <h2 className="text-lg font-bold text-white">${tagline}</h2>
+        </div>
+        <aside className="space-y-4">
+          <h3 className="text-xs font-bold text-white uppercase">Up Next</h3>
+          <div className="p-3 rounded-xl bg-[#140b15] border border-red-900/30 flex gap-3">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=200&q=80" alt="thumb" className="w-20 h-14 object-cover rounded-lg" />
+            <div>
+              <p className="text-xs font-bold text-white">Neural Agent Stream</p>
+              <p className="text-[10px] text-gray-400">12k views</p>
+            </div>
+          </div>
+        </aside>
       </main>
     </div>
   );
