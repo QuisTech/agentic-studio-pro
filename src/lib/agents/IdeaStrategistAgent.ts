@@ -128,7 +128,7 @@ Return valid JSON only. Do not wrap in markdown tags like \`\`\`json.
       problemStatement: z.string(),
       proposedSolution: z.string(),
       innovationHighlight: z.string().describe("What makes this disruptive and technically unique. Leave empty if none."),
-      layoutType: z.enum(["bento", "cyber", "dashboard", "clinical", "studio", "ecommerce", "media", "culinary", "realestate", "edutech"]).optional(),
+      layoutType: z.enum(["bento", "cyber", "dashboard", "clinical", "studio", "ecommerce", "media", "culinary", "realestate", "edutech"]),
       techStack: z.object({
         frontend: z.array(z.string()),
         backend: z.array(z.string()),
