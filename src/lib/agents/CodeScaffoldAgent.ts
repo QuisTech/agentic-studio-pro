@@ -908,6 +908,7 @@ export default function AnalyticsDashboard() {
     const isIos = fullText.includes("ios") || fullText.includes("swift") || fullText.includes("iphone") || fullText.includes("apple") || fullText.includes("xcode");
     const isAndroid = fullText.includes("android") || fullText.includes("kotlin") || fullText.includes("java") || fullText.includes("watchos");
     const isPython = fullText.includes("python") || fullText.includes("fastapi") || fullText.includes("django") || fullText.includes("flask");
+    const isFlutter = fullText.includes("flutter") || fullText.includes("dart");
 
     if (isIos || (!isAndroid && !isPython)) {
       // Generate Native iOS Swift & SwiftUI Source Files
@@ -1080,6 +1081,148 @@ class ${agents[0]?.name || 'DataFusionAgent'} {
         )
     }
 }`
+      });
+    }
+
+    if (isFlutter) {
+      nativeFiles.push({
+        path: `lib/main.dart`,
+        content: `import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const ${cleanProject}App());
+}
+
+class ${cleanProject}App extends StatelessWidget {
+  const ${cleanProject}App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: '${projectName}',
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF07090E),
+      ),
+      home: const DashboardScreen(),
+    );
+  }
+}
+
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  bool isExecuting = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('${projectName}'),
+        backgroundColor: const Color(0xFF0B0E14),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '${tagline}',
+              style: const TextStyle(color: Colors.grey, fontSize: 14),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  isExecuting = !isExecuting;
+                });
+              },
+              icon: Icon(isExecuting ? Icons.sync : Icons.play_arrow),
+              label: Text(isExecuting ? 'Executing AI Agents...' : 'Run Flutter Pipeline'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}`
+      });
+
+      nativeFiles.push({
+        path: `lib/agents/data_fusion_agent.dart`,
+        content: `class ${agents[0]?.name || 'DataFusionAgent'} {
+  final String role = "${agents[0]?.role || 'Sensors Fusion'}";
+
+  Future<Map<String, dynamic>> executePipeline() async {
+    return {
+      'agent': '${agents[0]?.name || 'DataFusionAgent'}',
+      'status': 'ONLINE',
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+  }
+}`
+      });
+
+      nativeFiles.push({
+        path: `pubspec.yaml`,
+        content: `name: ${cleanProject.toLowerCase()}
+description: "${tagline}"
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true`
+      });
+    }
+
+    if (isPython) {
+      nativeFiles.push({
+        path: `backend/main.py`,
+        content: `from fastapi import FastAPI
+
+app = FastAPI(title="${projectName}", description="${tagline}")
+
+@app.get("/")
+def read_root():
+    return {
+        "app": "${projectName}",
+        "status": "ONLINE",
+        "agentFleet": [
+            {"name": "${agents[0]?.name}", "role": "${agents[0]?.role}"},
+            {"name": "${agents[1]?.name}", "role": "${agents[1]?.role}"}
+        ]
+    }
+
+@app.post("/orchestrate")
+def orchestrate_pipeline():
+    return {
+        "status": "COMPLETED",
+        "message": "Autonomous multi-agent synthesis executed successfully."
+    }
+`
+      });
+
+      nativeFiles.push({
+        path: `backend/requirements.txt`,
+        content: `fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=2.0.0
+groq>=0.4.0
+`
       });
     }
 
