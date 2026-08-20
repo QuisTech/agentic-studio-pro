@@ -3,7 +3,17 @@
 import { Download, Bot, Settings, Activity, Trash2 } from "lucide-react";
 import { downloadProjectAsZip } from "@/lib/zip";
 
-export default function Header({ files, onClearSession }: { files: Record<string, string>, onClearSession: () => void }) {
+export default function Header({ 
+  files, 
+  onClearSession,
+  onOpenSystemLog,
+  systemLogCount = 0
+}: { 
+  files: Record<string, string>; 
+  onClearSession: () => void;
+  onOpenSystemLog?: () => void;
+  systemLogCount?: number;
+}) {
   const handleDownload = () => {
     downloadProjectAsZip(files, "agentic-generated-code");
   };
@@ -29,9 +39,17 @@ export default function Header({ files, onClearSession }: { files: Record<string
       </div>
       
       <div className="flex items-center gap-4">
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-sm font-medium">
-          <Activity className="w-4 h-4 text-purple-400" />
+        <button 
+          onClick={onOpenSystemLog}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-sm font-medium relative group"
+        >
+          <Activity className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
           <span>System Log</span>
+          {systemLogCount > 0 && (
+            <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-purple-500/30 text-purple-300 border border-purple-500/40">
+              {systemLogCount}
+            </span>
+          )}
         </button>
         <button 
           onClick={onClearSession}
@@ -47,7 +65,10 @@ export default function Header({ files, onClearSession }: { files: Record<string
           <Download className="w-4 h-4" />
           <span>Export .zip</span>
         </button>
-        <button className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-gray-400 hover:text-white">
+        <button 
+          onClick={onOpenSystemLog}
+          className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-gray-400 hover:text-white"
+        >
           <Settings className="w-5 h-5" />
         </button>
       </div>

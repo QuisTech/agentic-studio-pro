@@ -47,6 +47,8 @@ const DEFAULT_COLUMNS: Column[] = [
   }
 ];
 
+import SystemLogModal, { SystemLogEntry } from "./SystemLogModal";
+
 const DEFAULT_FILES: Record<string, string> = {
   "/App.tsx": `import React from 'react';\n\nexport default function App() {\n  return (\n    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">\n      <div className="bg-gray-800 p-8 rounded-2xl shadow-xl text-center max-w-md w-full border border-gray-700">\n        <h1 className="text-3xl font-bold text-white mb-2">Hackathon Dashboard</h1>\n        <p className="text-gray-400 mb-6">Agents are assembling...</p>\n      </div>\n    </div>\n  );\n}`,
   "/styles.css": `body {\n  margin: 0;\n  background-color: #090b10;\n  color: #fff;\n}`
@@ -56,6 +58,8 @@ export default function DashboardClient() {
   const [messages, setMessages] = useState<Message[]>(DEFAULT_MESSAGES);
   const [columns, setColumns] = useState<Column[]>(DEFAULT_COLUMNS);
   const [files, setFiles] = useState<Record<string, string>>(DEFAULT_FILES);
+  const [systemLogs, setSystemLogs] = useState<SystemLogEntry[]>([]);
+  const [isSystemLogOpen, setIsSystemLogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentTypingAgent, setCurrentTypingAgent] = useState<string | null>(null);
   const [expandedPanel, setExpandedPanel] = useState<"chat" | "preview" | "kanban" | null>(null);
@@ -66,11 +70,14 @@ export default function DashboardClient() {
     const savedMessages = localStorage.getItem("agentic_messages");
     const savedColumns = localStorage.getItem("agentic_columns");
     const savedFiles = localStorage.getItem("agentic_files");
+    const savedLogs = localStorage.getItem("agentic_system_logs");
     
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedMessages) setMessages(JSON.parse(savedMessages));
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedColumns) setColumns(JSON.parse(savedColumns));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (savedLogs) setSystemLogs(JSON.parse(savedLogs));
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedFiles) {
       try {
@@ -95,15 +102,18 @@ export default function DashboardClient() {
       localStorage.setItem("agentic_messages", JSON.stringify(messages));
       localStorage.setItem("agentic_columns", JSON.stringify(columns));
       localStorage.setItem("agentic_files", JSON.stringify(files));
+      localStorage.setItem("agentic_system_logs", JSON.stringify(systemLogs));
     }
-  }, [messages, columns, files, isHydrated]);
+  }, [messages, columns, files, systemLogs, isHydrated]);
 
   const handleClearSession = () => {
     if (confirm("Are you sure you want to clear your entire session? This cannot be undone.")) {
       localStorage.removeItem("agentic_messages");
       localStorage.removeItem("agentic_columns");
       localStorage.removeItem("agentic_files");
+      localStorage.removeItem("agentic_system_logs");
       setMessages([]);
+      setSystemLogs([]);
       
       const resetColumns = DEFAULT_COLUMNS.map(col => ({
         ...col,
@@ -150,6 +160,27 @@ export default function DashboardClient() {
             const data = JSON.parse(line);
             
             if (data.type === "message") {
+              if (data.role === "system") {
+                const logType = data.content.includes("Key") || data.content.includes("🔑")
+                  ? "key"
+                  : data.content.includes("📊")
+                  ? "stage"
+                  : data.content.includes("Error") || data.content.includes("⚠️")
+                  ? "error"
+                  : "info";
+
+                setSystemLogs(prev => [
+                  ...prev,
+                  {
+                    id: String(Date.now() + Math.random()),
+                    timestamp: new Date().toLocaleTimeString(),
+                    type: logType,
+                    sender: data.sender || "System",
+                    message: data.content
+                  }
+                ]);
+              }
+
               setMessages(prev => [...prev, {
                 id: Date.now() + Math.random(),
                 role: data.role,
@@ -196,7 +227,18 @@ export default function DashboardClient() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#0a0a0a]">
-      <Header files={files} onClearSession={handleClearSession} />
+      <Header 
+        files={files} 
+        onClearSession={handleClearSession} 
+        onOpenSystemLog={() => setIsSystemLogOpen(true)}
+        systemLogCount={systemLogs.length}
+      />
+      <SystemLogModal 
+        isOpen={isSystemLogOpen} 
+        onClose={() => setIsSystemLogOpen(false)} 
+        logs={systemLogs} 
+        onClearLogs={() => setSystemLogs([])} 
+      />
       
       <main className="flex-1 flex overflow-hidden relative">
         {/* Panel 1: Agent Chat */}
