@@ -909,8 +909,9 @@ export default function AnalyticsDashboard() {
     const isAndroid = fullText.includes("android") || fullText.includes("kotlin") || fullText.includes("java") || fullText.includes("watchos");
     const isPython = fullText.includes("python") || fullText.includes("fastapi") || fullText.includes("django") || fullText.includes("flask");
     const isFlutter = fullText.includes("flutter") || fullText.includes("dart");
+    const isExplicitOther = isAndroid || isPython || isFlutter;
 
-    if (isIos || (!isAndroid && !isPython)) {
+    if (isIos || !isExplicitOther) {
       // Generate Native iOS Swift & SwiftUI Source Files
       nativeFiles.push({
         path: `ios/${cleanProject}App.swift`,
