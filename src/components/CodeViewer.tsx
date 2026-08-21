@@ -9,7 +9,7 @@ import {
   useSandpack
 } from "@codesandbox/sandpack-react";
 import { useMemo, useEffect, useState } from "react";
-import { Eye, Code2, Columns } from "lucide-react";
+import { Eye, Code2, Columns, RefreshCw } from "lucide-react";
 
 function SandpackForceUpdater({ newFiles }: { newFiles: Record<string, string> }) {
   const { sandpack } = useSandpack();
@@ -27,6 +27,7 @@ function SandpackForceUpdater({ newFiles }: { newFiles: Record<string, string> }
 
 export default function CodeViewer({ files }: { files: Record<string, string> }) {
   const [viewMode, setViewMode] = useState<"split" | "preview" | "code">("split");
+  const [previewKey, setPreviewKey] = useState(0);
 
   // Sandpack expects absolute paths for files
   const sandpackFiles = useMemo(() => {
@@ -115,13 +116,13 @@ export default function App() {
     return formatted;
   }, [files]);
 
-  // Extract third party packages
+  // Extract third party packages with pinned versions to prevent timeout delays
   const sandpackDependencies = useMemo(() => {
     const deps: Record<string, string> = {
-      "lucide-react": "latest",
-      "framer-motion": "latest",
-      "clsx": "latest",
-      "tailwind-merge": "latest"
+      "lucide-react": "^0.469.0",
+      "framer-motion": "^11.15.0",
+      "clsx": "^2.1.1",
+      "tailwind-merge": "^2.6.0"
     };
 
     const importRegex = /import\s+.*?\s+from\s+['"]([^'"]+)['"]/g;
@@ -182,12 +183,24 @@ export default function App() {
           </button>
         </div>
 
-        <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">
-          {viewMode === "preview" ? "Full-Width Live App View" : viewMode === "code" ? "TypeScript Code Studio" : "Side-by-Side View"}
-        </span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setPreviewKey(k => k + 1)}
+            title="Reload Sandbox Preview"
+            className="flex items-center gap-1 px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[11px] font-medium text-gray-300 hover:text-white transition-colors border border-white/10"
+          >
+            <RefreshCw className="w-3 h-3" />
+            <span>Reload Sandbox</span>
+          </button>
+
+          <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">
+            {viewMode === "preview" ? "Full-Width Live App View" : viewMode === "code" ? "TypeScript Code Studio" : "Side-by-Side View"}
+          </span>
+        </div>
       </div>
 
       <SandpackProvider
+        key={previewKey}
         template="react-ts"
         theme="dark"
         files={sandpackFiles}
@@ -221,10 +234,11 @@ export default function App() {
 
           {/* Live Preview (Kept mounted in DOM, hidden in Code Only mode to prevent unmount white-screen glitches) */}
           <div className={`flex-1 relative min-w-0 min-h-0 h-full overflow-hidden flex flex-col bg-[#090b10] ${viewMode === "code" ? "hidden" : "flex"}`}>
-            <SandpackPreview showNavigator={true} showOpenInCodeSandbox={false} style={{ height: "100%" }} />
+            <SandpackPreview showNavigator={true} showOpenInCodeSandbox={false} showRefreshButton={true} style={{ height: "100%" }} />
           </div>
         </SandpackLayout>
       </SandpackProvider>
     </div>
   );
 }
+
