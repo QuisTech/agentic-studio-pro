@@ -35,8 +35,8 @@ export class CodeScaffoldAgent {
   }
 
   public async generateProjectFiles(blueprint: HackathonBlueprint): Promise<GeneratedFile[]> {
-    const projectName = (blueprint.projectName || "Agentic Studio").replace(/"/g, '\"');
-    const tagline = (blueprint.tagline || "Autonomous Multi-Agent Enterprise Command Center").replace(/"/g, '\"');
+    const projectName = (blueprint.projectName || "Agentic Studio").replace(/"/g, '"');
+    const tagline = (blueprint.tagline || "Autonomous Multi-Agent Enterprise Command Center").replace(/"/g, '"');
     const agents = blueprint.agentArchitecture && blueprint.agentArchitecture.length > 0
       ? blueprint.agentArchitecture
       : [
@@ -47,39 +47,37 @@ export class CodeScaffoldAgent {
         ];
 
     const cleanDomainName = projectName;
-    const problem = (blueprint.problemStatement || "").replace(/"/g, '\"');
-    const solution = (blueprint.proposedSolution || "").replace(/"/g, '\"');
+    const problem = (blueprint.problemStatement || "").replace(/"/g, '"');
+    const solution = (blueprint.proposedSolution || "").replace(/"/g, '"');
     const domainText = (blueprint.projectName + " " + blueprint.tagline + " " + blueprint.problemStatement + " " + blueprint.proposedSolution).toLowerCase();
 
-    let layoutType: "landing" | "storefront" | "kanban" | "feed" | "datatable" | "workspace" | "chat" | "streaming" | "dashboard" | "bento" | "cyber" | "clinical" | "studio" | "ecommerce" | "media" | "culinary" | "realestate" | "edutech" | "eventmason" = blueprint.layoutType as any;
+    // Count how many archetypes are mentioned in the domain text
+    let archetypeCount = 0;
+    if (domainText.includes("land") || domainText.includes("hero") || domainText.includes("marketing")) archetypeCount++;
+    if (domainText.includes("shop") || domainText.includes("store") || domainText.includes("cart") || domainText.includes("ecommerce")) archetypeCount++;
+    if (domainText.includes("kanban") || domainText.includes("task") || domainText.includes("board")) archetypeCount++;
+    if (domainText.includes("social") || domainText.includes("feed") || domainText.includes("community")) archetypeCount++;
+    if (domainText.includes("table") || domainText.includes("crm") || domainText.includes("database")) archetypeCount++;
+    if (domainText.includes("code") || domainText.includes("ide") || domainText.includes("workspace") || domainText.includes("editor")) archetypeCount++;
+    if (domainText.includes("chat") || domainText.includes("assistant") || domainText.includes("bot")) archetypeCount++;
+    if (domainText.includes("video") || domainText.includes("stream") || domainText.includes("media")) archetypeCount++;
+    if (domainText.includes("dash") || domainText.includes("telemetry") || domainText.includes("analytics")) archetypeCount++;
 
-    if (!layoutType) {
-      if (domainText.includes("land") || domainText.includes("hero") || domainText.includes("marketing") || domainText.includes("showcase") || domainText.includes("promo") || domainText.includes("startup") || domainText.includes("agency") || domainText.includes("pitch")) {
-        layoutType = "landing";
-      } else if (domainText.includes("shop") || domainText.includes("store") || domainText.includes("cart") || domainText.includes("ecommerce") || domainText.includes("retail") || domainText.includes("buy") || domainText.includes("checkout") || domainText.includes("product") || domainText.includes("apparel")) {
-        layoutType = "storefront";
-      } else if (domainText.includes("kanban") || domainText.includes("task") || domainText.includes("board") || domainText.includes("project") || domainText.includes("trello") || domainText.includes("jira") || domainText.includes("event") || domainText.includes("mason") || domainText.includes("party") || domainText.includes("venue") || domainText.includes("book") || domainText.includes("planner")) {
-        layoutType = "kanban";
-      } else if (domainText.includes("social") || domainText.includes("feed") || domainText.includes("community") || domainText.includes("post") || domainText.includes("network") || domainText.includes("forum") || domainText.includes("tweet") || domainText.includes("follower")) {
-        layoutType = "feed";
-      } else if (domainText.includes("table") || domainText.includes("grid") || domainText.includes("crm") || domainText.includes("database") || domainText.includes("row") || domainText.includes("admin") || domainText.includes("record")) {
-        layoutType = "datatable";
-      } else if (domainText.includes("code") || domainText.includes("editor") || domainText.includes("ide") || domainText.includes("workspace") || domainText.includes("dev") || domainText.includes("terminal") || domainText.includes("git")) {
-        layoutType = "workspace";
-      } else if (domainText.includes("chat") || domainText.includes("assistant") || domainText.includes("bot") || domainText.includes("message") || domainText.includes("conversation")) {
-        layoutType = "chat";
-      } else if (domainText.includes("video") || domainText.includes("stream") || domainText.includes("audio") || domainText.includes("music") || domainText.includes("media") || domainText.includes("podcast") || domainText.includes("youtube")) {
-        layoutType = "streaming";
-      } else {
-        const archetypePool: Array<"landing" | "storefront" | "kanban" | "feed" | "datatable" | "workspace" | "chat" | "streaming" | "dashboard"> = [
-          "landing", "storefront", "kanban", "feed", "datatable", "workspace", "chat", "streaming", "dashboard"
-        ];
-        let hash = 0;
-        for (let i = 0; i < domainText.length; i++) {
-          hash = (hash * 31 + domainText.charCodeAt(i)) & 0x7fffffff;
-        }
-        layoutType = archetypePool[hash % archetypePool.length];
-      }
+    let layoutType: string = blueprint.layoutType as string;
+
+    // If prompt explicitly combines multiple archetypes (e.g. 2 or more), force Unified Master Platform layout
+    if (archetypeCount >= 2 || domainText.includes("all-in-one") || domainText.includes("unified") || domainText.includes("combine") || domainText.includes("cockpit")) {
+      layoutType = "unified_platform";
+    } else if (!layoutType) {
+      if (domainText.includes("land") || domainText.includes("hero")) layoutType = "landing";
+      else if (domainText.includes("shop") || domainText.includes("store")) layoutType = "storefront";
+      else if (domainText.includes("kanban") || domainText.includes("task")) layoutType = "kanban";
+      else if (domainText.includes("feed") || domainText.includes("social")) layoutType = "feed";
+      else if (domainText.includes("table") || domainText.includes("crm")) layoutType = "datatable";
+      else if (domainText.includes("code") || domainText.includes("ide")) layoutType = "workspace";
+      else if (domainText.includes("chat") || domainText.includes("assistant")) layoutType = "chat";
+      else if (domainText.includes("stream") || domainText.includes("video")) layoutType = "streaming";
+      else layoutType = "unified_platform";
     }
 
     const badges = ["AUTONOMOUS_AI", "MULTI_AGENT", "ENTERPRISE", "REALTIME_DSP"];
@@ -135,329 +133,391 @@ export class CodeScaffoldAgent {
   }
 
   private generateAppContent(layoutType: string, config: any, cardsJson: string, projectName: string, tagline: string): string {
-    if (layoutType === "landing") {
-      return `import React, { useState } from "react";
-import { Sparkles, ArrowRight, CheckCircle2, Star, ShieldCheck, Zap, Layers, ChevronRight, Play, Globe, HelpCircle, ChevronDown, Check } from "lucide-react";
+    return `import React, { useState } from "react";
+import {
+  Sparkles, Zap, Layout, ShoppingBag, Layers, MessageSquare, Database, Code, Bot, Play,
+  BarChart3, CheckCircle2, Search, Filter, ShoppingCart, User, Terminal, FolderTree,
+  Send, ThumbsUp, ArrowRight, ShieldCheck, Star, ChevronDown, Check, Plus, HardDrive
+} from "lucide-react";
 import StudioWorkspace from "./components/StudioWorkspace";
 
 export default function App() {
+  const [activeModule, setActiveModule] = useState<"landing" | "storefront" | "kanban" | "feed" | "datatable" | "workspace" | "chat" | "streaming" | "dashboard">("landing");
   const [activeDemo, setActiveDemo] = useState(false);
-  const [pricingCycle, setPricingCycle] = useState<"monthly" | "annual">("annual");
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [cartCount, setCartCount] = useState(2);
 
-  const faqs = [
-    { q: "How does ${projectName} handle multi-agent orchestration?", a: "Our platform uses neural directive decomposition to automatically break down high-level user goals into parallel micro-agent execution graphs." },
-    { q: "Can I integrate custom APIs into the execution pipeline?", a: "Yes! ${projectName} supports custom REST, GraphQL, Web3 RPC, and WebSocket protocol adapters." },
-    { q: "What is the expected latency for live streaming tokens?", a: "Sub-second streaming token response with average latency under 14ms across our global edge node network." }
+  // Kanban State
+  const [tasks] = useState([
+    { id: 1, title: "Initialize Neural Directive Graph", col: "backlog", assignee: "Alex Vance", tag: "AI ENGINE" },
+    { id: 2, title: "Synthesize Multimodal Sub-Agents", col: "progress", assignee: "Sarah Chen", tag: "SYNTHESIS" },
+    { id: 3, title: "Zero-Trust Security Verification", col: "review", assignee: "David Miller", tag: "SECURITY" },
+    { id: 4, title: "Deploy Global Edge Pipeline", col: "done", assignee: "Elena Rostova", tag: "DEVOPS" }
+  ]);
+
+  // Feed State
+  const [posts] = useState([
+    { id: 1, author: "Agentic Core Team", time: "10m ago", text: "Autonomous multi-agent execution pipeline v4.2 is live across all global edge nodes!", likes: 184, comments: 32 },
+    { id: 2, author: "DevOps Sentinel", time: "1h ago", text: "Zero-latency streaming token verification completed with 99.98% accuracy.", likes: 96, comments: 14 }
+  ]);
+
+  // Data Table State
+  const [records] = useState([
+    { id: "REC-901", name: "Executive Directive Node", type: "Neural Graph", status: "ACTIVE", latency: "12ms", value: "$42,000" },
+    { id: "REC-902", name: "DataInsight SQL Agent", type: "Database", status: "OPTIMIZED", latency: "8ms", value: "$18,500" },
+    { id: "REC-903", name: "WebRTC Media Synthesizer", type: "Stream DSP", status: "RUNNING", latency: "14ms", value: "$29,000" }
+  ]);
+
+  // IDE Workspace State
+  const [activeFile, setActiveFile] = useState("App.tsx");
+
+  // Chat State
+  const [chatMessages, setChatMessages] = useState([
+    { role: "assistant", text: "Welcome to ${projectName} Enterprise AI Copilot. How can I assist your directive execution today?" }
+  ]);
+  const [chatInput, setChatInput] = useState("");
+
+  const products = [
+    { id: 1, title: "Neural Studio Pro Headset X1", price: "$299.00", rating: "4.9", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" },
+    { id: 2, title: "Autonomous Studio Keyboard", price: "$189.00", rating: "4.8", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80" },
+    { id: 3, title: "Quantum Telemetry Monitor 4K", price: "$499.00", rating: "5.0", image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80" }
   ];
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-gray-100 font-sans selection:bg-indigo-500 selection:text-white">
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-2.5 text-center text-xs font-bold text-white flex items-center justify-center gap-2 shadow-lg">
+    <div className="min-h-screen bg-[#07090e] text-gray-100 font-sans selection:bg-indigo-500 selection:text-white flex flex-col">
+      {/* Global Top Announcement Bar */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-2 text-center text-xs font-bold text-white flex items-center justify-center gap-2 shadow-lg">
         <Sparkles className="w-4 h-4 animate-spin" />
-        <span>PRODUCTION LAUNCH: ${projectName} Enterprise v4.2 is live!</span>
+        <span>UNIFIED ENTERPRISE COCKPIT: ${projectName} v4.2 is live with 9 integrated modules!</span>
       </div>
 
-      <nav className="border-b border-white/[0.08] bg-[#0b0e14]/90 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+      {/* Global Glassmorphic Multi-Module Header */}
+      <header className="border-b border-white/[0.08] bg-[#0b0e14]/90 backdrop-blur-xl px-6 py-3 sticky top-0 z-50 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/25">
             <Zap className="w-5 h-5 fill-current" />
           </div>
           <div>
-            <h1 className="text-base font-bold text-white tracking-tight">${projectName}</h1>
-            <p className="text-[10px] text-indigo-400 font-mono">GLOBAL EDGE ACTIVE</p>
+            <h1 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+              ${projectName}
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] border border-emerald-500/30">ONLINE</span>
+            </h1>
+            <p className="text-[10px] text-gray-400 font-mono">${tagline}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <button onClick={() => setActiveDemo(!activeDemo)} className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.05] hover:bg-white/[0.1] text-gray-200 border border-white/[0.1] transition-all cursor-pointer">
-            {activeDemo ? "Hide Playground" : "Live Playground"}
-          </button>
-          <button className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 text-white shadow-xl cursor-pointer">
-            Get Started Free
-          </button>
+
+        {/* 9 Archetype Module Tabs Switcher */}
+        <div className="hidden lg:flex items-center gap-1.5 p-1 rounded-xl bg-black/60 border border-white/[0.08] text-xs font-semibold">
+          {[
+            { id: "landing", label: "Hero & Landing", icon: Layout },
+            { id: "storefront", label: "Storefront", icon: ShoppingBag },
+            { id: "kanban", label: "Task Kanban", icon: Layers },
+            { id: "feed", label: "Social Feed", icon: MessageSquare },
+            { id: "datatable", label: "CRM Table", icon: Database },
+            { id: "workspace", label: "Code IDE", icon: Code },
+            { id: "chat", label: "AI Copilot", icon: Bot },
+            { id: "streaming", label: "Media Stage", icon: Play },
+            { id: "dashboard", label: "Telemetry", icon: BarChart3 }
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeModule === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveModule(tab.id as any)}
+                className={"flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer " + (isActive ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold shadow-md" : "text-gray-400 hover:text-white hover:bg-white/[0.05]")}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
-      </nav>
 
-      <section className="px-6 py-24 md:py-32 max-w-6xl mx-auto text-center space-y-8">
-        <h1 className="text-4xl md:text-7xl font-extrabold text-white tracking-tight leading-tight max-w-5xl mx-auto">
-          The World-Class AI Engine for <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">${projectName}</span>
-        </h1>
-        <p className="text-base md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">${tagline}</p>
-        {activeDemo && (
-          <div className="mt-12 text-left animate-fadeIn">
-            <StudioWorkspace onTrigger={() => {}} isExecuting={false} />
-          </div>
-        )}
-      </section>
-    </div>
-  );
-}`;
-    }
-
-    if (layoutType === "storefront") {
-      return `import React, { useState } from "react";
-import { ShoppingBag, Search, Filter, Star, ShoppingCart, Sparkles, X } from "lucide-react";
-
-export default function App() {
-  const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems] = useState([
-    { id: 1, title: "Neural Pro Headset X1", price: "$299.00", qty: 1 }
-  ]);
-
-  const products = [
-    { id: 1, title: "Neural Pro Headset X1", price: "$299.00", rating: "4.9", category: "Hardware", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" },
-    { id: 2, title: "Autonomous Studio Keyboard", price: "$189.00", rating: "4.8", category: "Hardware", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80" }
-  ];
-
-  return (
-    <div className="min-h-screen bg-[#09080c] text-amber-100 font-sans">
-      <header className="border-b border-amber-900/40 bg-[#120b18]/90 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-40">
-        <h1 className="text-base font-bold text-white tracking-tight">${projectName} • Storefront</h1>
-        <button onClick={() => setCartOpen(true)} className="px-4 py-2 rounded-xl bg-amber-500 text-black text-xs font-bold flex items-center gap-2">
-          <ShoppingCart className="w-4 h-4" /> Cart ({cartItems.length})
+        <button
+          onClick={() => setActiveDemo(!activeDemo)}
+          className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg transition-all cursor-pointer flex items-center gap-2"
+        >
+          <Play className="w-3.5 h-3.5 fill-current" />
+          <span>{activeDemo ? "Hide Workspace HUD" : "Trigger Live Directive"}</span>
         </button>
       </header>
-      <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {products.map(p => (
-          <div key={p.id} className="p-4 rounded-2xl bg-[#140b1e] border border-amber-900/40 space-y-3">
-            <img src={p.image} alt={p.title} className="w-full h-48 object-cover rounded-xl" />
-            <h3 className="text-sm font-bold text-white">{p.title}</h3>
-            <p className="text-amber-300 font-bold">{p.price}</p>
+
+      {/* Live Directive Execution Workspace HUD Banner */}
+      {activeDemo && (
+        <div className="p-6 bg-[#0a0d14] border-b border-indigo-500/30 animate-fadeIn max-w-7xl mx-auto w-full my-4 rounded-3xl">
+          <StudioWorkspace onTrigger={() => {}} isExecuting={false} />
+        </div>
+      )}
+
+      {/* Dynamic Module Content View Area */}
+      <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
+
+        {/* 1. LANDING MODULE */}
+        {activeModule === "landing" && (
+          <div className="space-y-16 py-8 text-center animate-fadeIn">
+            <div className="space-y-6">
+              <span className="px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-widest">
+                ENTERPRISE MULTI-AGENT ARCHITECTURE
+              </span>
+              <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight max-w-4xl mx-auto">
+                The World-Class AI Engine for <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">${projectName}</span>
+              </h1>
+              <p className="text-base text-gray-400 max-w-2xl mx-auto leading-relaxed">${tagline}</p>
+              <div className="flex justify-center gap-4 pt-4">
+                <button onClick={() => setActiveModule("workspace")} className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-xs shadow-xl cursor-pointer flex items-center gap-2">
+                  <span>Open IDE Workspace</span> <ArrowRight className="w-4 h-4" />
+                </button>
+                <button onClick={() => setActiveModule("storefront")} className="px-6 py-3.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-gray-200 font-bold text-xs border border-white/[0.1] cursor-pointer">
+                  Explore Marketplace
+                </button>
+              </div>
+            </div>
+
+            {/* SLA Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+              <div className="p-5 rounded-2xl bg-[#0d1017] border border-white/[0.08]">
+                <p className="text-2xl font-bold text-white">99.98%</p>
+                <p className="text-xs text-gray-400 mt-1">Autonomous SLA</p>
+              </div>
+              <div className="p-5 rounded-2xl bg-[#0d1017] border border-white/[0.08]">
+                <p className="text-2xl font-bold text-indigo-400">&lt;14ms</p>
+                <p className="text-xs text-gray-400 mt-1">Token Latency</p>
+              </div>
+              <div className="p-5 rounded-2xl bg-[#0d1017] border border-white/[0.08]">
+                <p className="text-2xl font-bold text-purple-400">2.5B+</p>
+                <p className="text-xs text-gray-400 mt-1">Tokens Synthesized</p>
+              </div>
+              <div className="p-5 rounded-2xl bg-[#0d1017] border border-white/[0.08]">
+                <p className="text-2xl font-bold text-pink-400">50,000+</p>
+                <p className="text-xs text-gray-400 mt-1">Active Fleets</p>
+              </div>
+            </div>
           </div>
-        ))}
-      </main>
-    </div>
-  );
-}`;
-    }
+        )}
 
-    if (layoutType === "kanban") {
-      return `import React, { useState } from "react";
-import { Layers, Plus, User, CheckCircle2 } from "lucide-react";
+        {/* 2. STOREFRONT MODULE */}
+        {activeModule === "storefront" && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-white">${projectName} Marketplace & Hardware Store</h2>
+                <p className="text-xs text-gray-400">Deploy validated developer hardware and agent tools.</p>
+              </div>
+              <button className="px-4 py-2 rounded-xl bg-amber-500 text-black font-bold text-xs flex items-center gap-2 shadow-lg">
+                <ShoppingCart className="w-4 h-4" /> Cart ({cartCount})
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((p) => (
+                <div key={p.id} className="p-4 rounded-2xl bg-[#0d1017] border border-white/[0.08] space-y-3">
+                  <img src={p.image} alt={p.title} className="w-full h-48 object-cover rounded-xl" />
+                  <h3 className="text-sm font-bold text-white">{p.title}</h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-amber-400 font-bold text-sm">{p.price}</span>
+                    <button onClick={() => setCartCount(cartCount + 1)} className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold cursor-pointer">
+                      + Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-export default function App() {
-  const [tasks] = useState([
-    { id: 1, title: "Initialize Neural Graph", col: "backlog", assignee: "Alex" },
-    { id: 2, title: "Synthesize Directives", col: "progress", assignee: "Sarah" },
-    { id: 3, title: "Zero-Trust Audit", col: "review", assignee: "David" },
-    { id: 4, title: "Deploy Global Edge", col: "done", assignee: "Elena" }
-  ]);
+        {/* 3. KANBAN MODULE */}
+        {activeModule === "kanban" && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-white">Project Sprint Kanban Board</h2>
+                <p className="text-xs text-gray-400">Autonomous task graph assigned to specialist sub-agents.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {["backlog", "progress", "review", "done"].map((col) => (
+                <div key={col} className="p-4 rounded-2xl bg-[#0d1017] border border-white/[0.08] space-y-3">
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center justify-between">
+                    <span>{col}</span>
+                    <span className="px-2 py-0.5 rounded bg-black/60 text-indigo-400">{tasks.filter(t => t.col === col).length}</span>
+                  </h3>
+                  {tasks.filter(t => t.col === col).map((t) => (
+                    <div key={t.id} className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-2">
+                      <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded">{t.tag}</span>
+                      <p className="text-xs font-bold text-white">{t.title}</p>
+                      <p className="text-[10px] text-gray-400 flex items-center gap-1"><User className="w-3 h-3" /> {t.assignee}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-  return (
-    <div className="min-h-screen bg-[#080910] text-purple-100 font-sans">
-      <header className="border-b border-purple-900/40 bg-[#101222]/90 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-40">
-        <h1 className="text-base font-bold text-white tracking-tight">${projectName} • Task Kanban</h1>
-      </header>
-      <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-        {["backlog", "progress", "review", "done"].map(c => (
-          <div key={c} className="p-4 rounded-2xl bg-[#0f1126] border border-purple-900/40 space-y-3">
-            <h3 className="text-xs font-bold text-white uppercase">{c}</h3>
-            {tasks.filter(t => t.col === c).map(t => (
-              <div key={t.id} className="p-3 rounded-xl bg-black/60 border border-purple-900/30">
-                <p className="text-xs font-bold text-white">{t.title}</p>
-                <p className="text-[10px] text-purple-400 mt-1">Assignee: {t.assignee}</p>
+        {/* 4. FEED MODULE */}
+        {activeModule === "feed" && (
+          <div className="max-w-3xl mx-auto space-y-6 animate-fadeIn">
+            <div className="border-b border-white/[0.08] pb-4">
+              <h2 className="text-lg font-bold text-white">Developer & Agent Community Feed</h2>
+              <p className="text-xs text-gray-400">Real-time status updates and execution streams.</p>
+            </div>
+            {posts.map((p) => (
+              <div key={p.id} className="p-5 rounded-2xl bg-[#0d1017] border border-white/[0.08] space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-white">{p.author}</span>
+                  <span className="text-gray-500">{p.time}</span>
+                </div>
+                <p className="text-xs text-gray-300 leading-relaxed">{p.text}</p>
+                <div className="flex items-center gap-4 text-xs text-gray-400 pt-2 border-t border-white/[0.05]">
+                  <span>❤️ {p.likes} Likes</span>
+                  <span>💬 {p.comments} Comments</span>
+                </div>
               </div>
             ))}
           </div>
-        ))}
-      </main>
-    </div>
-  );
-}`;
-    }
+        )}
 
-    if (layoutType === "feed") {
-      return `import React, { useState } from "react";
-import { MessageSquare, Heart, Share2, Sparkles } from "lucide-react";
-
-export default function App() {
-  const [posts] = useState([
-    { id: 1, author: "Agentic Pro", text: "Autonomous multi-agent synthesis running live!", likes: 142, comments: 28 },
-    { id: 2, author: "Tech Arch", text: "Generative web app layouts deployed instantly.", likes: 89, comments: 14 }
-  ]);
-
-  return (
-    <div className="min-h-screen bg-[#07090e] text-cyan-100 font-sans">
-      <header className="border-b border-cyan-900/40 bg-[#0c121e]/90 backdrop-blur-xl px-6 py-4 sticky top-0 z-40">
-        <h1 className="text-base font-bold text-white">${projectName} • Community Feed</h1>
-      </header>
-      <main className="max-w-4xl mx-auto px-6 py-8 space-y-4">
-        {posts.map(p => (
-          <div key={p.id} className="p-5 rounded-2xl bg-[#0f172a] border border-cyan-900/40 space-y-3">
-            <h4 className="font-bold text-white text-xs">{p.author}</h4>
-            <p className="text-xs text-gray-300">{p.text}</p>
-            <div className="flex gap-4 text-xs text-gray-400 pt-2 border-t border-cyan-900/30">
-              <span>❤️ {p.likes}</span>
-              <span>💬 {p.comments}</span>
+        {/* 5. DATATABLE MODULE */}
+        {activeModule === "datatable" && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-white">Enterprise CRM Data Table</h2>
+                <p className="text-xs text-gray-400">DataInsightAgent telemetry and database records.</p>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/[0.08] bg-[#0d1017] overflow-hidden">
+              <table className="w-full text-left text-xs text-gray-300">
+                <thead className="bg-black/60 text-indigo-400 font-bold border-b border-white/[0.08]">
+                  <tr><th className="p-4">ID</th><th className="p-4">Directive Node</th><th className="p-4">Type</th><th className="p-4">Status</th><th className="p-4">Latency</th><th className="p-4">Value</th></tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.05]">
+                  {records.map((r) => (
+                    <tr key={r.id} className="hover:bg-white/[0.02]">
+                      <td className="p-4 font-mono font-bold text-white">{r.id}</td>
+                      <td className="p-4 text-white font-medium">{r.name}</td>
+                      <td className="p-4 text-indigo-400">{r.type}</td>
+                      <td className="p-4 font-bold text-emerald-400">{r.status}</td>
+                      <td className="p-4 font-mono">{r.latency}</td>
+                      <td className="p-4 font-bold text-white">{r.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-        ))}
-      </main>
-    </div>
-  );
-}`;
-    }
+        )}
 
-    if (layoutType === "datatable") {
-      return `import React, { useState } from "react";
-import { Database, Search, Download, Plus } from "lucide-react";
+        {/* 6. WORKSPACE IDE MODULE */}
+        {activeModule === "workspace" && (
+          <div className="space-y-4 font-mono animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h2 className="text-sm font-bold text-white flex items-center gap-2"><Code className="w-4 h-4 text-indigo-400" /> Embedded Code IDE Workspace</h2>
+              <button className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center gap-1.5"><Play className="w-3.5 h-3.5 fill-current" /> Run Code</button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[420px]">
+              <aside className="p-4 rounded-2xl bg-[#0d1017] border border-white/[0.08] space-y-2">
+                <p className="text-xs font-bold text-gray-400 uppercase flex items-center gap-1.5 mb-3"><FolderTree className="w-4 h-4" /> Explorer</p>
+                {["App.tsx", "StudioWorkspace.tsx", "AgentOrchestrator.tsx", "config.json"].map((f) => (
+                  <button key={f} onClick={() => setActiveFile(f)} className={"w-full text-left px-3 py-1.5 rounded-lg text-xs transition-all " + (activeFile === f ? "bg-indigo-600/20 text-indigo-300 font-bold border border-indigo-500/40" : "text-gray-400 hover:text-white")}>
+                    {f}
+                  </button>
+                ))}
+              </aside>
+              <main className="md:col-span-3 p-4 rounded-2xl bg-black/80 border border-white/[0.08] overflow-auto">
+                <p className="text-xs text-gray-500 mb-3">// File: {activeFile}</p>
+                <pre className="text-xs text-emerald-400 font-mono leading-relaxed">
+                  export default function MasterPipeline() &#123; return orchestrator.execute(); &#125;
+                </pre>
+              </main>
+            </div>
+          </div>
+        )}
 
-export default function App() {
-  const [records] = useState([
-    { id: "REC-101", name: "Telemetry Node X", category: "Directives", status: "ACTIVE", value: "$14,200" },
-    { id: "REC-102", name: "Audit Compliance Log", category: "Security", status: "COMPLETED", value: "$8,500" }
-  ]);
-
-  return (
-    <div className="min-h-screen bg-[#07090e] text-emerald-100 font-sans">
-      <header className="border-b border-emerald-900/40 bg-[#0c1410]/90 backdrop-blur-xl px-6 py-4 sticky top-0 z-40">
-        <h1 className="text-base font-bold text-white">${projectName} • Enterprise Data Table</h1>
-      </header>
-      <main className="max-w-6xl mx-auto px-6 py-8 space-y-4">
-        <div className="rounded-2xl border border-emerald-900/40 bg-[#0e1713] overflow-hidden">
-          <table className="w-full text-left text-xs text-gray-300">
-            <thead className="bg-black/60 text-emerald-400 font-bold border-b border-emerald-900/40">
-              <tr><th className="p-4">ID</th><th className="p-4">Name</th><th className="p-4">Category</th><th className="p-4">Status</th><th className="p-4">Value</th></tr>
-            </thead>
-            <tbody className="divide-y divide-emerald-900/30">
-              {records.map(r => (
-                <tr key={r.id}>
-                  <td className="p-4 font-mono font-bold text-white">{r.id}</td>
-                  <td className="p-4 text-white">{r.name}</td>
-                  <td className="p-4 text-emerald-400">{r.category}</td>
-                  <td className="p-4 font-bold text-emerald-300">{r.status}</td>
-                  <td className="p-4 text-white font-bold">{r.value}</td>
-                </tr>
+        {/* 7. CHAT COPILOT MODULE */}
+        {activeModule === "chat" && (
+          <div className="max-w-3xl mx-auto space-y-4 animate-fadeIn">
+            <div className="border-b border-white/[0.08] pb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white">AI Copilot & Assistant Portal</h2>
+                <p className="text-xs text-gray-400">Autonomous LLM reasoning assistant.</p>
+              </div>
+            </div>
+            <div className="p-4 rounded-2xl bg-[#0d1017] border border-white/[0.08] min-h-[320px] space-y-3">
+              {chatMessages.map((m, idx) => (
+                <div key={idx} className={"p-3.5 rounded-xl text-xs max-w-lg " + (m.role === "user" ? "bg-indigo-600 text-white ml-auto" : "bg-black/60 border border-white/[0.08] text-gray-200")}>
+                  {m.text}
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </main>
-    </div>
-  );
-}`;
-    }
-
-    if (layoutType === "workspace") {
-      return `import React, { useState } from "react";
-import { Terminal, FileCode, Play, FolderTree, Cpu } from "lucide-react";
-
-export default function App() {
-  const [activeFile, setActiveFile] = useState("App.tsx");
-
-  return (
-    <div className="min-h-screen bg-[#050811] text-cyan-100 font-mono flex flex-col">
-      <header className="border-b border-cyan-900/40 bg-[#0a0f1d] px-6 py-3 flex items-center justify-between">
-        <h1 className="text-sm font-bold text-white tracking-tight">${projectName} • IDE Workspace</h1>
-        <button className="px-4 py-1.5 bg-cyan-600 text-black font-bold text-xs rounded-lg flex items-center gap-2"><Play className="w-3.5 h-3.5 fill-current" /> Run Pipeline</button>
-      </header>
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-4">
-        <aside className="border-r border-cyan-900/40 p-4 space-y-3 bg-[#080d19]">
-          <h4 className="text-xs font-bold text-cyan-400 uppercase flex items-center gap-2"><FolderTree className="w-4 h-4" /> Explorer</h4>
-          {["App.tsx", "StudioWorkspace.tsx", "config.json"].map(f => (
-            <button key={f} onClick={() => setActiveFile(f)} className={"w-full text-left px-3 py-1.5 rounded text-xs " + (activeFile === f ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40" : "text-gray-400 hover:text-white")}>{f}</button>
-          ))}
-        </aside>
-        <main className="md:col-span-3 p-6 bg-[#04060d]">
-          <h3 className="text-xs text-gray-500 mb-4">// Viewing {activeFile}</h3>
-          <pre className="text-xs text-emerald-400 font-mono bg-black/60 p-4 rounded-xl border border-cyan-900/40 overflow-x-auto">export default function App() &#123; return &lt;StudioWorkspace /&gt;; &#125;</pre>
-        </main>
-      </div>
-    </div>
-  );
-}`;
-    }
-
-    if (layoutType === "chat") {
-      return `import React, { useState } from "react";
-import { MessageSquare, Send, Bot, User, Sparkles } from "lucide-react";
-
-export default function App() {
-  const [messages, setMessages] = useState([
-    { role: "assistant", text: "Hello! I am your autonomous AI copilot for ${projectName}. How can I assist your directive graph today?" }
-  ]);
-  const [input, setInput] = useState("");
-
-  return (
-    <div className="min-h-screen bg-[#090a10] text-purple-100 font-sans flex flex-col">
-      <header className="border-b border-purple-900/40 bg-[#101222]/90 px-6 py-4 sticky top-0 z-40 flex justify-between items-center">
-        <h1 className="text-base font-bold text-white tracking-tight">${projectName} • AI Conversation Portal</h1>
-        <span className="text-xs text-emerald-400 font-mono flex items-center gap-1.5"><Bot className="w-4 h-4" /> Copilot Active</span>
-      </header>
-      <main className="flex-1 max-w-4xl mx-auto w-full p-6 space-y-4">
-        {messages.map((m, idx) => (
-          <div key={idx} className={"flex gap-3 text-xs p-4 rounded-2xl border " + (m.role === "user" ? "bg-purple-950/40 border-purple-500/40 ml-12" : "bg-black/60 border-purple-900/30 mr-12")}>
-            <span className="font-bold text-purple-300 uppercase">{m.role}:</span>
-            <p className="text-gray-200">{m.text}</p>
-          </div>
-        ))}
-      </main>
-      <div className="p-6 border-t border-purple-900/40 bg-[#101222]/90 max-w-4xl mx-auto w-full flex gap-3">
-        <input type="text" value={input} onChange={e => setInput(e.target.value)} placeholder="Type a message or directive..." className="flex-1 bg-black/60 border border-purple-900/40 p-3 rounded-xl text-xs text-white focus:outline-none" />
-        <button onClick={() => { if(input) { setMessages([...messages, { role: "user", text: input }, { role: "assistant", text: "Directive received! Autonomous agent graph is executing..." }]); setInput(""); } }} className="px-5 py-3 bg-purple-600 text-white font-bold text-xs rounded-xl flex items-center gap-2"><Send className="w-4 h-4" /> Send</button>
-      </div>
-    </div>
-  );
-}`;
-    }
-
-    if (layoutType === "streaming") {
-      return `import React, { useState } from "react";
-import { Play, ThumbsUp, Share2, Volume2, Film } from "lucide-react";
-
-export default function App() {
-  return (
-    <div className="min-h-screen bg-[#08070c] text-red-100 font-sans">
-      <header className="border-b border-red-900/40 bg-[#140b15]/90 px-6 py-4 sticky top-0 z-40">
-        <h1 className="text-base font-bold text-white tracking-tight">${projectName} • Media Stream Stage</h1>
-      </header>
-      <main className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 space-y-4">
-          <div className="h-96 rounded-3xl overflow-hidden relative border border-red-900/40 bg-black flex items-center justify-center">
-            <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80" alt="Stream" className="w-full h-full object-cover opacity-60" />
-            <button className="absolute p-5 rounded-full bg-red-600 text-white shadow-2xl hover:scale-110 transition-transform"><Play className="w-8 h-8 fill-current" /></button>
-          </div>
-          <h2 className="text-lg font-bold text-white">${tagline}</h2>
-        </div>
-        <aside className="space-y-4">
-          <h3 className="text-xs font-bold text-white uppercase">Up Next</h3>
-          <div className="p-3 rounded-xl bg-[#140b15] border border-red-900/30 flex gap-3">
-            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=200&q=80" alt="thumb" className="w-20 h-14 object-cover rounded-lg" />
-            <div>
-              <p className="text-xs font-bold text-white">Neural Agent Stream</p>
-              <p className="text-[10px] text-gray-400">12k views</p>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask AI Copilot to modify directive..."
+                className="flex-1 px-4 py-3 rounded-xl bg-[#0d1017] border border-white/[0.08] text-xs text-white focus:outline-none"
+              />
+              <button
+                onClick={() => {
+                  if (chatInput) {
+                    setChatMessages([...chatMessages, { role: "user", text: chatInput }, { role: "assistant", text: "Directive updated! Agent graph is processing your intent." }]);
+                    setChatInput("");
+                  }
+                }}
+                className="px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+              >
+                <Send className="w-4 h-4" /> Send
+              </button>
             </div>
           </div>
-        </aside>
+        )}
+
+        {/* 8. MEDIA STREAMING MODULE */}
+        {activeModule === "streaming" && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="border-b border-white/[0.08] pb-4">
+              <h2 className="text-lg font-bold text-white">WebRTC Media Streaming Studio</h2>
+              <p className="text-xs text-gray-400">AI-enhanced streaming studio powered by MediaSyncAgent.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="md:col-span-2 space-y-4">
+                <div className="h-80 rounded-3xl bg-black border border-white/[0.08] flex items-center justify-center relative overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80" alt="stream" className="w-full h-full object-cover opacity-60" />
+                  <button className="absolute p-4 rounded-full bg-indigo-600 text-white shadow-2xl hover:scale-110 transition-transform">
+                    <Play className="w-8 h-8 fill-current" />
+                  </button>
+                </div>
+                <h3 className="text-sm font-bold text-white">${projectName} Live Broadcast Stage</h3>
+              </div>
+              <div className="p-4 rounded-2xl bg-[#0d1017] border border-white/[0.08] space-y-3">
+                <h4 className="text-xs font-bold text-white uppercase">Stream Telemetry</h4>
+                <p className="text-xs text-gray-400">Resolution: 4K 60FPS Lossless</p>
+                <p className="text-xs text-gray-400">AI Captions: Active (Sub-10ms)</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 9. DASHBOARD METRICS MODULE */}
+        {activeModule === "dashboard" && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="border-b border-white/[0.08] pb-4">
+              <h2 className="text-lg font-bold text-white">Executive Operations Telemetry Dashboard</h2>
+              <p className="text-xs text-gray-400">Real-time throughput metrics and agent health.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {config.metrics.map((m: any) => (
+                <div key={m.label} className="p-5 rounded-2xl bg-[#0d1017] border border-white/[0.08] space-y-2">
+                  <span className="text-xs text-gray-400">{m.label}</span>
+                  <p className="text-2xl font-bold text-white">{m.value}</p>
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">{m.change}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </main>
-    </div>
-  );
-}`;
-    }
-
-    return `import React, { useState } from "react";
-import { Zap, Cpu, Layers, Terminal, BarChart3 } from "lucide-react";
-import StudioWorkspace from "./components/StudioWorkspace";
-
-export default function App() {
-  const [isExecuting, setIsExecuting] = useState(false);
-
-  return (
-    <div className="min-h-screen bg-[#07090e] text-gray-100 flex flex-col font-sans">
-      <header className="border-b border-white/[0.08] bg-[#0b0e14]/80 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-40">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white">
-            <Zap className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-base font-bold text-white tracking-tight">${projectName}</h1>
-            <p className="text-xs text-gray-400 font-medium">${tagline}</p>
-          </div>
-        </div>
-      </header>
-      <div className="flex-1 p-6 max-w-7xl mx-auto w-full">
-        <StudioWorkspace onTrigger={() => setIsExecuting(!isExecuting)} isExecuting={isExecuting} />
-      </div>
     </div>
   );
 }`;
