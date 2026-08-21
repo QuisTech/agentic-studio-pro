@@ -133,10 +133,9 @@ export class CodeScaffoldAgent {
         start: "next start"
       },
       dependencies: {
-        react: "^19.0.0",
-        "react-dom": "^19.0.0",
-        next: "^15.0.0",
-        "lucide-react": "^0.400.0"
+        react: "18.2.0",
+        "react-dom": "18.2.0",
+        "lucide-react": "0.469.0"
       }
     }, null, 2);
 

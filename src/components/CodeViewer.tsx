@@ -113,16 +113,39 @@ export default function App() {
       }, null, 2);
     }
 
+    // Force React 18.2.0 in package.json to prevent Sandpack React 19 download hangs
+    if (formatted['/package.json']) {
+      try {
+        const pkg = JSON.parse(formatted['/package.json']);
+        if (pkg.dependencies) {
+          pkg.dependencies['react'] = '18.2.0';
+          pkg.dependencies['react-dom'] = '18.2.0';
+          if (pkg.dependencies['next']) delete pkg.dependencies['next'];
+        }
+        formatted['/package.json'] = JSON.stringify(pkg, null, 2);
+      } catch {}
+    } else {
+      formatted['/package.json'] = JSON.stringify({
+        dependencies: {
+          react: "18.2.0",
+          "react-dom": "18.2.0",
+          "lucide-react": "0.469.0"
+        }
+      }, null, 2);
+    }
+
     return formatted;
   }, [files]);
 
-  // Extract third party packages with pinned versions to prevent timeout delays
+  // Extract third party packages with exact pinned versions (no carets) to prevent timeout delays
   const sandpackDependencies = useMemo(() => {
     const deps: Record<string, string> = {
-      "lucide-react": "^0.469.0",
-      "framer-motion": "^11.15.0",
-      "clsx": "^2.1.1",
-      "tailwind-merge": "^2.6.0"
+      "react": "18.2.0",
+      "react-dom": "18.2.0",
+      "lucide-react": "0.469.0",
+      "framer-motion": "11.15.0",
+      "clsx": "2.1.1",
+      "tailwind-merge": "2.6.0"
     };
 
     const importRegex = /import\s+.*?\s+from\s+['"]([^'"]+)['"]/g;
@@ -131,7 +154,7 @@ export default function App() {
       let match;
       while ((match = importRegex.exec(fileContent)) !== null) {
         const pkgName = match[1];
-        if (!pkgName.startsWith('.') && !pkgName.startsWith('/') && !pkgName.startsWith('@/') && !pkgName.startsWith('~/') && pkgName !== 'react' && pkgName !== 'react-dom') {
+        if (!pkgName.startsWith('.') && !pkgName.startsWith('/') && !pkgName.startsWith('@/') && !pkgName.startsWith('~/') && pkgName !== 'react' && pkgName !== 'react-dom' && pkgName !== 'next') {
             const parts = pkgName.split('/');
             const basePkg = pkgName.startsWith('@') ? `${parts[0]}/${parts[1]}` : parts[0];
             if (basePkg && !deps[basePkg]) {
