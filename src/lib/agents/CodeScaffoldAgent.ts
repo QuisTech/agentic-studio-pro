@@ -123,12 +123,31 @@ export class CodeScaffoldAgent {
     const analyticsContent = this.generateAnalyticsContent(metricsJson);
     const stylesContent = this.generateStylesContent();
 
+    const packageJsonContent = JSON.stringify({
+      name: this.slugify(projectName),
+      version: "1.0.0",
+      private: true,
+      scripts: {
+        dev: "next dev",
+        build: "next build",
+        start: "next start"
+      },
+      dependencies: {
+        react: "^19.0.0",
+        "react-dom": "^19.0.0",
+        next: "^15.0.0",
+        "lucide-react": "^0.400.0"
+      }
+    }, null, 2);
+
     return [
       { path: "App.tsx", content: appContent },
       { path: "components/StudioWorkspace.tsx", content: workspaceContent },
       { path: "components/AgentOrchestrator.tsx", content: orchestratorContent },
       { path: "components/AnalyticsDashboard.tsx", content: analyticsContent },
-      { path: "styles.css", content: stylesContent }
+      { path: "styles.css", content: stylesContent },
+      { path: "README.md", content: this.generateReadme(blueprint) },
+      { path: "package.json", content: packageJsonContent }
     ];
   }
 

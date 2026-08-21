@@ -10,6 +10,7 @@ export function extractProjectName(files: Record<string, string>): string {
 
   const sanitizeName = (str: string): string => {
     return str
+      .replace(/<[^>]*>/g, '') // Strip HTML tags
       .replace(/[^a-zA-Z0-9_-]/g, '_')
       .replace(/_+/g, '_')
       .replace(/^_|_$/g, '');
@@ -29,20 +30,7 @@ export function extractProjectName(files: Record<string, string>): string {
     }
   }
 
-  // 2. Check App.tsx header or canvas title
-  if (normalizedFiles["App.tsx"]) {
-    const h1Match = normalizedFiles["App.tsx"].match(/<h1[^>]*>\s*([^<•]+?)(?:\s*•|\s*<\/h1>)/i)
-      || normalizedFiles["App.tsx"].match(/const\s+cleanDomainName\s*=\s*["']([^"']+)["']/i)
-      || normalizedFiles["App.tsx"].match(/title:\s*["']([^"']+)["']/i);
-    if (h1Match && h1Match[1]) {
-      const name = h1Match[1].trim();
-      if (name && !name.toLowerCase().includes("agentic studio")) {
-        return sanitizeName(name);
-      }
-    }
-  }
-
-  // 3. Check package.json
+  // 2. Check package.json
   if (normalizedFiles["package.json"]) {
     try {
       const pkg = JSON.parse(normalizedFiles["package.json"]);
@@ -50,6 +38,31 @@ export function extractProjectName(files: Record<string, string>): string {
         return sanitizeName(pkg.name);
       }
     } catch {}
+  }
+
+  // 3. Check App.tsx header or project name variable declarations
+  if (normalizedFiles["App.tsx"]) {
+    const appText = normalizedFiles["App.tsx"];
+
+    // Match explicit variable assignments like const projectName = "SynapseSphere"
+    const varMatch = appText.match(/const\s+projectName\s*=\s*["']([^"']+)["']/i)
+      || appText.match(/projectName\s*:\s*["']([^"']+)["']/i)
+      || appText.match(/workspaceTitle\s*:\s*["']([^"']+)["']/i);
+    if (varMatch && varMatch[1] && !varMatch[1].includes("${")) {
+      const name = varMatch[1].trim();
+      if (name && !name.toLowerCase().includes("agentic studio")) {
+        return sanitizeName(name);
+      }
+    }
+
+    // Match <h1...> element content, stripping inner tags
+    const h1Match = appText.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+    if (h1Match && h1Match[1]) {
+      const rawText = h1Match[1].replace(/<[^>]*>/g, '').split('•')[0].trim();
+      if (rawText && !rawText.toLowerCase().includes("agentic studio")) {
+        return sanitizeName(rawText);
+      }
+    }
   }
 
   // 4. Check pubspec.yaml (Flutter)
@@ -73,15 +86,7 @@ export function extractProjectName(files: Record<string, string>): string {
     }
   }
 
-  // 7. Check Swift app files in ios/
-  for (const k of Object.keys(normalizedFiles)) {
-    if (k.startsWith("ios/") && k.endsWith("App.swift")) {
-      const appName = k.replace("ios/", "").replace("App.swift", "");
-      if (appName) return sanitizeName(appName);
-    }
-  }
-
-  return "agentic-project";
+  return "agentic_project";
 }
 
 export async function downloadProjectAsZip(files: Record<string, string>, customName?: string) {
